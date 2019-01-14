@@ -864,7 +864,7 @@ CLIENT_RANDOM 2255ECB935DC13C45B078B206F9E584322B65A191A13DF14E6A8961E10654E21
 <p>Now, by using the <em>Packalyzer</em> application and our access to the SSL key log, we can decrypt SSL traffic on the network and reveal their plaintext contents.</p>
 <p><img alt="Adding the SSL Log File" src="../challenges/8-ssllogadd.png" /></p>
 <p><img alt="Decrypted SSL Traffic" src="../challenges/8-wiresharkdecrypt.png" /></p>
-<p>Although these packets only show requests for the <em>Packalyzer</em> application, we can still examine the headers of each request to gather cookies for us to impersonate other users. To accomplish this, we need to gather values of for the 'PASESSION' cookie.</p>
+<p>Although these packets only show requests for the <em>Packalyzer</em> application, we can still examine the headers of each request to gather cookies for us to impersonate other users. To accomplish this, we need to gather values for the 'PASESSION' cookie.</p>
 <p><img alt="PASESSION Cookies" src="../challenges/8-wiresharkpasession.png" /></p>
 <p>We gather and test several of these cookies until we come across one that logs us in as 'alabaster', a user with admin privileges and a saved capture file named <code>super_secret_packet_capture.pcap</code>.</p>
 <p><img alt="Changing the Cookie Value" src="../challenges/8-cookiemodify.png" /></p>
