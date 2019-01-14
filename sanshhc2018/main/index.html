@@ -753,13 +753,14 @@ Archive:  ventilation_diagram.zip
 <p><img alt="PNG Upload" src="../challenges/6-usb.png" /></p>
 <p>After uploading the Alabaster's badge, we receive the following error code: <code>PNG Files Only</code></p>
 <p>We can convert the badge to a PNG image, but using it still gives us another error message: <code>Authorized User Account Has Been Disabled!</code></p>
-<p>By examining the application using Chrome's DevTools, we discover several things.
--   The URL for the application is located at https://scanomatic.kringlecastle.com/index.html
--   The app sends a POST request to https://scanomatic.kringlecastle.com/upload with the image file base64-encoded in the <code>b64barcode</code> parameter or in raw form using the <code>barcode</code> parameter.
--   Using the fingerprint scanner simply sends a blank image to the server; hence the error about not recognizing a QR code.
--   The app also performs client-side, file-type verification before submitting it to the server.
-- 
-<img alt="Upload B64" src="../challenges/6-upload.png" /></p>
+<p>By examining the application using Chrome's DevTools, we discover several things.</p>
+<ul>
+<li>The URL for the application is located at https://scanomatic.kringlecastle.com/index.html</li>
+<li>The app sends a POST request to https://scanomatic.kringlecastle.com/upload with the image file base64-encoded in the <code>b64barcode</code> parameter or in raw form using the <code>barcode</code> parameter.</li>
+<li>Using the fingerprint scanner simply sends a blank image to the server; hence the error about not recognizing a QR code.</li>
+<li>The app also performs client-side, file-type verification before submitting it to the server.</li>
+</ul>
+<p><img alt="Upload B64" src="../challenges/6-upload.png" /></p>
 <p><img alt="Upload Binary" src="../challenges/6-upload2.png" /></p>
 <p>Since the server only looks for a recognizable QR code, we don't need to worry about pasting a replacement code over the sample badge; we can just send standalone codes to the server. This ability allows us to automate the QR code creation and submission process using the following script:</p>
 <pre><code class="bash">#!/bin/bash
@@ -831,13 +832,17 @@ https://packalyzer.kringlecastle.com to support the elves and their information 
 <p><img alt="Control Panel" src="../challenges/8-controlpanel.png" /></p>
 <p>After opening this data within Wireshark, we notice a lot of encrypted TLS packets. This prevents us from deciphering the actual data being transmitted until we can find the SSL keys.</p>
 <p><img alt="Wireshark" src="../challenges/8-wireshark1.png" /></p>
-<p>By analyzing the webpage in Chrome DevTools, we discover several interesting pieces of information:
--   Many of the application's supporing files are accessed on port 80 via HTTPS within a <code>pub</code> directory.
--   There exists an <code>app.js</code> file, which we currently can't see under the sources tab.</p>
+<p>By analyzing the webpage in Chrome DevTools, we discover several interesting pieces of information:</p>
+<ul>
+<li>Many of the application's supporing files are accessed on port 80 via HTTPS within a <code>pub</code> directory.</li>
+<li>There exists an <code>app.js</code> file, which we currently can't see under the sources tab.</li>
+</ul>
 <p><img alt="Source File" src="../challenges/8-sources.png" /></p>
-<p>Using this information, we attempt to search for the app.js file. Although we cannot find it on the normal HTTPS port (443), we successfully find the file on port 80, in either https://packalyzer.kringlecastle.com:80/app.js or https://packalyzer.kringlecastle.com:80/pub/app.js. Analyzing <code>app.js</code> provides us with several key pieces of information about the <em>Packalyzer</em> application:
-- It runs using HTTP2.
-- The SSL key log file is located in <code>__dirname + process.env.DEV + process.env.SSLKEYLOGFILE</code>.</p>
+<p>Using this information, we attempt to search for the app.js file. Although we cannot find it on the normal HTTPS port (443), we successfully find the file on port 80, in either https://packalyzer.kringlecastle.com:80/app.js or https://packalyzer.kringlecastle.com:80/pub/app.js. Analyzing <code>app.js</code> provides us with several key pieces of information about the <em>Packalyzer</em> application:</p>
+<ul>
+<li>It runs using HTTP2.</li>
+<li>The SSL key log file is located in <code>__dirname + process.env.DEV + process.env.SSLKEYLOGFILE</code>.</li>
+</ul>
 <p>The log file's location is not immediately useful since it's held within ENV variables. However, by attempting to access the variable names on port 443, we notice that the application prints out the variable's actual value. This allows us to determine the log file's directory and file name (<code>/dev/packalyzer_clientrandom_ssl.log</code>) to download it for our use.</p>
 <pre><code>bernard@Bernard-PC:~/NetsecStudy/sans2018$ curl &quot;https://packalyzer.kringlecastle.com/DEV/reveal&quot;
 Error: ENOENT: no such file or directory, open '/opt/http2/dev//reveal'
@@ -998,14 +1003,15 @@ HINT:
   and match upon these patterns instead of just IP/domains.
 </code></pre>
 
-<p>After downloading a current capture file, we conduct our analysis and determine several key traits regarding the malicious traffic:
--   It's performed over DNS
--   It often involves a subdomain containing a hex-encoded string, in this case for "wannacookie.min.ps1".
--   It sometimes includes a sequence of subsubdomain requests for numbers incrementing from 0.
--   The domain name always has a permutation of the word "hans gruber".
--   The top-level domain varies between many different possibilities.
-- 
-<img alt="Traffic Analysis" src="../challenges/9a-wireshark.png" /></p>
+<p>After downloading a current capture file, we conduct our analysis and determine several key traits regarding the malicious traffic:</p>
+<ul>
+<li>It's performed over DNS</li>
+<li>It often involves a subdomain containing a hex-encoded string, in this case for "wannacookie.min.ps1".</li>
+<li>It sometimes includes a sequence of subsubdomain requests for numbers incrementing from 0.</li>
+<li>The domain name always has a permutation of the word "hans gruber".</li>
+<li>The top-level domain varies between many different possibilities.</li>
+</ul>
+<p><img alt="Traffic Analysis" src="../challenges/9a-wireshark.png" /></p>
 <p>There are many various ways to filter out the malicious traffic based on these factors. Here, we will filter out all domain names that contain a ten-character long word that only uses the letters from 'hans gruber'. After modifying our local.rules file, it will look like this:</p>
 <pre><code class="bash"># $Id: local.rules,v 1.11 2004/07/23 20:15:44 bmc Exp $
 # ----------------
@@ -1094,11 +1100,13 @@ if ($null -ne ((Resolve-DnsName -Name $(H2A $(B2H $(ti_rox $(B2H $(G2B $(H2B $S1
 if ($(netstat -ano | Select-String &quot;127.0.0.1:8080&quot;).length -ne 0 -or (Get-WmiObject Win32_ComputerSystem).Domain -ne &quot;KRINGLECASTLE&quot;) {return}
 </code></pre>
 
-<p>Several things make these statements interesting:
--   They are if-statements that end the script if the condition is true.
--   They are located at the beginning of the main, wannacookie function, giving them a chance to stop any malicious activity if triggered.
--   The hex value <code>6B696C6C737769746368</code> from the subdomain in the first statement translates to <code>killswitch</code>.
--   The second statement halts execution if the host machine doesn't live on the <code>KRINGLECASTLE</code> domain. This gives evidence that it's an attack that directly targets Santa's network.</p>
+<p>Several things make these statements interesting:</p>
+<ul>
+<li>They are if-statements that end the script if the condition is true.</li>
+<li>They are located at the beginning of the main, wannacookie function, giving them a chance to stop any malicious activity if triggered.</li>
+<li>The hex value <code>6B696C6C737769746368</code> from the subdomain in the first statement translates to <code>killswitch</code>.</li>
+<li>The second statement halts execution if the host machine doesn't live on the <code>KRINGLECASTLE</code> domain. This gives evidence that it's an attack that directly targets Santa's network.</li>
+</ul>
 <p>Like the previous deobfuscation techniques, we remove any potentially damaging code from the code block, modify it to output the desired information, and run it within PowerShell to see the decoded output. Another step for this particular challenge is that we much also import the various functions the "killswitch" method makes use of in order for the decoding process to work.</p>
 <p>After analyzing the various nested functions, we can determine that the killswitch method decodes the domain by simply using an XOR decryption between <code>1f0f0202171d020c0b09075604070a0a</code> and the data retrieved from the CnC server, which is <code>66667272727869657268667865666B73</code> in this case. The full explaination can be found in the <em>Wannacookie Malware Analysis</em> appendix.</p>
 <p>Our final code and output, sans the importing, is seen below.</p>
@@ -1166,9 +1174,11 @@ a2f6721ebe11a52758afd0fb268e38597c9ec17b47e615d063665455bd0663a7bcf4
 53b95f06f959ae8a929811481dacffb690a9
 </code></pre>
 
-<p>This information gives us two two things to look for within the memory dump:
--   A 32-character hex string for the AES key
--   A 512-character hex string for the public key encrypted AES key</p>
+<p>This information gives us two two things to look for within the memory dump:</p>
+<ul>
+<li>A 32-character hex string for the AES key</li>
+<li>A 512-character hex string for the public key encrypted AES key</li>
+</ul>
 <p>To accomplish this, we load the memory dump into "power_dump.py" to search for hex strings of 32-characters and 512-characters.</p>
 <pre><code>================ Filters ================
 1| LENGTH  len(variable_values) == 32

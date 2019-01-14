@@ -321,20 +321,26 @@
 <p>Provided is a high-level walkthrough of <em>Wannacookie's</em> infection and destruction process. The detailed analysis follows this chart.</p>
 <p><img alt="Wannacookie Flowchart" src="../wannacookie/wc-flowchart.svg" /></p>
 <p>To fully analyze the behavior of <em>Wannacookie</em>, we first spin up a Windows 10 virtual machine to see the execution of the malware in a controlled environment. We will run the <em>PowerShell</em> script directly, rather than from the <code>CHOCOLATE_CHIP_COOKIE_RECIPE.docm</code> file since this VM doesn't have access to <em>Microsoft Word</em>.
-There are several factors to <em>Wannacookie</em> that makes it relatively safe to analyze:
-- It does not seek out other computers to infect, so it's not virulent.
-- It only targets files with the <code>.elfdb</code> extension, which is designed solely for the purpose of the <em>SANS Holiday Hack Challenge 2018</em> and not used for real-world data.</p>
+There are several factors to <em>Wannacookie</em> that makes it relatively safe to analyze:</p>
+<ul>
+<li>It does not seek out other computers to infect, so it's not virulent.</li>
+<li>It only targets files with the <code>.elfdb</code> extension, which is designed solely for the purpose of the <em>SANS Holiday Hack Challenge 2018</em> and not used for real-world data.</li>
+</ul>
 <p>Our first attempt to run <em>Wannacookie</em> fails since we are not on a <code>KRINGLECASTLE</code> domain. In order to allow us to see its full execution, we remove the safety switch.</p>
 <p><img alt="Running" src="../wannacookie/wc-running.png" /></p>
 <p>During the malware's execution, it retrieves data over the DNS in a novel way. It first makes a request to the DNS CnC server with a hex-encoded string as the subdomain. If it's requesting a file, then the server responds with a length value within the TXT record. Due to the limitations of DNS records, the server can only reply with 254-char, or 127-byte, chunks. Thus, the malware uses the initial length value to know how many requests it needs to make to retrieve the full file. After retrieving the length value, the malware makes several DNS requests, in sequence, with the format of: <code>&lt;chunk_number&gt;.&lt;requested_file&gt;.erohetfanu.com</code>. The <code>chunk_number</code> increments from 0 to one less than the specified length from before. For each request, the server replies with a portion of the file as a hex string within the TXT record. Upon completing all DNS requests, the malware has downloaded the full file from the CnC server.</p>
 <p><img alt="A DNS Download" src="../wannacookie/wc-dnsdownload.png" /></p>
-<p>The script takes the following actions:
-1.  Performs the killswitch check. The malware generates a domain to lookup through several novel techniques that attempt to obfuscate its methods and the resulting domain name.
-    -  It first retreives a hex string from the TXT record of <code>6B696C6C737769746368.erohetfanu.com</code> (the hex subdomain translating to <code>killswitch</code>), which is an encrypted value that contains the killswitch domain name: <code>66667272727869657268667865666B73</code>
-    -  Another variable, <code>$S1</code>, contains a hex string of gzip data that the malware translates all the way to the hex-values of its unzipped contents; an XOR key for the previous value: <code>1f0f0202171d020c0b09075604070a0a</code>
-    -  Finally, the script performs an XOR operation between the two values to decrypt the domain name used as a killswitch: <code>yippeekiyaa.aaay</code>
-    -  The script attempts to resolve this domain name and if successful, halts further operation.</p>
+<p>The script takes the following actions:</p>
 <ol>
+<li>
+<p>Performs the killswitch check. The malware generates a domain to lookup through several novel techniques that attempt to obfuscate its methods and the resulting domain name.</p>
+<ul>
+<li>It first retreives a hex string from the TXT record of <code>6B696C6C737769746368.erohetfanu.com</code> (the hex subdomain translating to <code>killswitch</code>), which is an encrypted value that contains the killswitch domain name: <code>66667272727869657268667865666B73</code></li>
+<li>Another variable, <code>$S1</code>, contains a hex string of gzip data that the malware translates all the way to the hex-values of its unzipped contents; an XOR key for the previous value: <code>1f0f0202171d020c0b09075604070a0a</code></li>
+<li>Finally, the script performs an XOR operation between the two values to decrypt the domain name used as a killswitch: <code>yippeekiyaa.aaay</code></li>
+<li>The script attempts to resolve this domain name and if successful, halts further operation.</li>
+</ul>
+</li>
 <li>
 <p>Checks if the target is within the <code>KRINGLECASTLE</code> domain and has TCP port 8080 open on localhost. If either of these are not true, then the script exits.</p>
 </li>

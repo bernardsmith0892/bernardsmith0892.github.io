@@ -1245,9 +1245,11 @@ elf@b6eaa89be3f0:~$ python evtx_dump.py ho-ho-no.evtx 2&gt;/dev/null | head -n 2
 &lt;/Event&gt;
 </code></pre>
 
-<p>To discover what webmail username has been comprimised by the password spraying attack, we are most interested in these two Event IDs:
-- EventID 4624 - An account was successfully logged on
-- EventID 4625 - An account failed to log on</p>
+<p>To discover what webmail username has been comprimised by the password spraying attack, we are most interested in these two Event IDs:</p>
+<ul>
+<li>EventID 4624 - An account was successfully logged on</li>
+<li>EventID 4625 - An account failed to log on</li>
+</ul>
 <p>In order to determine the best way to format our data for analysis, we first look at a few logon events to determine what line will give us the desired username. </p>
 <p>Our full command for this step involves several steps:
 The <code>evtx_dump.py</code> output while hiding all errors using <code>2&gt;/dev/null</code>. This output is then piped to a grep command that searches for the lines that include the <code>EventID 4624</code>, as well as a few lines before and after to make sure we grab the entire log entry. Finally, we pipe that output to the <code>head</code> command, just to limit our total output for analysis purposes and only view the first matched entry.</p>
