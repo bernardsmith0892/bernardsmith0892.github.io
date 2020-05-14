@@ -1,29 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://bernardsmith0892.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://bernardsmith0892.github.io//" rel="alternate" type="text/html" /><updated>2020-05-13T18:43:47-10:00</updated><id>https://bernardsmith0892.github.io//feed.xml</id><title type="html">Bernard Smith</title><subtitle>Mostly technology-related</subtitle><entry><title type="html">All-Army CyberStakes 4 - Cryptography (We’re Related)</title><link href="https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-were-related.html" rel="alternate" type="text/html" title="All-Army CyberStakes 4 - Cryptography (We're Related)" /><published>2020-05-13T05:00:00-10:00</published><updated>2020-05-13T05:00:00-10:00</updated><id>https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-were-related</id><content type="html" xml:base="https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-were-related.html">&lt;h1 id=&quot;were-related-250-points&quot;&gt;We’re Related (250 Points)&lt;/h1&gt;
-
-&lt;p&gt;TBD&lt;/p&gt;
-
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-  MathJax.Hub.Config({
-    extensions: [
-      &quot;MathMenu.js&quot;,
-      &quot;MathZoom.js&quot;,
-      &quot;AssistiveMML.js&quot;,
-      &quot;a11y/accessibility-menu.js&quot;
-    ],
-    jax: [&quot;input/TeX&quot;, &quot;output/CommonHTML&quot;],
-    TeX: {
-      extensions: [
-        &quot;AMSmath.js&quot;,
-        &quot;AMSsymbols.js&quot;,
-        &quot;noErrors.js&quot;,
-        &quot;noUndefined.js&quot;,
-      ]
-    }
-  });
-&lt;/script&gt;
-
-&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML&quot;&gt;
-&lt;/script&gt;</content><author><name></name></author><summary type="html">We’re Related (250 Points) TBD</summary></entry><entry><title type="html">All-Army CyberStakes 4 - Cryptography (Headpiece Silver)</title><link href="https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-headpiece-silver.html" rel="alternate" type="text/html" title="All-Army CyberStakes 4 - Cryptography (Headpiece Silver)" /><published>2020-05-13T04:00:00-10:00</published><updated>2020-05-13T04:00:00-10:00</updated><id>https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-headpiece-silver</id><content type="html" xml:base="https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-headpiece-silver.html">&lt;h1 id=&quot;headpiece-silver-250-points&quot;&gt;Headpiece Silver (250 Points)&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://bernardsmith0892.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://bernardsmith0892.github.io//" rel="alternate" type="text/html" /><updated>2020-05-13T18:54:17-10:00</updated><id>https://bernardsmith0892.github.io//feed.xml</id><title type="html">Bernard Smith</title><subtitle>Mostly technology-related</subtitle><entry><title type="html">All-Army CyberStakes 4 - Cryptography (Headpiece Silver)</title><link href="https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-headpiece-silver.html" rel="alternate" type="text/html" title="All-Army CyberStakes 4 - Cryptography (Headpiece Silver)" /><published>2020-05-13T04:00:00-10:00</published><updated>2020-05-13T04:00:00-10:00</updated><id>https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-headpiece-silver</id><content type="html" xml:base="https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-headpiece-silver.html">&lt;h1 id=&quot;headpiece-silver-250-points&quot;&gt;Headpiece Silver (250 Points)&lt;/h1&gt;
 
 &lt;p&gt;This challenge provides us with a server to interact with at challenge.acictf.com:30151. (&lt;em&gt;Your port number may differ&lt;/em&gt;) To get started, lets see what this server is about by connecting to it using &lt;code class=&quot;highlighter-rouge&quot;&gt;ncat&lt;/code&gt;.&lt;/p&gt;
 
