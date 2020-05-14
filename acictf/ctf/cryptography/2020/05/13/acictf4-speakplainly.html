@@ -50,19 +50,19 @@
 <p>This problem diverts from the previous ones by providing us with a website instead. The hints bring a lot of attention to the website’s login cookies, so we try creating an account and examining the created cookies. <code class="highlighter-rouge">auth_token</code> in particular stands out since it’s not a standard cookie that’s seen on other sites.</p>
 
 <figure>
-  <img src="https://bernardsmith0892.github.io/assets/imgs/speakplainly/login.png" alt="Logging In" />
+  <img src="https://bernardsmith0892.github.io//assets/imgs/speakplainly/login.png" alt="Logging In" />
   <figcaption>Creating an account.</figcaption>
 </figure>
 
 <figure>
-  <img src="https://bernardsmith0892.github.io/assets/imgs/speakplainly/cookies.png" alt="Cookies" />
+  <img src="https://bernardsmith0892.github.io//assets/imgs/speakplainly/cookies.png" alt="Cookies" />
   <figcaption>The list of site cookies from the Chrome DevTools menu.</figcaption>
 </figure>
 
 <p>After creating an account, the website tells us it’ll give us the flag after we provide it with the <em>StrongToken</em>. The home page has several information blocks that give us a few hints about what this could mean:</p>
 
 <figure>
-  <img src="https://bernardsmith0892.github.io/assets/imgs/speakplainly/encryption-info.png" alt="Speak Plainly Hints" />
+  <img src="https://bernardsmith0892.github.io//assets/imgs/speakplainly/encryption-info.png" alt="Speak Plainly Hints" />
   <figcaption>Information blocks from the website's main menu.</figcaption>
 </figure>
 
@@ -80,17 +80,17 @@
 <p>Since we’re going to be using the account creation feature quite a bit, we should figure out a way to make the process easier for us. <em>Burp Suite</em> has a feature called <em>Repeater</em> that allows us to save a web request and repeatedly modify and resend it, rather than repeating the process in the web browser.</p>
 
 <figure>
-  <img src="https://bernardsmith0892.github.io/assets/imgs/speakplainly/burp-history.png" alt="Burp Suite History" />
+  <img src="https://bernardsmith0892.github.io//assets/imgs/speakplainly/burp-history.png" alt="Burp Suite History" />
   <figcaption>Finding the web request to repeat in the history menu.</figcaption>
 </figure>
 
 <figure>
-  <img src="https://bernardsmith0892.github.io/assets/imgs/speakplainly/burp-choose-repeater.png" alt="Burp Suite Repeater Option" />
+  <img src="https://bernardsmith0892.github.io//assets/imgs/speakplainly/burp-choose-repeater.png" alt="Burp Suite Repeater Option" />
   <figcaption>Selecting the <i>Send to Repeater</i> option.</figcaption>
 </figure>
 
 <figure>
-  <img src="https://bernardsmith0892.github.io/assets/imgs/speakplainly/burp-repeater.png" alt="Burp Suite Repeater" />
+  <img src="https://bernardsmith0892.github.io//assets/imgs/speakplainly/burp-repeater.png" alt="Burp Suite Repeater" />
   <figcaption>Modifying the request and seeing the <code>auth_token</code> change in the response.</figcaption>
 </figure>
 

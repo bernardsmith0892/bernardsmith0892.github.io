@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://bernardsmith0892.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://bernardsmith0892.github.io//" rel="alternate" type="text/html" /><updated>2020-05-13T19:03:30-10:00</updated><id>https://bernardsmith0892.github.io//feed.xml</id><title type="html">Bernard Smith</title><subtitle>Mostly technology-related</subtitle><entry><title type="html">All-Army CyberStakes 4 - Cryptography (Headpiece Silver)</title><link href="https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-headpiece-silver.html" rel="alternate" type="text/html" title="All-Army CyberStakes 4 - Cryptography (Headpiece Silver)" /><published>2020-05-13T04:00:00-10:00</published><updated>2020-05-13T04:00:00-10:00</updated><id>https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-headpiece-silver</id><content type="html" xml:base="https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-headpiece-silver.html">&lt;h1 id=&quot;headpiece-silver-250-points&quot;&gt;Headpiece Silver (250 Points)&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://bernardsmith0892.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://bernardsmith0892.github.io//" rel="alternate" type="text/html" /><updated>2020-05-13T19:08:28-10:00</updated><id>https://bernardsmith0892.github.io//feed.xml</id><title type="html">Bernard Smith</title><subtitle>Mostly technology-related</subtitle><entry><title type="html">All-Army CyberStakes 4 - Cryptography (Headpiece Silver)</title><link href="https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-headpiece-silver.html" rel="alternate" type="text/html" title="All-Army CyberStakes 4 - Cryptography (Headpiece Silver)" /><published>2020-05-13T04:00:00-10:00</published><updated>2020-05-13T04:00:00-10:00</updated><id>https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-headpiece-silver</id><content type="html" xml:base="https://bernardsmith0892.github.io//acictf/ctf/cryptography/2020/05/13/acictf4-headpiece-silver.html">&lt;h1 id=&quot;headpiece-silver-250-points&quot;&gt;Headpiece Silver (250 Points)&lt;/h1&gt;
 
 &lt;p&gt;This challenge provides us with a server to interact with at challenge.acictf.com:30151. (&lt;em&gt;Your port number may differ&lt;/em&gt;) To get started, lets see what this server is about by connecting to it using &lt;code class=&quot;highlighter-rouge&quot;&gt;ncat&lt;/code&gt;.&lt;/p&gt;
 
@@ -33,19 +33,19 @@ e: 65537
 &lt;p&gt;This problem diverts from the previous ones by providing us with a website instead. The hints bring a lot of attention to the website’s login cookies, so we try creating an account and examining the created cookies. &lt;code class=&quot;highlighter-rouge&quot;&gt;auth_token&lt;/code&gt; in particular stands out since it’s not a standard cookie that’s seen on other sites.&lt;/p&gt;
 
 &lt;figure&gt;
-  &lt;img src=&quot;https://bernardsmith0892.github.io/assets/imgs/speakplainly/login.png&quot; alt=&quot;Logging In&quot; /&gt;
+  &lt;img src=&quot;https://bernardsmith0892.github.io//assets/imgs/speakplainly/login.png&quot; alt=&quot;Logging In&quot; /&gt;
   &lt;figcaption&gt;Creating an account.&lt;/figcaption&gt;
 &lt;/figure&gt;
 
 &lt;figure&gt;
-  &lt;img src=&quot;https://bernardsmith0892.github.io/assets/imgs/speakplainly/cookies.png&quot; alt=&quot;Cookies&quot; /&gt;
+  &lt;img src=&quot;https://bernardsmith0892.github.io//assets/imgs/speakplainly/cookies.png&quot; alt=&quot;Cookies&quot; /&gt;
   &lt;figcaption&gt;The list of site cookies from the Chrome DevTools menu.&lt;/figcaption&gt;
 &lt;/figure&gt;
 
 &lt;p&gt;After creating an account, the website tells us it’ll give us the flag after we provide it with the &lt;em&gt;StrongToken&lt;/em&gt;. The home page has several information blocks that give us a few hints about what this could mean:&lt;/p&gt;
 
 &lt;figure&gt;
-  &lt;img src=&quot;https://bernardsmith0892.github.io/assets/imgs/speakplainly/encryption-info.png&quot; alt=&quot;Speak Plainly Hints&quot; /&gt;
+  &lt;img src=&quot;https://bernardsmith0892.github.io//assets/imgs/speakplainly/encryption-info.png&quot; alt=&quot;Speak Plainly Hints&quot; /&gt;
   &lt;figcaption&gt;Information blocks from the website's main menu.&lt;/figcaption&gt;
 &lt;/figure&gt;
 
@@ -63,17 +63,17 @@ e: 65537
 &lt;p&gt;Since we’re going to be using the account creation feature quite a bit, we should figure out a way to make the process easier for us. &lt;em&gt;Burp Suite&lt;/em&gt; has a feature called &lt;em&gt;Repeater&lt;/em&gt; that allows us to save a web request and repeatedly modify and resend it, rather than repeating the process in the web browser.&lt;/p&gt;
 
 &lt;figure&gt;
-  &lt;img src=&quot;https://bernardsmith0892.github.io/assets/imgs/speakplainly/burp-history.png&quot; alt=&quot;Burp Suite History&quot; /&gt;
+  &lt;img src=&quot;https://bernardsmith0892.github.io//assets/imgs/speakplainly/burp-history.png&quot; alt=&quot;Burp Suite History&quot; /&gt;
   &lt;figcaption&gt;Finding the web request to repeat in the history menu.&lt;/figcaption&gt;
 &lt;/figure&gt;
 
 &lt;figure&gt;
-  &lt;img src=&quot;https://bernardsmith0892.github.io/assets/imgs/speakplainly/burp-choose-repeater.png&quot; alt=&quot;Burp Suite Repeater Option&quot; /&gt;
+  &lt;img src=&quot;https://bernardsmith0892.github.io//assets/imgs/speakplainly/burp-choose-repeater.png&quot; alt=&quot;Burp Suite Repeater Option&quot; /&gt;
   &lt;figcaption&gt;Selecting the &lt;i&gt;Send to Repeater&lt;/i&gt; option.&lt;/figcaption&gt;
 &lt;/figure&gt;
 
 &lt;figure&gt;
-  &lt;img src=&quot;https://bernardsmith0892.github.io/assets/imgs/speakplainly/burp-repeater.png&quot; alt=&quot;Burp Suite Repeater&quot; /&gt;
+  &lt;img src=&quot;https://bernardsmith0892.github.io//assets/imgs/speakplainly/burp-repeater.png&quot; alt=&quot;Burp Suite Repeater&quot; /&gt;
   &lt;figcaption&gt;Modifying the request and seeing the &lt;code&gt;auth_token&lt;/code&gt; change in the response.&lt;/figcaption&gt;
 &lt;/figure&gt;
 
