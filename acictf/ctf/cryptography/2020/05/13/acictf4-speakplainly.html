@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>All-Army CyberStakes 4 - Cryptography (Speak Plainly) | Bernard Smith</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="All-Army CyberStakes 4 - Cryptography (Speak Plainly)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Speak Plainly (150 Points) This problem diverts from the previous ones by providing us with a website instead. The hints bring a lot of attention to the website’s login cookies, so we try creating an account and examining the created cookies. auth_token in particular stands out since it’s not a standard cookie that’s seen on other sites. Creating an account. The list of site cookies from the Chrome DevTools menu. After creating an account, the website tells us it’ll give us the flag after we provide it with the StrongToken. The home page has several information blocks that give us a few hints about what this could mean: Information blocks from the website&#39;s main menu. auth_token is encrypted with a 128-bit key in AES-ECB mode. Prior to encryption, the site appends a StrongToken to the data and then encrypts it. Since the site is using Electronic Code Book (ECB) mode, we can perform a chosen-plaintext attack by using the account creation process as an encryption oracle. This will allows us to extract the StrongToken, byte-by-byte. The entire attack process is well-explained in a blog post by Zach Grace. Since we’re going to be using the account creation feature quite a bit, we should figure out a way to make the process easier for us. Burp Suite has a feature called Repeater that allows us to save a web request and repeatedly modify and resend it, rather than repeating the process in the web browser. Finding the web request to repeat in the history menu. Selecting the Send to Repeater option. Modifying the request and seeing the auth_token change in the response. Our first step is to figure out exactly what’s being encrypted. We know it comes from the account information, so there’s only two real options: the username and password. By testing out two accounts with the same username but different passwords, we can see that auth_token doesn’t change as long as the username stays the same. With this, we can determine that auth_token only uses the username in its encryption. testusername:password = 958af5df8adcc6bb0abf0473f6be9bb7684387617f292c4d7e1f689f7f5bf19d testusername:newpass = 958af5df8adcc6bb0abf0473f6be9bb7684387617f292c4d7e1f689f7f5bf19d The next step is to determine the encryption block size. By testing out a few different inputs, we can quickly see that ciphertext is added in 16 byte blocks. AAAAAAAAAAAAAAA (15 As) = a764ad6331f1ed698044b8f4bf208dd7 73ad7e84d6e3bb6e8c85112732e0160a AAAAAAAAAAAAAAAA (16 As) = e5a8d39cc17dd336ac0c0fd443ca5089 23101bd6e92b9703b48b69d5a1d01460 68a9e1b3e5368dc2725eb057cc397065 Our next step is to figure out the offset between the start of the encrypted data, and where our input begins. We start by sending 2 blocks (32 bytes) of the same information, and then prepending that input with padding characters until we can see two blocks in a row of the same encrypted data. It will also let us estimate the size of the StrongToken by seeing how much many more blocks appear after the matching blocks. AAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAA = e5a8d39cc17dd336ac0c0fd443ca5089 e5a8d39cc17dd336ac0c0fd443ca5089 23101bd6e92b9703b48b69d5a1d01460 68a9e1b3e5368dc2725eb057cc397065 [None] = 23101bd6e92b9703b48b69d5a1d01460 68a9e1b3e5368dc2725eb057cc397065 These results immediately show that there is no offset between the start of the plaintext and the username, since the first two blocks are already the same without any padding needed. Now that we know the block size and offset, we can begin brute-forcing the StrongToken. We first provide an input one byte smaller than the block size, AAAAAAAAAAAAAAA. This creates a ciphertext block using the plaintext AAAAAAAAAAAAAAA?, where ? is the first byte of the StrongToken. Using the ciphertext block provided by the website as a reference output, we can brute-force the first byte of the StrongToken. By using the reference input, AAAAAAAAAAAAAAA, and iterating through all possible characters for the last byte, we can determine what the StrongToken’s first byte when our output matches the reference output. Reference Value: AAAAAAAAAAAAAAA = a764ad6331f1ed698044b8f4bf208dd7 Brute-Forcing: AAAAAAAAAAAAAAA! = d4e420b6abd4e19033ed1fdea60dabdb AAAAAAAAAAAAAAA&quot; = caee4360f81620169c15d01da4064629 [...snip...] AAAAAAAAAAAAAAA: = 0c775d6e025a1ad985ac8c339e261a47 AAAAAAAAAAAAAAA; = a764ad6331f1ed698044b8f4bf208dd7 ** MATCH ** By repeating this process and replacing more of the reference input with discovered StrongToken characters, we can slowly determine the StrongToken byte-by-byte. Using a Python script also makes this process less arduous. With this process, we are able to determine that the full StrongToken is fY5V/=B80?e4.CA8. (The initial character ; is only used as a divider between the plaintext and the StrongToken) By submitting the token to the website, we are able to receive the flag. Correct! The Flag is: ACI{c0db96acd85091480db76ed49ca}" />
+<meta property="og:description" content="Speak Plainly (150 Points) This problem diverts from the previous ones by providing us with a website instead. The hints bring a lot of attention to the website’s login cookies, so we try creating an account and examining the created cookies. auth_token in particular stands out since it’s not a standard cookie that’s seen on other sites. Creating an account. The list of site cookies from the Chrome DevTools menu. After creating an account, the website tells us it’ll give us the flag after we provide it with the StrongToken. The home page has several information blocks that give us a few hints about what this could mean: Information blocks from the website&#39;s main menu. auth_token is encrypted with a 128-bit key in AES-ECB mode. Prior to encryption, the site appends a StrongToken to the data and then encrypts it. Since the site is using Electronic Code Book (ECB) mode, we can perform a chosen-plaintext attack by using the account creation process as an encryption oracle. This will allows us to extract the StrongToken, byte-by-byte. The entire attack process is well-explained in a blog post by Zach Grace. Since we’re going to be using the account creation feature quite a bit, we should figure out a way to make the process easier for us. Burp Suite has a feature called Repeater that allows us to save a web request and repeatedly modify and resend it, rather than repeating the process in the web browser. Finding the web request to repeat in the history menu. Selecting the Send to Repeater option. Modifying the request and seeing the auth_token change in the response. Our first step is to figure out exactly what’s being encrypted. We know it comes from the account information, so there’s only two real options: the username and password. By testing out two accounts with the same username but different passwords, we can see that auth_token doesn’t change as long as the username stays the same. With this, we can determine that auth_token only uses the username in its encryption. testusername:password = 958af5df8adcc6bb0abf0473f6be9bb7684387617f292c4d7e1f689f7f5bf19d testusername:newpass = 958af5df8adcc6bb0abf0473f6be9bb7684387617f292c4d7e1f689f7f5bf19d The next step is to determine the encryption block size. By testing out a few different inputs, we can quickly see that ciphertext is added in 16 byte blocks. AAAAAAAAAAAAAAA (15 As) = a764ad6331f1ed698044b8f4bf208dd7 73ad7e84d6e3bb6e8c85112732e0160a AAAAAAAAAAAAAAAA (16 As) = e5a8d39cc17dd336ac0c0fd443ca5089 23101bd6e92b9703b48b69d5a1d01460 68a9e1b3e5368dc2725eb057cc397065 Our next step is to figure out the offset between the start of the encrypted data, and where our input begins. We start by sending 2 blocks (32 bytes) of the same information, and then prepending that input with padding characters until we can see two blocks in a row of the same encrypted data. It will also let us estimate the size of the StrongToken by seeing how much many more blocks appear after the matching blocks. AAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAA = e5a8d39cc17dd336ac0c0fd443ca5089 e5a8d39cc17dd336ac0c0fd443ca5089 23101bd6e92b9703b48b69d5a1d01460 68a9e1b3e5368dc2725eb057cc397065 [None] = 23101bd6e92b9703b48b69d5a1d01460 68a9e1b3e5368dc2725eb057cc397065 These results immediately show that there is no offset between the start of the plaintext and the username, since the first two blocks are already the same without any padding needed. Now that we know the block size and offset, we can begin brute-forcing the StrongToken. We first provide an input one byte smaller than the block size, AAAAAAAAAAAAAAA. This creates a ciphertext block using the plaintext AAAAAAAAAAAAAAA?, where ? is the first byte of the StrongToken. Using the ciphertext block provided by the website as a reference output, we can brute-force the first byte of the StrongToken. By using the reference input, AAAAAAAAAAAAAAA, and iterating through all possible characters for the last byte, we can determine what the StrongToken’s first byte when our output matches the reference output. Reference Value: AAAAAAAAAAAAAAA = a764ad6331f1ed698044b8f4bf208dd7 Brute-Forcing: AAAAAAAAAAAAAAA! = d4e420b6abd4e19033ed1fdea60dabdb AAAAAAAAAAAAAAA&quot; = caee4360f81620169c15d01da4064629 [...snip...] AAAAAAAAAAAAAAA: = 0c775d6e025a1ad985ac8c339e261a47 AAAAAAAAAAAAAAA; = a764ad6331f1ed698044b8f4bf208dd7 ** MATCH ** By repeating this process and replacing more of the reference input with discovered StrongToken characters, we can slowly determine the StrongToken byte-by-byte. Using a Python script also makes this process less arduous. With this process, we are able to determine that the full StrongToken is fY5V/=B80?e4.CA8. (The initial character ; is only used as a divider between the plaintext and the StrongToken) By submitting the token to the website, we are able to receive the flag. Correct! The Flag is: ACI{c0db96acd85091480db76ed49ca}" />
+<link rel="canonical" href="http://localhost:4000/blog/acictf/ctf/cryptography/2020/05/13/acictf4-speakplainly.html" />
+<meta property="og:url" content="http://localhost:4000/blog/acictf/ctf/cryptography/2020/05/13/acictf4-speakplainly.html" />
+<meta property="og:site_name" content="Bernard Smith" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-13T03:00:00-10:00" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blog/acictf/ctf/cryptography/2020/05/13/acictf4-speakplainly.html"},"url":"http://localhost:4000/blog/acictf/ctf/cryptography/2020/05/13/acictf4-speakplainly.html","headline":"All-Army CyberStakes 4 - Cryptography (Speak Plainly)","dateModified":"2020-05-13T03:00:00-10:00","datePublished":"2020-05-13T03:00:00-10:00","description":"Speak Plainly (150 Points) This problem diverts from the previous ones by providing us with a website instead. The hints bring a lot of attention to the website’s login cookies, so we try creating an account and examining the created cookies. auth_token in particular stands out since it’s not a standard cookie that’s seen on other sites. Creating an account. The list of site cookies from the Chrome DevTools menu. After creating an account, the website tells us it’ll give us the flag after we provide it with the StrongToken. The home page has several information blocks that give us a few hints about what this could mean: Information blocks from the website&#39;s main menu. auth_token is encrypted with a 128-bit key in AES-ECB mode. Prior to encryption, the site appends a StrongToken to the data and then encrypts it. Since the site is using Electronic Code Book (ECB) mode, we can perform a chosen-plaintext attack by using the account creation process as an encryption oracle. This will allows us to extract the StrongToken, byte-by-byte. The entire attack process is well-explained in a blog post by Zach Grace. Since we’re going to be using the account creation feature quite a bit, we should figure out a way to make the process easier for us. Burp Suite has a feature called Repeater that allows us to save a web request and repeatedly modify and resend it, rather than repeating the process in the web browser. Finding the web request to repeat in the history menu. Selecting the Send to Repeater option. Modifying the request and seeing the auth_token change in the response. Our first step is to figure out exactly what’s being encrypted. We know it comes from the account information, so there’s only two real options: the username and password. By testing out two accounts with the same username but different passwords, we can see that auth_token doesn’t change as long as the username stays the same. With this, we can determine that auth_token only uses the username in its encryption. testusername:password = 958af5df8adcc6bb0abf0473f6be9bb7684387617f292c4d7e1f689f7f5bf19d testusername:newpass = 958af5df8adcc6bb0abf0473f6be9bb7684387617f292c4d7e1f689f7f5bf19d The next step is to determine the encryption block size. By testing out a few different inputs, we can quickly see that ciphertext is added in 16 byte blocks. AAAAAAAAAAAAAAA (15 As) = a764ad6331f1ed698044b8f4bf208dd7 73ad7e84d6e3bb6e8c85112732e0160a AAAAAAAAAAAAAAAA (16 As) = e5a8d39cc17dd336ac0c0fd443ca5089 23101bd6e92b9703b48b69d5a1d01460 68a9e1b3e5368dc2725eb057cc397065 Our next step is to figure out the offset between the start of the encrypted data, and where our input begins. We start by sending 2 blocks (32 bytes) of the same information, and then prepending that input with padding characters until we can see two blocks in a row of the same encrypted data. It will also let us estimate the size of the StrongToken by seeing how much many more blocks appear after the matching blocks. AAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAA = e5a8d39cc17dd336ac0c0fd443ca5089 e5a8d39cc17dd336ac0c0fd443ca5089 23101bd6e92b9703b48b69d5a1d01460 68a9e1b3e5368dc2725eb057cc397065 [None] = 23101bd6e92b9703b48b69d5a1d01460 68a9e1b3e5368dc2725eb057cc397065 These results immediately show that there is no offset between the start of the plaintext and the username, since the first two blocks are already the same without any padding needed. Now that we know the block size and offset, we can begin brute-forcing the StrongToken. We first provide an input one byte smaller than the block size, AAAAAAAAAAAAAAA. This creates a ciphertext block using the plaintext AAAAAAAAAAAAAAA?, where ? is the first byte of the StrongToken. Using the ciphertext block provided by the website as a reference output, we can brute-force the first byte of the StrongToken. By using the reference input, AAAAAAAAAAAAAAA, and iterating through all possible characters for the last byte, we can determine what the StrongToken’s first byte when our output matches the reference output. Reference Value: AAAAAAAAAAAAAAA = a764ad6331f1ed698044b8f4bf208dd7 Brute-Forcing: AAAAAAAAAAAAAAA! = d4e420b6abd4e19033ed1fdea60dabdb AAAAAAAAAAAAAAA&quot; = caee4360f81620169c15d01da4064629 [...snip...] AAAAAAAAAAAAAAA: = 0c775d6e025a1ad985ac8c339e261a47 AAAAAAAAAAAAAAA; = a764ad6331f1ed698044b8f4bf208dd7 ** MATCH ** By repeating this process and replacing more of the reference input with discovered StrongToken characters, we can slowly determine the StrongToken byte-by-byte. Using a Python script also makes this process less arduous. With this process, we are able to determine that the full StrongToken is fY5V/=B80?e4.CA8. (The initial character ; is only used as a divider between the plaintext and the StrongToken) By submitting the token to the website, we are able to receive the flag. Correct! The Flag is: ACI{c0db96acd85091480db76ed49ca}","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/blog/feed.xml" title="Bernard Smith" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Bernard Smith</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">All-Army CyberStakes 4 - Cryptography (Speak Plainly)</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-05-13T03:00:00-10:00" itemprop="datePublished">May 13, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="speak-plainly-150-points">Speak Plainly (150 Points)</h1>
+
+<p>This problem diverts from the previous ones by providing us with a website instead. The hints bring a lot of attention to the website’s login cookies, so we try creating an account and examining the created cookies. <code class="highlighter-rouge">auth_token</code> in particular stands out since it’s not a standard cookie that’s seen on other sites.</p>
+
+<figure>
+  <img src="http://localhost:4000/assets/imgs/speakplainly/login.png" alt="Logging In" />
+  <figcaption>Creating an account.</figcaption>
+</figure>
+
+<figure>
+  <img src="http://localhost:4000/assets/imgs/speakplainly/cookies.png" alt="Cookies" />
+  <figcaption>The list of site cookies from the Chrome DevTools menu.</figcaption>
+</figure>
+
+<p>After creating an account, the website tells us it’ll give us the flag after we provide it with the <em>StrongToken</em>. The home page has several information blocks that give us a few hints about what this could mean:</p>
+
+<figure>
+  <img src="http://localhost:4000/assets/imgs/speakplainly/encryption-info.png" alt="Speak Plainly Hints" />
+  <figcaption>Information blocks from the website's main menu.</figcaption>
+</figure>
+
+<ol>
+  <li>
+    <p><code class="highlighter-rouge">auth_token</code> is encrypted with a 128-bit key in <a href="https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_codebook_(ECB)">AES-ECB</a> mode.</p>
+  </li>
+  <li>
+    <p>Prior to encryption, the site appends a <em>StrongToken</em> to the data and then encrypts it.</p>
+  </li>
+</ol>
+
+<p>Since the site is using <em>Electronic Code Book (ECB) mode</em>, we can perform a <em>chosen-plaintext attack</em> by using the account creation process as an <em>encryption oracle</em>. This will allows us to extract the <em>StrongToken</em>, byte-by-byte. The entire attack process is well-explained in a blog post by <a href="https://zachgrace.com/posts/attacking-ecb/">Zach Grace</a>.</p>
+
+<p>Since we’re going to be using the account creation feature quite a bit, we should figure out a way to make the process easier for us. <em>Burp Suite</em> has a feature called <em>Repeater</em> that allows us to save a web request and repeatedly modify and resend it, rather than repeating the process in the web browser.</p>
+
+<figure>
+  <img src="http://localhost:4000/assets/imgs/speakplainly/burp-history.png" alt="Burp Suite History" />
+  <figcaption>Finding the web request to repeat in the history menu.</figcaption>
+</figure>
+
+<figure>
+  <img src="http://localhost:4000/assets/imgs/speakplainly/burp-choose-repeater.png" alt="Burp Suite Repeater Option" />
+  <figcaption>Selecting the <i>Send to Repeater</i> option.</figcaption>
+</figure>
+
+<figure>
+  <img src="http://localhost:4000/assets/imgs/speakplainly/burp-repeater.png" alt="Burp Suite Repeater" />
+  <figcaption>Modifying the request and seeing the <code>auth_token</code> change in the response.</figcaption>
+</figure>
+
+<p>Our first step is to figure out exactly what’s being encrypted. We know it comes from the account information, so there’s only two real options: the username and password. By testing out two accounts with the same username but different passwords, we can see that <code class="highlighter-rouge">auth_token</code> doesn’t change as long as the username stays the same. With this, we can determine that <code class="highlighter-rouge">auth_token</code> only uses the username in its encryption.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>testusername:password = 958af5df8adcc6bb0abf0473f6be9bb7684387617f292c4d7e1f689f7f5bf19d
+testusername:newpass  = 958af5df8adcc6bb0abf0473f6be9bb7684387617f292c4d7e1f689f7f5bf19d
+</code></pre></div></div>
+
+<p>The next step is to determine the encryption <em>block size</em>. By testing out a few different inputs, we can quickly see that ciphertext is added in <strong>16 byte</strong> blocks.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>AAAAAAAAAAAAAAA  (15 As) = a764ad6331f1ed698044b8f4bf208dd7 73ad7e84d6e3bb6e8c85112732e0160a
+AAAAAAAAAAAAAAAA (16 As) = e5a8d39cc17dd336ac0c0fd443ca5089 23101bd6e92b9703b48b69d5a1d01460 68a9e1b3e5368dc2725eb057cc397065
+</code></pre></div></div>
+
+<p>Our next step is to figure out the offset between the start of the encrypted data, and where our input begins. We start by sending 2 blocks (32 bytes) of the same information, and then prepending that input with padding characters until we can see two blocks in a row of the same encrypted data. It will also let us estimate the size of the <em>StrongToken</em> by seeing how much many more blocks appear after the matching blocks.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>AAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAA = e5a8d39cc17dd336ac0c0fd443ca5089 e5a8d39cc17dd336ac0c0fd443ca5089 23101bd6e92b9703b48b69d5a1d01460 68a9e1b3e5368dc2725eb057cc397065
+[None]                   = 23101bd6e92b9703b48b69d5a1d01460 68a9e1b3e5368dc2725eb057cc397065
+</code></pre></div></div>
+
+<p>These results immediately show that there is no offset between the start of the plaintext and the username, since the first two blocks are already the same without any padding needed. Now that we know the block size and offset, we can begin brute-forcing the <em>StrongToken</em>. We first provide an input one byte smaller than the block size, <code class="highlighter-rouge">AAAAAAAAAAAAAAA</code>. This creates a ciphertext block using the plaintext <code class="highlighter-rouge">AAAAAAAAAAAAAAA?</code>, where <code class="highlighter-rouge">?</code> is the first byte of the <em>StrongToken</em>. Using the ciphertext block provided by the website as a <em>reference output</em>, we can brute-force the first byte of the <em>StrongToken</em>. By using the <em>reference input</em>, <code class="highlighter-rouge">AAAAAAAAAAAAAAA</code>, and iterating through all possible characters for the last byte, we can determine what the <em>StrongToken’s</em> first byte when our output matches the <em>reference output</em>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Reference Value:
+AAAAAAAAAAAAAAA  = a764ad6331f1ed698044b8f4bf208dd7
+
+Brute-Forcing:
+AAAAAAAAAAAAAAA! = d4e420b6abd4e19033ed1fdea60dabdb
+AAAAAAAAAAAAAAA" = caee4360f81620169c15d01da4064629
+[...snip...]
+AAAAAAAAAAAAAAA: = 0c775d6e025a1ad985ac8c339e261a47
+AAAAAAAAAAAAAAA; = a764ad6331f1ed698044b8f4bf208dd7
+** MATCH **
+</code></pre></div></div>
+
+<p>By repeating this process and replacing more of the reference input with discovered <em>StrongToken</em> characters, we can slowly determine the <em>StrongToken</em> byte-by-byte. Using a Python script also makes this process less arduous. With this process, we are able to determine that the full <em>StrongToken</em> is <code class="highlighter-rouge">fY5V/=B80?e4.CA8</code>. (<em>The initial character <code class="highlighter-rouge">;</code> is only used as a divider between the plaintext and the StrongToken</em>) By submitting the token to the website, we are able to receive the flag.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Correct! The Flag is: ACI{c0db96acd85091480db76ed49ca}
+</code></pre></div></div>
+
+
+  </div><a class="u-url" href="/blog/acictf/ctf/cryptography/2020/05/13/acictf4-speakplainly.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Bernard Smith</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Bernard Smith</li><li><a class="u-email" href="mailto:mail@brndjsmith.net">mail@brndjsmith.net</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/bernardsmith0892"><svg class="svg-icon"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg> <span class="username">bernardsmith0892</span></a></li><li><a href="https://www.linkedin.com/in/bernard-smith-27324257"><svg class="svg-icon"><use xlink:href="/blog/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">bernard-smith-27324257</span></a></li><li><a href="https://www.twitter.com/BernardSmith892"><svg class="svg-icon"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">BernardSmith892</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Mostly technology-related</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

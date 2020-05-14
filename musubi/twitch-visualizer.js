@@ -3,7 +3,7 @@ var LITE = false; // If true, use text versions of emotes instead
 var MAX_EMOTE = 4; // How many emotes per message to consider when adding
 var DEFAULT_MAX = (DECAY_MODE) ? 10 : 50; // What to set the highest value to as a default
 var wss = new WebSocket('wss://irc-ws.chat.twitch.tv:443');
-var DECAY_MODE = (getParameter('mode') === 'decay' || getParameter('mode') === null) ? true : false;
+var DECAY_MODE = getParameter('mode') === 'decay' && !(getParameter('mode') === null);
 var channel = (getParameter('channel') === null) ? 'overwatchleague' : getParameter('channel');
 var interval;
 
@@ -134,7 +134,7 @@ wss.onmessage = function(msg){
 function getEmoteIDs(msg){
 	// Regex to grab the `emotes` field
 	var emote_re = /emotes=([0-9:\-,\/]*)/;
-	var msg_re = /PRIVMSG \#[a-zA-Z0-9]* :(.*)/
+	var msg_re = /PRIVMSG \#[a-zA-Z0-9_]* :(.*)/
 	
 	// Grab the `emotes` field
 	var emote_data = msg.match(emote_re);
