@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+
+
+
+<html lang="en-US" 
+  
+    mode="dark"
+  
+>
+
+  <!--
+  The Head
+-->
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+
+    
+
+    
+
+  
+
+  <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="All-Army CyberStakes 4 - Cryptography (Over Time: Paid)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Over Time: Paid (50 Points) This is where the challegnes start getting more difficult. This problem starts with two files again: document.encrypted, which contains 15 lines of hex, and source.py, which contains what appears to be the script that generated the document. The script performs two key steps to create the document: Generates the plaintext of the document with a static intro line, 10 random lines, a static outro line, and finally the flag. Generates a random, 64-byte long key and XORs each line with it. Based on the name of the challenge (Over Time: Paid), we can see that this method is inspired by how a One-time Pad works. One-time pads ensure complete and unbreakable secrecy for a message by encrypting it with a key of the same length, usually with the XOR operation. This encryption is only unbreakable if and only if that key is used for only that text and is never reused. The major weakness in this challenge’s implementation is that is only uses a 64-byte key to encrypt the entire message. Furthermore, since we know exactly what the first line is, we can extract the key using a known-plaintext attack, by virtue of how the XOR operation works. In XOR (\(\oplus\)) encryption, we can encrypt plaintext (\(P\)) into ciphertext (\(C\)) by XORing the plaintext with a key (\(K\)). [P \oplus K = C] To decrypt the ciphertext, we only need to XOR the ciphertext with the key. [C \oplus K = P] However, the mathematical properties of XOR also allow us to compute the key by XORing the plaintext and ciphertext together. [P \oplus C = K] In this challenge, the script provides us with a hardcoded intro statement, which is our plaintext for this attack. Since is the first line of text, we also know this corresponds to the first line of ciphertext in document.encrypted. By XORing these two lines together, we can compute the 64-byte key used throughout the encrypted document using CyberChef. Note: We also need to make sure the lengths of the plaintext and ciphertext match, so we have to remove the : at the end of the plaintext. 1 2 3 Plaintext: The following encoded individuals are to be given a $27.3k bonus Ciphertext: 2246e0fe4f69ccb153f209b8cc73a5d87ce7cfdea8fa5ce35bb68b908e5a7e20f557810187bfc8b101a69b27edce27e15802d1f3eb7ef3dfb87eac2c6e12f4c0 Key: 762e85de2906a0dd3c8560d6ab53c0b61f88abbbccda358d3fdffdf9ea2f1f4c8677e073e29fbcde21c4fe078aa751843622b0d3cf4cc4f18b158c4e017c81b3 Finally, we can use this key in CyberChef to XOR the remaining lines and decrypt the entire document and extract the flag. 1 2 3 4 [..snip..] Furthermore, the FLAG is: ACI{6e6e41b658edba0f25eb5049ee1}" />
+<meta property="og:description" content="Over Time: Paid (50 Points) This is where the challegnes start getting more difficult. This problem starts with two files again: document.encrypted, which contains 15 lines of hex, and source.py, which contains what appears to be the script that generated the document. The script performs two key steps to create the document: Generates the plaintext of the document with a static intro line, 10 random lines, a static outro line, and finally the flag. Generates a random, 64-byte long key and XORs each line with it. Based on the name of the challenge (Over Time: Paid), we can see that this method is inspired by how a One-time Pad works. One-time pads ensure complete and unbreakable secrecy for a message by encrypting it with a key of the same length, usually with the XOR operation. This encryption is only unbreakable if and only if that key is used for only that text and is never reused. The major weakness in this challenge’s implementation is that is only uses a 64-byte key to encrypt the entire message. Furthermore, since we know exactly what the first line is, we can extract the key using a known-plaintext attack, by virtue of how the XOR operation works. In XOR (\(\oplus\)) encryption, we can encrypt plaintext (\(P\)) into ciphertext (\(C\)) by XORing the plaintext with a key (\(K\)). [P \oplus K = C] To decrypt the ciphertext, we only need to XOR the ciphertext with the key. [C \oplus K = P] However, the mathematical properties of XOR also allow us to compute the key by XORing the plaintext and ciphertext together. [P \oplus C = K] In this challenge, the script provides us with a hardcoded intro statement, which is our plaintext for this attack. Since is the first line of text, we also know this corresponds to the first line of ciphertext in document.encrypted. By XORing these two lines together, we can compute the 64-byte key used throughout the encrypted document using CyberChef. Note: We also need to make sure the lengths of the plaintext and ciphertext match, so we have to remove the : at the end of the plaintext. 1 2 3 Plaintext: The following encoded individuals are to be given a $27.3k bonus Ciphertext: 2246e0fe4f69ccb153f209b8cc73a5d87ce7cfdea8fa5ce35bb68b908e5a7e20f557810187bfc8b101a69b27edce27e15802d1f3eb7ef3dfb87eac2c6e12f4c0 Key: 762e85de2906a0dd3c8560d6ab53c0b61f88abbbccda358d3fdffdf9ea2f1f4c8677e073e29fbcde21c4fe078aa751843622b0d3cf4cc4f18b158c4e017c81b3 Finally, we can use this key in CyberChef to XOR the remaining lines and decrypt the entire document and extract the flag. 1 2 3 4 [..snip..] Furthermore, the FLAG is: ACI{6e6e41b658edba0f25eb5049ee1}" />
+<link rel="canonical" href="https://bernardsmith0892.github.io//posts/acictf4-otp/" />
+<meta property="og:url" content="https://bernardsmith0892.github.io//posts/acictf4-otp/" />
+<meta property="og:site_name" content="Bernard Smith" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-15T02:00:00-10:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="All-Army CyberStakes 4 - Cryptography (Over Time: Paid)" />
+<meta name="twitter:site" content="@BernardSmith892" />
+<meta name="google-site-verification" content="google_meta_tag_verification" />
+<script type="application/ld+json">
+{"description":"Over Time: Paid (50 Points) This is where the challegnes start getting more difficult. This problem starts with two files again: document.encrypted, which contains 15 lines of hex, and source.py, which contains what appears to be the script that generated the document. The script performs two key steps to create the document: Generates the plaintext of the document with a static intro line, 10 random lines, a static outro line, and finally the flag. Generates a random, 64-byte long key and XORs each line with it. Based on the name of the challenge (Over Time: Paid), we can see that this method is inspired by how a One-time Pad works. One-time pads ensure complete and unbreakable secrecy for a message by encrypting it with a key of the same length, usually with the XOR operation. This encryption is only unbreakable if and only if that key is used for only that text and is never reused. The major weakness in this challenge’s implementation is that is only uses a 64-byte key to encrypt the entire message. Furthermore, since we know exactly what the first line is, we can extract the key using a known-plaintext attack, by virtue of how the XOR operation works. In XOR (\\(\\oplus\\)) encryption, we can encrypt plaintext (\\(P\\)) into ciphertext (\\(C\\)) by XORing the plaintext with a key (\\(K\\)). [P \\oplus K = C] To decrypt the ciphertext, we only need to XOR the ciphertext with the key. [C \\oplus K = P] However, the mathematical properties of XOR also allow us to compute the key by XORing the plaintext and ciphertext together. [P \\oplus C = K] In this challenge, the script provides us with a hardcoded intro statement, which is our plaintext for this attack. Since is the first line of text, we also know this corresponds to the first line of ciphertext in document.encrypted. By XORing these two lines together, we can compute the 64-byte key used throughout the encrypted document using CyberChef. Note: We also need to make sure the lengths of the plaintext and ciphertext match, so we have to remove the : at the end of the plaintext. 1 2 3 Plaintext: The following encoded individuals are to be given a $27.3k bonus Ciphertext: 2246e0fe4f69ccb153f209b8cc73a5d87ce7cfdea8fa5ce35bb68b908e5a7e20f557810187bfc8b101a69b27edce27e15802d1f3eb7ef3dfb87eac2c6e12f4c0 Key: 762e85de2906a0dd3c8560d6ab53c0b61f88abbbccda358d3fdffdf9ea2f1f4c8677e073e29fbcde21c4fe078aa751843622b0d3cf4cc4f18b158c4e017c81b3 Finally, we can use this key in CyberChef to XOR the remaining lines and decrypt the entire document and extract the flag. 1 2 3 4 [..snip..] Furthermore, the FLAG is: ACI{6e6e41b658edba0f25eb5049ee1}","@type":"BlogPosting","headline":"All-Army CyberStakes 4 - Cryptography (Over Time: Paid)","dateModified":"2020-05-15T02:00:00-10:00","datePublished":"2020-05-15T02:00:00-10:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://bernardsmith0892.github.io//posts/acictf4-otp/"},"url":"https://bernardsmith0892.github.io//posts/acictf4-otp/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <title>All-Army CyberStakes 4 - Cryptography (Over Time: Paid) | Bernard Smith
+  </title>
+
+  <!--
+  The Favicons for Web, Android, Microsoft, and iOS (iPhone and iPad) Apps
+  Generated by: https://realfavicongenerator.net/
+-->
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png">
+<link rel="manifest" href="/assets/img/favicons/site.webmanifest">
+<link rel="shortcut icon" href="/assets/img/favicons/favicon.ico">
+<meta name="apple-mobile-web-app-title" content="Bernard Smith">
+<meta name="application-name" content="Bernard Smith">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+
+  <!-- GA -->
+  
+
+  <!-- jsDelivr CDN -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css">
+
+  <!--
+  CSS selector for site.
+-->
+
+<link rel="stylesheet" href="/assets/css/style.css">
+
+
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css">
+
+
+
+  <!-- Manific Popup -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1.1.0/dist/magnific-popup.min.css">
+
+
+
+  <!-- JavaScripts -->
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  <script defer
+    src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.15.0,npm/bootstrap@4/dist/js/bootstrap.min.js"></script>
+
+  <!--
+  JS selector for site.
+-->
+
+
+  
+
+
+
+  <!-- image lazy-loading & popup -->
+  <script async
+    src="https://cdn.jsdelivr.net/combine/npm/lozad/dist/lozad.min.js,npm/magnific-popup@1/dist/jquery.magnific-popup.min.js"></script>
+
+
+
+
+
+<script defer src="/assets/js/dist/post.min.js"></script>
+
+
+
+
+
+
+</head>
+
+
+  <body data-spy="scroll" data-target="#toc">
+
+    <!--
+  The Side Bar
+-->
+
+<div id="sidebar" class="d-flex flex-column align-items-end">
+
+  <div class="profile-wrapper text-center">
+    <div id="avatar">
+      <a href="/" alt="avatar" class="mx-auto">
+        
+        <img src="/assets/imgs/avatar.jpg" alt="avatar" onerror="this.style.display='none'">
+      </a>
+    </div>
+
+    <div class="site-title mt-3">
+      <a href="/">Bernard Smith</a>
+    </div>
+
+    <div class="site-subtitle font-italic">A text-focused Jekyll theme</div>
+
+  </div><!-- .profile-wrapper -->
+
+  <ul class="w-100">
+    <!-- home -->
+    <li class="nav-item">
+      <a href="/" class="nav-link">
+        <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>HOME</span>
+      </a>
+    </li>
+    <!-- the real tabs -->
+    
+    <li class="nav-item">
+      <a href="/categories/" class="nav-link">
+        <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>CATEGORIES</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+    <li class="nav-item">
+      <a href="/archives/" class="nav-link">
+        <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>ARCHIVES</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+    <li class="nav-item">
+      <a href="/tags/" class="nav-link">
+        <i class="fa-fw fas fa-tags ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>TAGS</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+    <li class="nav-item">
+      <a href="/about/" class="nav-link">
+        <i class="fa-fw fas fa-info ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>ABOUT</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+    <li class="nav-item">
+      <a href="/projects/" class="nav-link">
+        <i class="fa-fw fas fa-code ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>PROJECTS</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+
+  </ul> <!-- ul.nav.flex-column -->
+
+  <div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center">
+
+    
+      
+
+      
+      <a href="https://github.com/bernardsmith0892" aria-label="github"
+        
+        target="_blank" rel="noopener">
+        <i class="fab fa-github-alt"></i>
+      </a>
+      
+
+    
+      
+
+      
+      <a href="https://twitter.com/BernardSmith892" aria-label="twitter"
+        
+        target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+      
+
+    
+      
+
+      
+      <a href="https://linkedin.com/in/bernard-smith-27324257/" aria-label="linkedin"
+        
+        target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+      
+
+    
+      
+
+      
+      <a href="
+          javascript:location.href = 'mailto:' + ['mail','brndjsmith.net'].join('@')" aria-label="email"
+        
+        target="_blank" rel="noopener">
+        <i class="fas fa-envelope"></i>
+      </a>
+      
+
+    
+
+    
+
+  </div> <!-- .sidebar-bottom -->
+
+</div><!-- #sidebar -->
+
+
+    <!--
+  The Top Bar
+-->
+
+<div id="topbar-wrapper" class="row justify-content-center topbar-down">
+  <div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between">
+    <span id="breadcrumb">
+
+    
+
+    
+
+      
+
+        
+          
+
+        
+
+      
+
+        
+        <span>
+          
+          
+          <a href="/">
+            Posts
+          </a>
+        </span>
+
+        
+
+      
+
+        
+          <span>All-Army CyberStakes 4 - Cryptography (Over Time: Paid)</span>
+
+        
+
+      
+
+    
+
+    </span><!-- endof #breadcrumb -->
+
+    <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i>
+
+    <div id="topbar-title">
+      Post
+    </div>
+
+    <i id="search-trigger" class="fas fa-search fa-fw"></i>
+    <span id="search-wrapper" class="align-items-center">
+      <i class="fas fa-search fa-fw"></i>
+      <input class="form-control" id="search-input" type="search"
+        aria-label="search" autocomplete="off" placeholder="Search...">
+      <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i>
+    </span>
+    <span id="search-cancel" >Cancel</span>
+  </div>
+
+</div>
+
+
+    <div id="main-wrapper">
+      <div id="main">
+
+        <!--
+  Refactor the HTML structure.
+-->
+
+
+
+<!--
+  In order to allow a wide table to scroll horizontally,
+  we suround the markdown table with `<div class="table-wrapper">` and `</div>`
+-->
+
+
+<!--
+  Fixed kramdown code highlight rendering:
+  https://github.com/penibelst/jekyll-compress-html/issues/101
+  https://github.com/penibelst/jekyll-compress-html/issues/71#issuecomment-188144901
+-->
+
+
+<!-- Add attribute 'hide-bullet' to the checkbox list -->
+
+
+
+
+<!-- return -->
+<div class="row">
+
+  <div id="post-wrapper" class="col-12 col-lg-11 col-xl-8">
+
+    <div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4">
+
+      <h1 data-toc-skip>All-Army CyberStakes 4 - Cryptography (Over Time: Paid)</h1>
+
+      <div class="post-meta text-muted d-flex flex-column">
+        <!-- Published date and author -->
+        <div>
+          <span class="semi-bold">
+            Bernard Smith
+          </span>
+          <!--
+  Date format snippet
+  See: /assets/js/_utils/timeage.js
+-->
+
+
+
+
+
+<span class="timeago "
+  
+    data-toggle="tooltip"
+    data-placement="bottom"
+    title="Fri, 15 May 2020, 02:00 HST"
+  
+
+  
+  prep="on" >
+
+  
+  
+
+  
+    15 May 2020
+  
+
+  <i class="unloaded">2020-05-15T02:00:00-10:00</i>
+
+</span>
+
+        </div>
+
+        <div>
+          <!-- lastmod -->
+          
+
+          <!-- read time -->
+          <!--
+  Calculate the post's reading time, and display the word count in tooltip
+ -->
+
+
+<!-- words per minute  -->
+
+
+
+
+
+
+
+<!-- return element -->
+<span class="readtime" data-toggle="tooltip" data-placement="bottom" title="409 words">2 min</span>
+
+
+          <!-- page views -->
+          
+
+        </div>
+
+      </div> <!-- .post-meta -->
+
+      <div class="post-content">
+
+        
+
+        <h1 id="over-time-paid-50-points">Over Time: Paid (50 Points)</h1>
+
+<p>This is where the challegnes start getting more difficult. This problem starts with two files again: <code class="language-plaintext highlighter-rouge">document.encrypted</code>, which contains 15 lines of hex, and <code class="language-plaintext highlighter-rouge">source.py</code>, which contains what appears to be the script that generated the document. The script performs two key steps to create the document:</p>
+
+<ol>
+  <li>
+    <p>Generates the plaintext of the document with a static intro line, 10 random lines, a static outro line, and finally the flag.</p>
+  </li>
+  <li>
+    <p>Generates a random, 64-byte long key and XORs each line with it.</p>
+  </li>
+</ol>
+
+<p>Based on the name of the challenge (<strong>O</strong>ver <strong>T</strong>ime: <strong>P</strong>aid), we can see that this method is inspired by how a <em>One-time Pad</em> works. One-time pads ensure complete and unbreakable secrecy for a message by encrypting it with a key of the same length, usually with the XOR operation. This encryption is only unbreakable <em>if and only if</em> that key is used for <strong>only</strong> that text and is never reused.</p>
+
+<p>The major weakness in this challenge’s implementation is that is only uses a 64-byte key to encrypt the <em>entire</em> message. Furthermore, since we know exactly what the first line is, we can extract the key using a <em>known-plaintext attack</em>, by virtue of how the XOR operation works. In XOR (\(\oplus\)) encryption, we can encrypt plaintext (\(P\)) into ciphertext (\(C\)) by XORing the plaintext with a key (\(K\)).</p>
+
+\[P \oplus K = C\]
+
+<p>To decrypt the ciphertext, we only need to XOR the ciphertext with the key.</p>
+
+\[C \oplus K = P\]
+
+<p>However, the mathematical properties of XOR also allow us to compute the <em>key</em> by XORing the plaintext and ciphertext together.</p>
+
+\[P \oplus C = K\]
+
+<p>In this challenge, the script provides us with a hardcoded intro statement, which is our plaintext for this attack. Since is the first line of text, we also know this corresponds to the first line of ciphertext in <code class="language-plaintext highlighter-rouge">document.encrypted</code>. By XORing these two lines together, we can compute the 64-byte key used throughout the encrypted document using <a href="https://gchq.github.io/CyberChef/#recipe=XOR(%7B'option':'Hex','string':'2246e0fe4f69ccb153f209b8cc73a5d87ce7cfdea8fa5ce35bb68b908e5a7e20f557810187bfc8b101a69b27edce27e15802d1f3eb7ef3dfb87eac2c6e12f4c0'%7D,'Standard',false)To_Hex('None',0)&amp;input=VGhlIGZvbGxvd2luZyBlbmNvZGVkIGluZGl2aWR1YWxzIGFyZSB0byBiZSBnaXZlbiBhICQyNy4zayBib251cw">CyberChef</a>.</p>
+
+<p><em>Note: We also need to make sure the lengths of the plaintext and ciphertext match, so we have to remove the <code class="language-plaintext highlighter-rouge">:</code> at the end of the plaintext.</em></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre>Plaintext:  The following encoded individuals are to be given a $27.3k bonus
+Ciphertext: 2246e0fe4f69ccb153f209b8cc73a5d87ce7cfdea8fa5ce35bb68b908e5a7e20f557810187bfc8b101a69b27edce27e15802d1f3eb7ef3dfb87eac2c6e12f4c0
+Key:        762e85de2906a0dd3c8560d6ab53c0b61f88abbbccda358d3fdffdf9ea2f1f4c8677e073e29fbcde21c4fe078aa751843622b0d3cf4cc4f18b158c4e017c81b3
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Finally, we can use this key in <a href="https://gchq.github.io/CyberChef/#recipe=From_Hex('Auto')XOR(%7B'option':'Hex','string':'762e85de2906a0dd3c8560d6ab53c0b61f88abbbccda358d3fdffdf9ea2f1f4c8677e073e29fbcde21c4fe078aa751843622b0d3cf4cc4f18b158c4e017c81b3'%7D,'Standard',false)&amp;input=MjI0NmUwZmU0ZjY5Y2NiMTUzZjIwOWI4Y2M3M2E1ZDg3Y2U3Y2ZkZWE4ZmE1Y2UzNWJiNjhiOTA4ZTVhN2UyMGY1NTc4MTAxODdiZmM4YjEwMWE2OWIyN2VkY2UyN2UxNTgwMmQxZjNlYjdlZjNkZmI4N2VhYzJjNmUxMmY0YzAKNGMyNGQ2OTc2YzU0ZjI5YzFjYzYyODk3ZjkxZjg5ZjMzZmQyZWVlZjhkZmE3Y2MzN2I5NmJjZDlhYjYzNGYwNGM3NTdhMTNmYjJkN2ZkZmU2ODhhYmE0ZWNiODcxOGNhNzI2YmYxZjM4ZTAwOTRiOWNhMzVjZTFjNDAyYWNlOTMKNTYyNGMxOWI2NTUyZTFmZDY4YzQyZTkxZTQ3Mzk0Zjc1MWNmZTQ5YjhiOTU3OWNiMWY4YmJjYjdhZDYwM2YwNGM5MjNhNTNmYzJjNWY5OGE2MGU0YjY0OGRlZTIxZGE0NzE2ZGZjOTVlZjBkODhhMWMzNTRhYzBiNDIzNGNlOTMKNTYyNGM2OTY2ODU0ZWM5NDc5YTUzNDk3ZTUxNDhmOTY0Y2MxZWVlOTllOWIxNWM0NzE5YmI0YjhjYTdjNTYwOWQ0MjVhMTUzYTZkYWYwOGE2MGU0YmM1NWNiZjExZWE0NjI2M2ZlOTQ4MDZjOGNiZWRmNTBjMDZlNDYzM2NkZjUKNTYyNGQxOWY2NzQxZWZmZDc4YzAyYzgyZWE3Mzg0ZjM1M2RjZWE5YjhkOTY2NWM1N2VmZmJjYjViYTY3NWU2Y2M1M2ZhMTIxYWVkNmY5ZmU2MjhjYmY1NWM2ZWUxNGE0NmM2N2U0OTJlZjE2ODFhNWNhMzVkZjA3NDQyZWQzZjIKNTYyNGMyOTE2NTQwODA5NDcyYzEyOTk3OGIxNjgzZmU1MGE4ZjFmZTk4OWIxNWM5N2E5M2E5YjhjYTY4NTAwMGMwNTdhNzNjYWVkOTljOWE2NDg4YWE0NmFhZTIxMmNjNzkwMmY1OTA4NzAzZTRiOGM1NTFjNTBmMjE1Y2ExOTMKNTYyNGQ2OTc2YzU0ZjI5YzFjYzMyZjhlZmYwMThmZTIzZmRjZWFmNThiOTUxNWM4N2M5N2IyZDlhZjZjNTcwM2E2MzNhNTNmYjZkZTljOWY2ZDk0YjY0NmFhZWYxZWQwNzM2ZTkwODc4ZTAyODNiZWFiNDFjZDAwNDYzM2ExOTMKNTYyNGNkOTE3ZDQzZWNmZDc4YzAyYzgyZWE3MzlhZjM0YmM5OGJmMzgzOGU3MGMxMWY5OWIyYTFiZTdkNTAxOGE2MmRhNTI3YTNiZmU4OWY2ZjgzYjEyN2MzZTkxNWNkNzcwMmY4OWM5YjA5ODhkMWNjNWFjMDA4MjE1Y2ExOTMKNTYyNGRmOWI3ZDQ3ODA5YTczYzkyNmY2ZTkwMTgxZTA1MGE4ZmZmYTgyOWQ3YWFkNzc5MGE5YmNhNjBmNGIwZGM4MzBhZjUzYTFkN2ZkOGM2ZDhkYmIyN2RlZTYxZmMzNzkwMmU0OTI4MTBiOGJkMWQ4NWNjOTFjNTMzZGExOTMKNTYyNGMzOTE3MTUyZjI5MjY4YTUyOTk4ZWYxYTgxOTY1YWNiZTNmNGVjOWI3OWRkNzc5ZWRkYWFhMzZhNGQxZWM3NTdhMjIxYTNjOWYzZmU2OThiYWE0MmM2ODcxOGNhNzI2YmYxZjM4NzAzOTBiNGM3MzVjZDAyNTEzNGMwOTMKNTYyNGQ2OTc2YzU0ZjI5YzFjY2QyZjgyZWUxZmUwZWM1YWRjZWE5Yjg1OTQ3MWM0N2VmZmI5YmNhNjdiNWU2Y2M0MjVhMTI1YWRiZmZiOTE2ZDgyZGU0MGM1ZWIxN2E0NjI2M2ZlOTQ4MDZjODNiZWM3NTNhYzZlMjE1Y2ExOTMKNTYyNGE1ZmUwOTI2ODBmZDFjYTU0MGY2OGI3M2UwOTYzZmE4OGI5YmVjZmExNWFkMWZmZmRkZDljYTBmM2Y2Y2E2NTdjMDUzYzJiZjljZmUwMWU0ZGUyN2FhODc3MWE0MTYwMjkwZjNlZjZjZTRkMWFiMzVhYzZlMjE1Y2ExOTMKNTYyNGMzYWI1YjcyYzhiODRlZTgwZmE0Y2U3ZmUwYzI3N2VkOGJmZDgwOWI3MmFkNTZhY2M3ZDljYTBmM2Y2Y2E2NTdjMDUzYzJiZjljZmUwMWU0ZGUyN2FhODc3MWE0MTYwMjkwZjNlZjZjZTRkMWFiMzVhYzZlMjE1Y2ExOTMKNTYyNDhmOWY2YTRmZGJlYjU5YjMwNWUyOWEzMWY2ODMyN2VkY2ZkOWFkZWE1M2JmMGFiYTlmY2NkYTFiMjYyOWUzNDY5ZDUzYzJiZjljZmUwMWU0ZGUyN2FhODc3MWE0MTYwMjkwZjNlZjZjZTRkMWFiMzVhYzZlMjE1Y2ExOTMKNTYwZThmCg">CyberChef</a> to XOR the remaining lines and decrypt the entire document and extract the flag.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre>[..snip..]
+Furthermore, the FLAG is:                                      
+
+ACI{6e6e41b658edba0f25eb5049ee1}                               
+</pre></td></tr></tbody></table></code></div></div>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: [
+      "MathMenu.js",
+      "MathZoom.js",
+      "AssistiveMML.js",
+      "a11y/accessibility-menu.js"
+    ],
+    jax: ["input/TeX", "output/CommonHTML"],
+    TeX: {
+      extensions: [
+        "AMSmath.js",
+        "AMSsymbols.js",
+        "noErrors.js",
+        "noUndefined.js",
+      ]
+    }
+  });
+</script>
+
+<script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+      </div>
+
+      <div class="post-tail-wrapper text-muted">
+
+        <!-- categories -->
+        
+        <div class="post-meta mb-3">
+          <i class="far fa-folder-open fa-fw mr-1"></i>
+          
+            <a href='/categories/ctf/'>CTF</a>,
+            <a href='/categories/allarmycyberstakes4/'>AllArmyCyberStakes4</a>
+        </div>
+        
+
+        <!-- tags -->
+        
+        <div class="post-tags">
+          <i class="fa fa-tags fa-fw mr-1"></i>
+          
+          <a href="/tags/cryptography/"
+            class="post-tag no-text-decoration" >cryptography</a>
+          
+          </div>
+        
+
+        <div class="post-tail-bottom
+          d-flex justify-content-between align-items-center mt-3 pt-5 pb-2">
+          
+          <div class="license-wrapper">
+            This post is licensed under
+            <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+            by the author.
+          </div>
+          
+
+          <!--
+ Post sharing snippet
+-->
+
+<div class="share-wrapper">
+  <span class="share-label text-muted mr-1">Share</span>
+  <span class="share-icons">
+    
+    
+
+    
+      
+        <a href="https://twitter.com/intent/tweet?text=All-Army CyberStakes 4 - Cryptography (Over Time: Paid) - Bernard Smith&url=https://bernardsmith0892.github.io//posts/acictf4-otp/" data-toggle="tooltip" data-placement="top"
+          title="Twitter" target="_blank" rel="noopener" aria-label="Twitter">
+          <i class="fa-fw fab fa-twitter"></i>
+        </a>
+    
+      
+        <a href="https://www.facebook.com/sharer/sharer.php?title=All-Army CyberStakes 4 - Cryptography (Over Time: Paid) - Bernard Smith&u=https://bernardsmith0892.github.io//posts/acictf4-otp/" data-toggle="tooltip" data-placement="top"
+          title="Facebook" target="_blank" rel="noopener" aria-label="Facebook">
+          <i class="fa-fw fab fa-facebook-square"></i>
+        </a>
+    
+      
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://bernardsmith0892.github.io//posts/acictf4-otp/" data-toggle="tooltip" data-placement="top"
+          title="Linkedin" target="_blank" rel="noopener" aria-label="Linkedin">
+          <i class="fa-fw fab fa-linkedin"></i>
+        </a>
+    
+
+    <i class="fa-fw fas fa-link small" onclick="copyLink()"
+        data-toggle="tooltip" data-placement="top" title="Copy link"></i>
+
+  </span>
+</div>
+
+
+        </div><!-- .post-tail-bottom -->
+
+      </div><!-- div.post-tail -->
+
+    </div> <!-- .post -->
+
+
+  </div> <!-- #post-wrapper -->
+
+  
+
+  
+
+  <!--
+  The Pannel on right side (Desktop views)
+-->
+
+<div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down">
+
+  <div class="access">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+
+
+  
+    <div id="access-tags">
+      <span>Trending Tags</span>
+      <div class="d-flex flex-wrap mt-3 mb-1 mr-3">
+
+      
+        
+        <a class="post-tag" href="/tags/cryptography/">cryptography</a>
+      
+        
+        <a class="post-tag" href="/tags/reverse-engineering/">reverse_engineering</a>
+      
+
+      </div>
+    </div>
+  
+  </div> <!-- .access -->
+
+  
+
+</div> <!-- #panel-wrapper -->
+
+
+</div> <!-- .row -->
+
+<div class="row">
+  <div class="col-12 col-lg-11 col-xl-8">
+    <div id="post-extend-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4">
+
+    <!--
+ Recommend the other 3 posts according to the tags and categories of the current post,
+ if the number is not enough, use the other latest posts to supplement.
+-->
+
+<!-- The total size of related posts  -->
+
+
+<!-- An random integer that bigger than 0  -->
+
+
+<!-- Equals to TAG_SCORE / {max_categories_hierarchy}  -->
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+
+
+
+<!-- Fill with the other newlest posts  -->
+
+
+
+
+
+
+  <div id="related-posts" class="mt-5 mb-2 mb-sm-4">
+    <h3 class="pt-2 mt-1 mb-4 ml-1"
+      data-toc-skip>Further Reading</h3>
+    <div class="card-deck mb-4">
+    
+      
+      
+      <div class="card">
+        <a href="/posts/acictf4-rotateme/">
+          <div class="card-body">
+            <!--
+  Date format snippet
+  See: /assets/js/_utils/timeage.js
+-->
+
+
+
+
+
+<span class="timeago small"
+  
+
+  
+   >
+
+  
+  
+
+  
+    13 May 2020
+  
+
+  <i class="unloaded">2020-05-13T00:00:00-10:00</i>
+
+</span>
+
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>All-Army CyberStakes 4 - Cryptography (Rotate Me)</h3>
+            <div class="text-muted small">
+              <p>
+                
+
+
+
+
+
+                Rotate Me (5 Points)
+
+This one is a very simple problem, especially considering it’s only worth 5 points. We start with a text file that contains enciphered text, which already seems to be in the e...
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    
+      
+      
+      <div class="card">
+        <a href="/posts/acictf4-rsa/">
+          <div class="card-body">
+            <!--
+  Date format snippet
+  See: /assets/js/_utils/timeage.js
+-->
+
+
+
+
+
+<span class="timeago small"
+  
+
+  
+   >
+
+  
+  
+
+  
+    14 May 2020
+  
+
+  <i class="unloaded">2020-05-14T01:00:00-10:00</i>
+
+</span>
+
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>All-Army CyberStakes 4 - Cryptography (Really Senseless Admins)</h3>
+            <div class="text-muted small">
+              <p>
+                
+
+
+
+
+
+                Really Senseless Admins (35 Points)
+
+Here, we are provided with two files: flag.enc, containing a very large decimal number, and params.txt, containing three decimal numbers, p, q, and e. Based on ...
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    
+      
+      
+      <div class="card">
+        <a href="/posts/acictf4-speakplainly/">
+          <div class="card-body">
+            <!--
+  Date format snippet
+  See: /assets/js/_utils/timeage.js
+-->
+
+
+
+
+
+<span class="timeago small"
+  
+
+  
+   >
+
+  
+  
+
+  
+    16 May 2020
+  
+
+  <i class="unloaded">2020-05-16T03:00:00-10:00</i>
+
+</span>
+
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>All-Army CyberStakes 4 - Cryptography (Speak Plainly)</h3>
+            <div class="text-muted small">
+              <p>
+                
+
+
+
+
+
+                Speak Plainly (150 Points)
+
+This problem diverts from the previous ones by providing us with a website instead. The hints bring a lot of attention to the website’s login cookies, so we try creating...
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    
+    </div> <!-- .card-deck -->
+  </div> <!-- #related-posts -->
+
+
+
+    <!--
+  Navigation buttons at the bottom of the post.
+-->
+
+<div class="post-navigation d-flex justify-content-between">
+  
+  <a href="/posts/acictf4-rsa/" class="btn btn-outline-primary"
+    prompt="Older">
+    <p>All-Army CyberStakes 4 - Cryptography (Really Senseless Admins)</p>
+  </a>
+  
+
+  
+  <a href="/posts/acictf4-speakplainly/" class="btn btn-outline-primary"
+    prompt="Newer">
+    <p>All-Army CyberStakes 4 - Cryptography (Speak Plainly)</p>
+  </a>
+  
+
+</div>
+
+
+    
+
+    </div> <!-- #post-extend-wrapper -->
+
+  </div> <!-- .col-* -->
+
+</div> <!-- .row -->
+
+
+
+        <!--
+  The Footer
+-->
+
+<footer class="d-flex w-100 justify-content-center">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="footer-left">
+      <p class="mb-0">
+        © 2021
+        <a href="https://twitter.com/BernardSmith892">Bernard Smith</a>.
+        
+        <span data-toggle="tooltip" data-placement="top"
+          title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span>
+        
+      </p>
+    </div>
+
+    <div class="footer-right">
+      <p class="mb-0">
+        Powered by
+        <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a>
+        with
+        <a href="https://github.com/cotes2020/jekyll-theme-chirpy"
+          target="_blank" rel="noopener">Chirpy</a>
+        theme.
+      </p>
+    </div>
+
+  </div> <!-- div.d-flex -->
+</footer>
+
+
+      </div>
+
+      <!--
+  The Search results
+-->
+<div id="search-result-wrapper" class="d-flex justify-content-center unloaded">
+  <div class="col-12 col-sm-11 post-content">
+    <div id="search-hints">
+      <h4 class="text-muted mb-4">Trending Tags</h4>
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+
+
+      
+        
+        <a class="post-tag" href="/tags/cryptography/">cryptography</a>
+      
+        
+        <a class="post-tag" href="/tags/reverse-engineering/">reverse_engineering</a>
+      
+
+    </div>
+    <div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div>
+  </div>
+</div>
+
+
+    </div> <!-- #main-wrapper -->
+
+    
+
+    <div id="mask"></div>
+
+    <a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button">
+      <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!--
+  Jekyll Simple Search loader
+  See: <https://github.com/christian-fei/Simple-Jekyll-Search>
+-->
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.7.3/dest/simple-jekyll-search.min.js"></script>
+
+<script>
+SimpleJekyllSearch({
+  searchInput: document.getElementById('search-input'),
+  resultsContainer: document.getElementById('search-results'),
+  json: '/assets/js/data/search.json',
+  searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">  <a href="https://bernardsmith0892.github.io/{url}">{title}</a>  <div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">    {categories}    {tags}  </div>  <p>{snippet}</p></div>',
+  noResultsText: '<p class="mt-5">Oops! No result founds.</p>',
+  templateMiddleware: function(prop, value, template) {
+    if (prop === 'categories') {
+      if (value === '') {
+        return `${value}`;
+      } else {
+        return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`;
+      }
+    }
+
+    if (prop === 'tags') {
+      if (value === '') {
+        return `${value}`;
+      } else {
+        return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`;
+      }
+    }
+  }
+});
+</script>
+
+
+  </body>
+
+</html>
+

@@ -1,0 +1,94 @@
+[
+  
+  {
+    "title": "Hack-A-Sat 2: tree in the forest",
+    "url": "/posts/hackasat2-forest/",
+    "categories": "CTF, HackASat2",
+    "tags": "reverse_engineering",
+    "date": "2021-06-29 22:00:00 -1000",
+    
+
+
+
+
+
+    "snippet": "tree in the forest (Rapid Unplanned Disassembly)Upon connecting to the challenge and providing our ticket, we’re presented with a simple message.Starting up Service on udp:18.222.149.188:12752We can connect to this server using nc -u 18.222.149.188 12752 and see what the challenge looks like. Aft..."
+  },
+  
+  {
+    "title": "All-Army CyberStakes 4 - Cryptography (Headpiece Silver)",
+    "url": "/posts/acictf4-headpiece-silver/",
+    "categories": "CTF, AllArmyCyberStakes4",
+    "tags": "cryptography",
+    "date": "2020-05-16 04:00:00 -1000",
+    
+
+
+
+
+
+    "snippet": "Headpiece Silver (250 Points)This challenge provides us with a server to interact with at challenge.acictf.com:30151. (Your port number may differ) To get started, lets see what this server is about by connecting to it using ncat.Based on this information given to us, this is clearly another RSA ..."
+  },
+  
+  {
+    "title": "All-Army CyberStakes 4 - Cryptography (Speak Plainly)",
+    "url": "/posts/acictf4-speakplainly/",
+    "categories": "CTF, AllArmyCyberStakes4",
+    "tags": "cryptography",
+    "date": "2020-05-16 03:00:00 -1000",
+    
+
+
+
+
+
+    "snippet": "Speak Plainly (150 Points)This problem diverts from the previous ones by providing us with a website instead. The hints bring a lot of attention to the website’s login cookies, so we try creating an account and examining the created cookies. auth_token in particular stands out since it’s not a st..."
+  },
+  
+  {
+    "title": "All-Army CyberStakes 4 - Cryptography (Over Time: Paid)",
+    "url": "/posts/acictf4-otp/",
+    "categories": "CTF, AllArmyCyberStakes4",
+    "tags": "cryptography",
+    "date": "2020-05-15 02:00:00 -1000",
+    
+
+
+
+
+
+    "snippet": "Over Time: Paid (50 Points)This is where the challegnes start getting more difficult. This problem starts with two files again: document.encrypted, which contains 15 lines of hex, and source.py, which contains what appears to be the script that generated the document. The script performs two key ..."
+  },
+  
+  {
+    "title": "All-Army CyberStakes 4 - Cryptography (Really Senseless Admins)",
+    "url": "/posts/acictf4-rsa/",
+    "categories": "CTF, AllArmyCyberStakes4",
+    "tags": "cryptography",
+    "date": "2020-05-14 01:00:00 -1000",
+    
+
+
+
+
+
+    "snippet": "Really Senseless Admins (35 Points)Here, we are provided with two files: flag.enc, containing a very large decimal number, and params.txt, containing three decimal numbers, p, q, and e. Based on the challenge’s title (Really Senseless Admins), these numbers must be the parameters that generate th..."
+  },
+  
+  {
+    "title": "All-Army CyberStakes 4 - Cryptography (Rotate Me)",
+    "url": "/posts/acictf4-rotateme/",
+    "categories": "CTF, AllArmyCyberStakes4",
+    "tags": "cryptography",
+    "date": "2020-05-13 00:00:00 -1000",
+    
+
+
+
+
+
+    "snippet": "Rotate Me (5 Points)This one is a very simple problem, especially considering it’s only worth 5 points. We start with a text file that contains enciphered text, which already seems to be in the expected format of a flag.IKQ{KzGxBw_NcV_nWz_ItT_ScrflorN}Based on the name of the challenge and the hi..."
+  }
+  
+]
+

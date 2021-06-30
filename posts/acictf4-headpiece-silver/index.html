@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+
+
+
+<html lang="en-US" 
+  
+    mode="dark"
+  
+>
+
+  <!--
+  The Head
+-->
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+
+    
+
+    
+
+  
+
+  <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="All-Army CyberStakes 4 - Cryptography (Headpiece Silver)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Headpiece Silver (250 Points) This challenge provides us with a server to interact with at challenge.acictf.com:30151. (Your port number may differ) To get started, lets see what this server is about by connecting to it using ncat. Based on this information given to us, this is clearly another RSA related challenge. The server provides us with the components for a public key, the public modulus N, and the public exponent e, which are: 1 2 N: 122298190177919866881639090045815514691491489519639425496178483984084352945237 e: 65537 If we can derive the private key from this public key, we will be able to decrypt the encrypted password they provided to us, which is: 985be9b7b845a1a09a916437d767c30ae8d7ad4987cb77b0602b04889f7c2301 Normally, computing the private key from just the public key is nearly impossible. However, what makes the key provided here different is in the key length. Most RSA keys are used today are 2048-bit keys, which are practically impossible for current computers to decrypt. But the key provided by the server is only around a 256-bit key, which is vastly weaker than what is needed for proper security. To fully compare the strengths of these two key lengths, we need to determine how many bits of security these keys would have. Since RSA is based on the factoring problem, brute-forcing an RSA key doesn’t require you to test all possible numbers, unlike AES where you’d need to check every possible key. So while AES-256 has 256-bit security, 2048-bit RSA key doesn’t have 2048-bit security. According to NIST (p. 54), a 2048-bit RSA key only offers about 112-bit security. And while 256-bit RSA is so weak that it isn’t even considered in the NIST publication, this StackExchange question tells us that 256-bit RSA only offers around 46-bit security. Each extra bit of security makes a key twice as secure, so 256-bit RSA is twice as easy to break than a key with 47-bit security. Now compared to 2048-bit RSA, 256-bit RSA is about 73 quintillion times easier to break, or 73786976294838206464 times easier. Now to how we can actually break the key. RsaCtfTool makes this task very easy. We can provide the public key components, N and e, and the ciphertext in decimal to this tool in order to quickly derive the private key and plaintext. (Note: It appears the challenge’s modulus is now in FactorDB, so RsaCtfTool isn’t conducting the full attack). We can see the plaintext password at the end of the unciphered data: 4n1a5ebRFmtyysAe. By providing this password to the server, we can retrieve the flag: ACI{ad94502b4d2437193e9c3fed364} Bonus Solution As it turns out, like many real-world systems, the challenge’s server has a misconfiguration vulnerability that allows you to skip all of this. What we didn’t check in the previous steps was the fourth option to test ciphertext. It appears that this was supposed to serve as a decryption oracle that decrypts whatever you provide it using the server’s private key. However, since the password ciphertext is encrypted with the public key, we are able to use this test function to simply have the server decrypt the password ciphertext itself." />
+<meta property="og:description" content="Headpiece Silver (250 Points) This challenge provides us with a server to interact with at challenge.acictf.com:30151. (Your port number may differ) To get started, lets see what this server is about by connecting to it using ncat. Based on this information given to us, this is clearly another RSA related challenge. The server provides us with the components for a public key, the public modulus N, and the public exponent e, which are: 1 2 N: 122298190177919866881639090045815514691491489519639425496178483984084352945237 e: 65537 If we can derive the private key from this public key, we will be able to decrypt the encrypted password they provided to us, which is: 985be9b7b845a1a09a916437d767c30ae8d7ad4987cb77b0602b04889f7c2301 Normally, computing the private key from just the public key is nearly impossible. However, what makes the key provided here different is in the key length. Most RSA keys are used today are 2048-bit keys, which are practically impossible for current computers to decrypt. But the key provided by the server is only around a 256-bit key, which is vastly weaker than what is needed for proper security. To fully compare the strengths of these two key lengths, we need to determine how many bits of security these keys would have. Since RSA is based on the factoring problem, brute-forcing an RSA key doesn’t require you to test all possible numbers, unlike AES where you’d need to check every possible key. So while AES-256 has 256-bit security, 2048-bit RSA key doesn’t have 2048-bit security. According to NIST (p. 54), a 2048-bit RSA key only offers about 112-bit security. And while 256-bit RSA is so weak that it isn’t even considered in the NIST publication, this StackExchange question tells us that 256-bit RSA only offers around 46-bit security. Each extra bit of security makes a key twice as secure, so 256-bit RSA is twice as easy to break than a key with 47-bit security. Now compared to 2048-bit RSA, 256-bit RSA is about 73 quintillion times easier to break, or 73786976294838206464 times easier. Now to how we can actually break the key. RsaCtfTool makes this task very easy. We can provide the public key components, N and e, and the ciphertext in decimal to this tool in order to quickly derive the private key and plaintext. (Note: It appears the challenge’s modulus is now in FactorDB, so RsaCtfTool isn’t conducting the full attack). We can see the plaintext password at the end of the unciphered data: 4n1a5ebRFmtyysAe. By providing this password to the server, we can retrieve the flag: ACI{ad94502b4d2437193e9c3fed364} Bonus Solution As it turns out, like many real-world systems, the challenge’s server has a misconfiguration vulnerability that allows you to skip all of this. What we didn’t check in the previous steps was the fourth option to test ciphertext. It appears that this was supposed to serve as a decryption oracle that decrypts whatever you provide it using the server’s private key. However, since the password ciphertext is encrypted with the public key, we are able to use this test function to simply have the server decrypt the password ciphertext itself." />
+<link rel="canonical" href="https://bernardsmith0892.github.io//posts/acictf4-headpiece-silver/" />
+<meta property="og:url" content="https://bernardsmith0892.github.io//posts/acictf4-headpiece-silver/" />
+<meta property="og:site_name" content="Bernard Smith" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-16T04:00:00-10:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="All-Army CyberStakes 4 - Cryptography (Headpiece Silver)" />
+<meta name="twitter:site" content="@BernardSmith892" />
+<meta name="google-site-verification" content="google_meta_tag_verification" />
+<script type="application/ld+json">
+{"description":"Headpiece Silver (250 Points) This challenge provides us with a server to interact with at challenge.acictf.com:30151. (Your port number may differ) To get started, lets see what this server is about by connecting to it using ncat. Based on this information given to us, this is clearly another RSA related challenge. The server provides us with the components for a public key, the public modulus N, and the public exponent e, which are: 1 2 N: 122298190177919866881639090045815514691491489519639425496178483984084352945237 e: 65537 If we can derive the private key from this public key, we will be able to decrypt the encrypted password they provided to us, which is: 985be9b7b845a1a09a916437d767c30ae8d7ad4987cb77b0602b04889f7c2301 Normally, computing the private key from just the public key is nearly impossible. However, what makes the key provided here different is in the key length. Most RSA keys are used today are 2048-bit keys, which are practically impossible for current computers to decrypt. But the key provided by the server is only around a 256-bit key, which is vastly weaker than what is needed for proper security. To fully compare the strengths of these two key lengths, we need to determine how many bits of security these keys would have. Since RSA is based on the factoring problem, brute-forcing an RSA key doesn’t require you to test all possible numbers, unlike AES where you’d need to check every possible key. So while AES-256 has 256-bit security, 2048-bit RSA key doesn’t have 2048-bit security. According to NIST (p. 54), a 2048-bit RSA key only offers about 112-bit security. And while 256-bit RSA is so weak that it isn’t even considered in the NIST publication, this StackExchange question tells us that 256-bit RSA only offers around 46-bit security. Each extra bit of security makes a key twice as secure, so 256-bit RSA is twice as easy to break than a key with 47-bit security. Now compared to 2048-bit RSA, 256-bit RSA is about 73 quintillion times easier to break, or 73786976294838206464 times easier. Now to how we can actually break the key. RsaCtfTool makes this task very easy. We can provide the public key components, N and e, and the ciphertext in decimal to this tool in order to quickly derive the private key and plaintext. (Note: It appears the challenge’s modulus is now in FactorDB, so RsaCtfTool isn’t conducting the full attack). We can see the plaintext password at the end of the unciphered data: 4n1a5ebRFmtyysAe. By providing this password to the server, we can retrieve the flag: ACI{ad94502b4d2437193e9c3fed364} Bonus Solution As it turns out, like many real-world systems, the challenge’s server has a misconfiguration vulnerability that allows you to skip all of this. What we didn’t check in the previous steps was the fourth option to test ciphertext. It appears that this was supposed to serve as a decryption oracle that decrypts whatever you provide it using the server’s private key. However, since the password ciphertext is encrypted with the public key, we are able to use this test function to simply have the server decrypt the password ciphertext itself.","@type":"BlogPosting","headline":"All-Army CyberStakes 4 - Cryptography (Headpiece Silver)","dateModified":"2020-05-16T04:00:00-10:00","datePublished":"2020-05-16T04:00:00-10:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://bernardsmith0892.github.io//posts/acictf4-headpiece-silver/"},"url":"https://bernardsmith0892.github.io//posts/acictf4-headpiece-silver/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <title>All-Army CyberStakes 4 - Cryptography (Headpiece Silver) | Bernard Smith
+  </title>
+
+  <!--
+  The Favicons for Web, Android, Microsoft, and iOS (iPhone and iPad) Apps
+  Generated by: https://realfavicongenerator.net/
+-->
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png">
+<link rel="manifest" href="/assets/img/favicons/site.webmanifest">
+<link rel="shortcut icon" href="/assets/img/favicons/favicon.ico">
+<meta name="apple-mobile-web-app-title" content="Bernard Smith">
+<meta name="application-name" content="Bernard Smith">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+
+  <!-- GA -->
+  
+
+  <!-- jsDelivr CDN -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css">
+
+  <!--
+  CSS selector for site.
+-->
+
+<link rel="stylesheet" href="/assets/css/style.css">
+
+
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css">
+
+
+
+  <!-- Manific Popup -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1.1.0/dist/magnific-popup.min.css">
+
+
+
+  <!-- JavaScripts -->
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  <script defer
+    src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.15.0,npm/bootstrap@4/dist/js/bootstrap.min.js"></script>
+
+  <!--
+  JS selector for site.
+-->
+
+
+  
+
+
+
+  <!-- image lazy-loading & popup -->
+  <script async
+    src="https://cdn.jsdelivr.net/combine/npm/lozad/dist/lozad.min.js,npm/magnific-popup@1/dist/jquery.magnific-popup.min.js"></script>
+
+
+
+
+
+<script defer src="/assets/js/dist/post.min.js"></script>
+
+
+
+
+
+
+</head>
+
+
+  <body data-spy="scroll" data-target="#toc">
+
+    <!--
+  The Side Bar
+-->
+
+<div id="sidebar" class="d-flex flex-column align-items-end">
+
+  <div class="profile-wrapper text-center">
+    <div id="avatar">
+      <a href="/" alt="avatar" class="mx-auto">
+        
+        <img src="/assets/imgs/avatar.jpg" alt="avatar" onerror="this.style.display='none'">
+      </a>
+    </div>
+
+    <div class="site-title mt-3">
+      <a href="/">Bernard Smith</a>
+    </div>
+
+    <div class="site-subtitle font-italic">A text-focused Jekyll theme</div>
+
+  </div><!-- .profile-wrapper -->
+
+  <ul class="w-100">
+    <!-- home -->
+    <li class="nav-item">
+      <a href="/" class="nav-link">
+        <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>HOME</span>
+      </a>
+    </li>
+    <!-- the real tabs -->
+    
+    <li class="nav-item">
+      <a href="/categories/" class="nav-link">
+        <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>CATEGORIES</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+    <li class="nav-item">
+      <a href="/archives/" class="nav-link">
+        <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>ARCHIVES</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+    <li class="nav-item">
+      <a href="/tags/" class="nav-link">
+        <i class="fa-fw fas fa-tags ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>TAGS</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+    <li class="nav-item">
+      <a href="/about/" class="nav-link">
+        <i class="fa-fw fas fa-info ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>ABOUT</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+    <li class="nav-item">
+      <a href="/projects/" class="nav-link">
+        <i class="fa-fw fas fa-code ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>PROJECTS</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+
+  </ul> <!-- ul.nav.flex-column -->
+
+  <div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center">
+
+    
+      
+
+      
+      <a href="https://github.com/bernardsmith0892" aria-label="github"
+        
+        target="_blank" rel="noopener">
+        <i class="fab fa-github-alt"></i>
+      </a>
+      
+
+    
+      
+
+      
+      <a href="https://twitter.com/BernardSmith892" aria-label="twitter"
+        
+        target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+      
+
+    
+      
+
+      
+      <a href="https://linkedin.com/in/bernard-smith-27324257/" aria-label="linkedin"
+        
+        target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+      
+
+    
+      
+
+      
+      <a href="
+          javascript:location.href = 'mailto:' + ['mail','brndjsmith.net'].join('@')" aria-label="email"
+        
+        target="_blank" rel="noopener">
+        <i class="fas fa-envelope"></i>
+      </a>
+      
+
+    
+
+    
+
+  </div> <!-- .sidebar-bottom -->
+
+</div><!-- #sidebar -->
+
+
+    <!--
+  The Top Bar
+-->
+
+<div id="topbar-wrapper" class="row justify-content-center topbar-down">
+  <div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between">
+    <span id="breadcrumb">
+
+    
+
+    
+
+      
+
+        
+          
+
+        
+
+      
+
+        
+        <span>
+          
+          
+          <a href="/">
+            Posts
+          </a>
+        </span>
+
+        
+
+      
+
+        
+          <span>All-Army CyberStakes 4 - Cryptography (Headpiece Silver)</span>
+
+        
+
+      
+
+    
+
+    </span><!-- endof #breadcrumb -->
+
+    <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i>
+
+    <div id="topbar-title">
+      Post
+    </div>
+
+    <i id="search-trigger" class="fas fa-search fa-fw"></i>
+    <span id="search-wrapper" class="align-items-center">
+      <i class="fas fa-search fa-fw"></i>
+      <input class="form-control" id="search-input" type="search"
+        aria-label="search" autocomplete="off" placeholder="Search...">
+      <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i>
+    </span>
+    <span id="search-cancel" >Cancel</span>
+  </div>
+
+</div>
+
+
+    <div id="main-wrapper">
+      <div id="main">
+
+        <!--
+  Refactor the HTML structure.
+-->
+
+
+
+<!--
+  In order to allow a wide table to scroll horizontally,
+  we suround the markdown table with `<div class="table-wrapper">` and `</div>`
+-->
+
+
+<!--
+  Fixed kramdown code highlight rendering:
+  https://github.com/penibelst/jekyll-compress-html/issues/101
+  https://github.com/penibelst/jekyll-compress-html/issues/71#issuecomment-188144901
+-->
+
+
+<!-- Add attribute 'hide-bullet' to the checkbox list -->
+
+
+
+
+<!-- return -->
+<div class="row">
+
+  <div id="post-wrapper" class="col-12 col-lg-11 col-xl-8">
+
+    <div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4">
+
+      <h1 data-toc-skip>All-Army CyberStakes 4 - Cryptography (Headpiece Silver)</h1>
+
+      <div class="post-meta text-muted d-flex flex-column">
+        <!-- Published date and author -->
+        <div>
+          <span class="semi-bold">
+            Bernard Smith
+          </span>
+          <!--
+  Date format snippet
+  See: /assets/js/_utils/timeage.js
+-->
+
+
+
+
+
+<span class="timeago "
+  
+    data-toggle="tooltip"
+    data-placement="bottom"
+    title="Sat, 16 May 2020, 04:00 HST"
+  
+
+  
+  prep="on" >
+
+  
+  
+
+  
+    16 May 2020
+  
+
+  <i class="unloaded">2020-05-16T04:00:00-10:00</i>
+
+</span>
+
+        </div>
+
+        <div>
+          <!-- lastmod -->
+          
+
+          <!-- read time -->
+          <!--
+  Calculate the post's reading time, and display the word count in tooltip
+ -->
+
+
+<!-- words per minute  -->
+
+
+
+
+
+
+
+<!-- return element -->
+<span class="readtime" data-toggle="tooltip" data-placement="bottom" title="507 words">2 min</span>
+
+
+          <!-- page views -->
+          
+
+        </div>
+
+      </div> <!-- .post-meta -->
+
+      <div class="post-content">
+
+        
+
+        <h1 id="headpiece-silver-250-points">Headpiece Silver (250 Points)</h1>
+
+<p>This challenge provides us with a server to interact with at challenge.acictf.com:30151. (<em>Your port number may differ</em>) To get started, lets see what this server is about by connecting to it using <code class="language-plaintext highlighter-rouge">ncat</code>.</p>
+
+<script id="asciicast-sNd3fjZW4f9c69nYw88Ieu4G8" src="https://asciinema.org/a/sNd3fjZW4f9c69nYw88Ieu4G8.js" async="" data-rows="20"></script>
+
+<p>Based on this information given to us, this is clearly another <em>RSA</em> related challenge. The server provides us with the components for a <em>public key</em>, the public modulus <code class="language-plaintext highlighter-rouge">N</code>, and the public exponent <code class="language-plaintext highlighter-rouge">e</code>, which are:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>N: 122298190177919866881639090045815514691491489519639425496178483984084352945237
+e: 65537
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>If we can derive the <em>private key</em> from this <em>public key</em>, we will be able to decrypt the encrypted password they provided to us, which is: <code class="language-plaintext highlighter-rouge">985be9b7b845a1a09a916437d767c30ae8d7ad4987cb77b0602b04889f7c2301</code></p>
+
+<p>Normally, computing the <em>private key</em> from just the <em>public key</em> is nearly impossible. However, what makes the key provided here different is in the <em>key length</em>. Most RSA keys are used today are <strong>2048-bit</strong> keys, which are practically impossible for current computers to decrypt. But the key provided by the server is only around a <strong>256-bit</strong> key, which is vastly weaker than what is needed for proper security. To fully compare the strengths of these two key lengths, we need to determine how many <em>bits of security</em> these keys would have. Since RSA is based on the <em>factoring problem</em>, brute-forcing an RSA key doesn’t require you to test <strong>all</strong> possible numbers, unlike <a href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard">AES</a> where you’d need to check every possible key. So while <em>AES-256</em> has <em>256-bit security</em>, 2048-bit RSA key doesn’t have 2048-bit security.</p>
+
+<p>According to <a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf">NIST (p. 54)</a>, a 2048-bit RSA key only offers about <strong>112-bit security</strong>. And while 256-bit RSA is so weak that it isn’t even considered in the NIST publication, <a href="https://crypto.stackexchange.com/questions/8687/security-strength-of-rsa-in-relation-with-the-modulus-size">this StackExchange</a> question tells us that <a href="https://www.wolframalpha.com/input/?i=N%5BLog2%5BExp%5B%2864%2F9*Log%5B2%5E256%5D%29%5E%281%2F3%29*%28Log%5BLog%5B2%5E256%5D%5D%29%5E%282%2F3%29%5D%5D%5D">256-bit RSA</a> only offers around <strong>46-bit security</strong>. Each extra bit of security makes a key twice as secure, so 256-bit RSA is <em>twice</em> as easy to break than a key with <em>47-bit security</em>. Now compared to 2048-bit RSA, 256-bit RSA is about <em>73 quintillion</em> times easier to break, or <em>73786976294838206464</em> times easier.</p>
+
+<p>Now to how we can actually break the key. <a href="https://github.com/Ganapati/RsaCtfTool">RsaCtfTool</a> makes this task very easy. We can provide the <em>public key</em> components, <code class="language-plaintext highlighter-rouge">N</code> and <code class="language-plaintext highlighter-rouge">e</code>, and the <em>ciphertext</em> in decimal to this tool in order to quickly derive the <em>private key</em> and <em>plaintext</em>. (<em>Note: It appears the challenge’s modulus is now in <a href="http://factordb.com/index.php?query=122298190177919866881639090045815514691491489519639425496178483984084352945237">FactorDB</a>, so RsaCtfTool isn’t conducting the full attack)</em>.</p>
+
+<script id="asciicast-rfequzN91lhn6WrsCDyYnTD34" src="https://asciinema.org/a/rfequzN91lhn6WrsCDyYnTD34.js" async="" data-rows="20"></script>
+
+<p>We can see the plaintext password at the end of the unciphered data: <code class="language-plaintext highlighter-rouge">4n1a5ebRFmtyysAe</code>. By providing this password to the server, we can retrieve the flag: <code class="language-plaintext highlighter-rouge">ACI{ad94502b4d2437193e9c3fed364}</code></p>
+
+<script id="asciicast-jeYy2ox48alc3qVHwKL5BTufE" src="https://asciinema.org/a/jeYy2ox48alc3qVHwKL5BTufE.js" async="" data-rows="20"></script>
+
+<h2 id="bonus-solution">Bonus Solution</h2>
+
+<p>As it turns out, like many real-world systems, the challenge’s server has a <em>misconfiguration</em> vulnerability that allows you to skip all of this. What we didn’t check in the previous steps was the fourth option to <em>test ciphertext</em>. It appears that this was supposed to serve as a <em>decryption oracle</em> that decrypts whatever you provide it using the server’s private key. However, since the <em>password ciphertext</em> is encrypted with the public key, we are able to use this test function to simply have the server decrypt the password ciphertext itself.</p>
+
+<script id="asciicast-2h6fYvAV9BvBDJYhw3PqUrtN2" src="https://asciinema.org/a/2h6fYvAV9BvBDJYhw3PqUrtN2.js" async="" data-rows="20"></script>
+
+
+
+      </div>
+
+      <div class="post-tail-wrapper text-muted">
+
+        <!-- categories -->
+        
+        <div class="post-meta mb-3">
+          <i class="far fa-folder-open fa-fw mr-1"></i>
+          
+            <a href='/categories/ctf/'>CTF</a>,
+            <a href='/categories/allarmycyberstakes4/'>AllArmyCyberStakes4</a>
+        </div>
+        
+
+        <!-- tags -->
+        
+        <div class="post-tags">
+          <i class="fa fa-tags fa-fw mr-1"></i>
+          
+          <a href="/tags/cryptography/"
+            class="post-tag no-text-decoration" >cryptography</a>
+          
+          </div>
+        
+
+        <div class="post-tail-bottom
+          d-flex justify-content-between align-items-center mt-3 pt-5 pb-2">
+          
+          <div class="license-wrapper">
+            This post is licensed under
+            <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+            by the author.
+          </div>
+          
+
+          <!--
+ Post sharing snippet
+-->
+
+<div class="share-wrapper">
+  <span class="share-label text-muted mr-1">Share</span>
+  <span class="share-icons">
+    
+    
+
+    
+      
+        <a href="https://twitter.com/intent/tweet?text=All-Army CyberStakes 4 - Cryptography (Headpiece Silver) - Bernard Smith&url=https://bernardsmith0892.github.io//posts/acictf4-headpiece-silver/" data-toggle="tooltip" data-placement="top"
+          title="Twitter" target="_blank" rel="noopener" aria-label="Twitter">
+          <i class="fa-fw fab fa-twitter"></i>
+        </a>
+    
+      
+        <a href="https://www.facebook.com/sharer/sharer.php?title=All-Army CyberStakes 4 - Cryptography (Headpiece Silver) - Bernard Smith&u=https://bernardsmith0892.github.io//posts/acictf4-headpiece-silver/" data-toggle="tooltip" data-placement="top"
+          title="Facebook" target="_blank" rel="noopener" aria-label="Facebook">
+          <i class="fa-fw fab fa-facebook-square"></i>
+        </a>
+    
+      
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://bernardsmith0892.github.io//posts/acictf4-headpiece-silver/" data-toggle="tooltip" data-placement="top"
+          title="Linkedin" target="_blank" rel="noopener" aria-label="Linkedin">
+          <i class="fa-fw fab fa-linkedin"></i>
+        </a>
+    
+
+    <i class="fa-fw fas fa-link small" onclick="copyLink()"
+        data-toggle="tooltip" data-placement="top" title="Copy link"></i>
+
+  </span>
+</div>
+
+
+        </div><!-- .post-tail-bottom -->
+
+      </div><!-- div.post-tail -->
+
+    </div> <!-- .post -->
+
+
+  </div> <!-- #post-wrapper -->
+
+  
+
+  
+
+  <!--
+  The Pannel on right side (Desktop views)
+-->
+
+<div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down">
+
+  <div class="access">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+
+
+  
+    <div id="access-tags">
+      <span>Trending Tags</span>
+      <div class="d-flex flex-wrap mt-3 mb-1 mr-3">
+
+      
+        
+        <a class="post-tag" href="/tags/cryptography/">cryptography</a>
+      
+        
+        <a class="post-tag" href="/tags/reverse-engineering/">reverse_engineering</a>
+      
+
+      </div>
+    </div>
+  
+  </div> <!-- .access -->
+
+  
+    <!-- BS-toc.js will be loaded at medium priority -->
+    <script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script>
+    <div id="toc-wrapper" class="pl-0 pr-4 mb-5">
+      <span class="pl-3 pt-2 mb-2">Contents</span>
+      <nav id="toc" data-toggle="toc"></nav>
+    </div>
+  
+
+</div> <!-- #panel-wrapper -->
+
+
+</div> <!-- .row -->
+
+<div class="row">
+  <div class="col-12 col-lg-11 col-xl-8">
+    <div id="post-extend-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4">
+
+    <!--
+ Recommend the other 3 posts according to the tags and categories of the current post,
+ if the number is not enough, use the other latest posts to supplement.
+-->
+
+<!-- The total size of related posts  -->
+
+
+<!-- An random integer that bigger than 0  -->
+
+
+<!-- Equals to TAG_SCORE / {max_categories_hierarchy}  -->
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+
+
+
+<!-- Fill with the other newlest posts  -->
+
+
+
+
+
+
+  <div id="related-posts" class="mt-5 mb-2 mb-sm-4">
+    <h3 class="pt-2 mt-1 mb-4 ml-1"
+      data-toc-skip>Further Reading</h3>
+    <div class="card-deck mb-4">
+    
+      
+      
+      <div class="card">
+        <a href="/posts/acictf4-rotateme/">
+          <div class="card-body">
+            <!--
+  Date format snippet
+  See: /assets/js/_utils/timeage.js
+-->
+
+
+
+
+
+<span class="timeago small"
+  
+
+  
+   >
+
+  
+  
+
+  
+    13 May 2020
+  
+
+  <i class="unloaded">2020-05-13T00:00:00-10:00</i>
+
+</span>
+
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>All-Army CyberStakes 4 - Cryptography (Rotate Me)</h3>
+            <div class="text-muted small">
+              <p>
+                
+
+
+
+
+
+                Rotate Me (5 Points)
+
+This one is a very simple problem, especially considering it’s only worth 5 points. We start with a text file that contains enciphered text, which already seems to be in the e...
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    
+      
+      
+      <div class="card">
+        <a href="/posts/acictf4-rsa/">
+          <div class="card-body">
+            <!--
+  Date format snippet
+  See: /assets/js/_utils/timeage.js
+-->
+
+
+
+
+
+<span class="timeago small"
+  
+
+  
+   >
+
+  
+  
+
+  
+    14 May 2020
+  
+
+  <i class="unloaded">2020-05-14T01:00:00-10:00</i>
+
+</span>
+
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>All-Army CyberStakes 4 - Cryptography (Really Senseless Admins)</h3>
+            <div class="text-muted small">
+              <p>
+                
+
+
+
+
+
+                Really Senseless Admins (35 Points)
+
+Here, we are provided with two files: flag.enc, containing a very large decimal number, and params.txt, containing three decimal numbers, p, q, and e. Based on ...
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    
+      
+      
+      <div class="card">
+        <a href="/posts/acictf4-otp/">
+          <div class="card-body">
+            <!--
+  Date format snippet
+  See: /assets/js/_utils/timeage.js
+-->
+
+
+
+
+
+<span class="timeago small"
+  
+
+  
+   >
+
+  
+  
+
+  
+    15 May 2020
+  
+
+  <i class="unloaded">2020-05-15T02:00:00-10:00</i>
+
+</span>
+
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>All-Army CyberStakes 4 - Cryptography (Over Time: Paid)</h3>
+            <div class="text-muted small">
+              <p>
+                
+
+
+
+
+
+                Over Time: Paid (50 Points)
+
+This is where the challegnes start getting more difficult. This problem starts with two files again: document.encrypted, which contains 15 lines of hex, and source.py, ...
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    
+    </div> <!-- .card-deck -->
+  </div> <!-- #related-posts -->
+
+
+
+    <!--
+  Navigation buttons at the bottom of the post.
+-->
+
+<div class="post-navigation d-flex justify-content-between">
+  
+  <a href="/posts/acictf4-speakplainly/" class="btn btn-outline-primary"
+    prompt="Older">
+    <p>All-Army CyberStakes 4 - Cryptography (Speak Plainly)</p>
+  </a>
+  
+
+  
+  <a href="/posts/hackasat2-forest/" class="btn btn-outline-primary"
+    prompt="Newer">
+    <p>Hack-A-Sat 2: tree in the forest</p>
+  </a>
+  
+
+</div>
+
+
+    
+
+    </div> <!-- #post-extend-wrapper -->
+
+  </div> <!-- .col-* -->
+
+</div> <!-- .row -->
+
+
+
+        <!--
+  The Footer
+-->
+
+<footer class="d-flex w-100 justify-content-center">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="footer-left">
+      <p class="mb-0">
+        © 2021
+        <a href="https://twitter.com/BernardSmith892">Bernard Smith</a>.
+        
+        <span data-toggle="tooltip" data-placement="top"
+          title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span>
+        
+      </p>
+    </div>
+
+    <div class="footer-right">
+      <p class="mb-0">
+        Powered by
+        <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a>
+        with
+        <a href="https://github.com/cotes2020/jekyll-theme-chirpy"
+          target="_blank" rel="noopener">Chirpy</a>
+        theme.
+      </p>
+    </div>
+
+  </div> <!-- div.d-flex -->
+</footer>
+
+
+      </div>
+
+      <!--
+  The Search results
+-->
+<div id="search-result-wrapper" class="d-flex justify-content-center unloaded">
+  <div class="col-12 col-sm-11 post-content">
+    <div id="search-hints">
+      <h4 class="text-muted mb-4">Trending Tags</h4>
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+
+
+      
+        
+        <a class="post-tag" href="/tags/cryptography/">cryptography</a>
+      
+        
+        <a class="post-tag" href="/tags/reverse-engineering/">reverse_engineering</a>
+      
+
+    </div>
+    <div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div>
+  </div>
+</div>
+
+
+    </div> <!-- #main-wrapper -->
+
+    
+
+    <div id="mask"></div>
+
+    <a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button">
+      <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!--
+  Jekyll Simple Search loader
+  See: <https://github.com/christian-fei/Simple-Jekyll-Search>
+-->
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.7.3/dest/simple-jekyll-search.min.js"></script>
+
+<script>
+SimpleJekyllSearch({
+  searchInput: document.getElementById('search-input'),
+  resultsContainer: document.getElementById('search-results'),
+  json: '/assets/js/data/search.json',
+  searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">  <a href="https://bernardsmith0892.github.io/{url}">{title}</a>  <div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">    {categories}    {tags}  </div>  <p>{snippet}</p></div>',
+  noResultsText: '<p class="mt-5">Oops! No result founds.</p>',
+  templateMiddleware: function(prop, value, template) {
+    if (prop === 'categories') {
+      if (value === '') {
+        return `${value}`;
+      } else {
+        return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`;
+      }
+    }
+
+    if (prop === 'tags') {
+      if (value === '') {
+        return `${value}`;
+      } else {
+        return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`;
+      }
+    }
+  }
+});
+</script>
+
+
+  </body>
+
+</html>
+

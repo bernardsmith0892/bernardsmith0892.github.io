@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+
+
+
+<html lang="en-US" 
+  
+    mode="dark"
+  
+>
+
+  <!--
+  The Head
+-->
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+
+    
+
+    
+
+  
+
+  <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="All-Army CyberStakes 4 - Cryptography (Really Senseless Admins)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Really Senseless Admins (35 Points) Here, we are provided with two files: flag.enc, containing a very large decimal number, and params.txt, containing three decimal numbers, p, q, and e. Based on the challenge’s title (Really Senseless Admins), these numbers must be the parameters that generate the RSA private key which decrypts the flag. Using the tool provided by CrypTool, we can easily generate the key and decrypt the flag by simply copying and pasting the values into it. However, it’s still worthwhile to understand the underlying theory behind how RSA works, for both knowledge purposes and to help in a later challenge. You can read into it here. After decrypting the message contained in flag.enc, we get a slightly smaller decimal number. One thing to remember is that all information contained in memory is stored as and can by represented by a number. Hexadecimal numbers are used since it’s easy to represent individual bytes of data with it. Every 4-bits of data are represented by one hex number, so a byte (8-bits) is represented by two hex numbers. For example, the string ABCDE is represented in hex as 0x4142434445. We can also represent these hex numbers as a normal decimal number. If we convert the previous hex number into decimal, we can also write the string ABCDE as the number 280284578885. Keep in mind, this is an unusual way to represent strings since, unlike hex, a small change in any character will drastically change the entire decimal number. Changing the string to BBCDE causes it to become the number 284579546181, while its hex version simply sees a change in the first two places, 0x4242434445. To get the flag, we just need to apply this principle in the reverse direction: Convert the decimal number into hex and then decode each byte into its character equivalent. We can easily perform this task by using CyberChef again. 1 2 3 Decimal Plaintext: 104873340459054924181115292546315913092670500490515826417481341 Hex Plaintext: 0x4143497b5072316d33735f54214d337a5f34373533393062367d ASCII Plaintext: ACI{Pr1m3s_T!M3z_475390b6}" />
+<meta property="og:description" content="Really Senseless Admins (35 Points) Here, we are provided with two files: flag.enc, containing a very large decimal number, and params.txt, containing three decimal numbers, p, q, and e. Based on the challenge’s title (Really Senseless Admins), these numbers must be the parameters that generate the RSA private key which decrypts the flag. Using the tool provided by CrypTool, we can easily generate the key and decrypt the flag by simply copying and pasting the values into it. However, it’s still worthwhile to understand the underlying theory behind how RSA works, for both knowledge purposes and to help in a later challenge. You can read into it here. After decrypting the message contained in flag.enc, we get a slightly smaller decimal number. One thing to remember is that all information contained in memory is stored as and can by represented by a number. Hexadecimal numbers are used since it’s easy to represent individual bytes of data with it. Every 4-bits of data are represented by one hex number, so a byte (8-bits) is represented by two hex numbers. For example, the string ABCDE is represented in hex as 0x4142434445. We can also represent these hex numbers as a normal decimal number. If we convert the previous hex number into decimal, we can also write the string ABCDE as the number 280284578885. Keep in mind, this is an unusual way to represent strings since, unlike hex, a small change in any character will drastically change the entire decimal number. Changing the string to BBCDE causes it to become the number 284579546181, while its hex version simply sees a change in the first two places, 0x4242434445. To get the flag, we just need to apply this principle in the reverse direction: Convert the decimal number into hex and then decode each byte into its character equivalent. We can easily perform this task by using CyberChef again. 1 2 3 Decimal Plaintext: 104873340459054924181115292546315913092670500490515826417481341 Hex Plaintext: 0x4143497b5072316d33735f54214d337a5f34373533393062367d ASCII Plaintext: ACI{Pr1m3s_T!M3z_475390b6}" />
+<link rel="canonical" href="https://bernardsmith0892.github.io//posts/acictf4-rsa/" />
+<meta property="og:url" content="https://bernardsmith0892.github.io//posts/acictf4-rsa/" />
+<meta property="og:site_name" content="Bernard Smith" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-14T01:00:00-10:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="All-Army CyberStakes 4 - Cryptography (Really Senseless Admins)" />
+<meta name="twitter:site" content="@BernardSmith892" />
+<meta name="google-site-verification" content="google_meta_tag_verification" />
+<script type="application/ld+json">
+{"description":"Really Senseless Admins (35 Points) Here, we are provided with two files: flag.enc, containing a very large decimal number, and params.txt, containing three decimal numbers, p, q, and e. Based on the challenge’s title (Really Senseless Admins), these numbers must be the parameters that generate the RSA private key which decrypts the flag. Using the tool provided by CrypTool, we can easily generate the key and decrypt the flag by simply copying and pasting the values into it. However, it’s still worthwhile to understand the underlying theory behind how RSA works, for both knowledge purposes and to help in a later challenge. You can read into it here. After decrypting the message contained in flag.enc, we get a slightly smaller decimal number. One thing to remember is that all information contained in memory is stored as and can by represented by a number. Hexadecimal numbers are used since it’s easy to represent individual bytes of data with it. Every 4-bits of data are represented by one hex number, so a byte (8-bits) is represented by two hex numbers. For example, the string ABCDE is represented in hex as 0x4142434445. We can also represent these hex numbers as a normal decimal number. If we convert the previous hex number into decimal, we can also write the string ABCDE as the number 280284578885. Keep in mind, this is an unusual way to represent strings since, unlike hex, a small change in any character will drastically change the entire decimal number. Changing the string to BBCDE causes it to become the number 284579546181, while its hex version simply sees a change in the first two places, 0x4242434445. To get the flag, we just need to apply this principle in the reverse direction: Convert the decimal number into hex and then decode each byte into its character equivalent. We can easily perform this task by using CyberChef again. 1 2 3 Decimal Plaintext: 104873340459054924181115292546315913092670500490515826417481341 Hex Plaintext: 0x4143497b5072316d33735f54214d337a5f34373533393062367d ASCII Plaintext: ACI{Pr1m3s_T!M3z_475390b6}","@type":"BlogPosting","headline":"All-Army CyberStakes 4 - Cryptography (Really Senseless Admins)","dateModified":"2020-05-14T01:00:00-10:00","datePublished":"2020-05-14T01:00:00-10:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://bernardsmith0892.github.io//posts/acictf4-rsa/"},"url":"https://bernardsmith0892.github.io//posts/acictf4-rsa/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <title>All-Army CyberStakes 4 - Cryptography (Really Senseless Admins) | Bernard Smith
+  </title>
+
+  <!--
+  The Favicons for Web, Android, Microsoft, and iOS (iPhone and iPad) Apps
+  Generated by: https://realfavicongenerator.net/
+-->
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png">
+<link rel="manifest" href="/assets/img/favicons/site.webmanifest">
+<link rel="shortcut icon" href="/assets/img/favicons/favicon.ico">
+<meta name="apple-mobile-web-app-title" content="Bernard Smith">
+<meta name="application-name" content="Bernard Smith">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+
+  <!-- GA -->
+  
+
+  <!-- jsDelivr CDN -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css">
+
+  <!--
+  CSS selector for site.
+-->
+
+<link rel="stylesheet" href="/assets/css/style.css">
+
+
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css">
+
+
+
+  <!-- Manific Popup -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1.1.0/dist/magnific-popup.min.css">
+
+
+
+  <!-- JavaScripts -->
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+  <script defer
+    src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.15.0,npm/bootstrap@4/dist/js/bootstrap.min.js"></script>
+
+  <!--
+  JS selector for site.
+-->
+
+
+  
+
+
+
+  <!-- image lazy-loading & popup -->
+  <script async
+    src="https://cdn.jsdelivr.net/combine/npm/lozad/dist/lozad.min.js,npm/magnific-popup@1/dist/jquery.magnific-popup.min.js"></script>
+
+
+
+
+
+<script defer src="/assets/js/dist/post.min.js"></script>
+
+
+
+
+
+
+</head>
+
+
+  <body data-spy="scroll" data-target="#toc">
+
+    <!--
+  The Side Bar
+-->
+
+<div id="sidebar" class="d-flex flex-column align-items-end">
+
+  <div class="profile-wrapper text-center">
+    <div id="avatar">
+      <a href="/" alt="avatar" class="mx-auto">
+        
+        <img src="/assets/imgs/avatar.jpg" alt="avatar" onerror="this.style.display='none'">
+      </a>
+    </div>
+
+    <div class="site-title mt-3">
+      <a href="/">Bernard Smith</a>
+    </div>
+
+    <div class="site-subtitle font-italic">A text-focused Jekyll theme</div>
+
+  </div><!-- .profile-wrapper -->
+
+  <ul class="w-100">
+    <!-- home -->
+    <li class="nav-item">
+      <a href="/" class="nav-link">
+        <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>HOME</span>
+      </a>
+    </li>
+    <!-- the real tabs -->
+    
+    <li class="nav-item">
+      <a href="/categories/" class="nav-link">
+        <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>CATEGORIES</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+    <li class="nav-item">
+      <a href="/archives/" class="nav-link">
+        <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>ARCHIVES</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+    <li class="nav-item">
+      <a href="/tags/" class="nav-link">
+        <i class="fa-fw fas fa-tags ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>TAGS</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+    <li class="nav-item">
+      <a href="/about/" class="nav-link">
+        <i class="fa-fw fas fa-info ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>ABOUT</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+    <li class="nav-item">
+      <a href="/projects/" class="nav-link">
+        <i class="fa-fw fas fa-code ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>PROJECTS</span>
+      </a>
+    </li> <!-- .nav-item -->
+    
+
+  </ul> <!-- ul.nav.flex-column -->
+
+  <div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center">
+
+    
+      
+
+      
+      <a href="https://github.com/bernardsmith0892" aria-label="github"
+        
+        target="_blank" rel="noopener">
+        <i class="fab fa-github-alt"></i>
+      </a>
+      
+
+    
+      
+
+      
+      <a href="https://twitter.com/BernardSmith892" aria-label="twitter"
+        
+        target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+      
+
+    
+      
+
+      
+      <a href="https://linkedin.com/in/bernard-smith-27324257/" aria-label="linkedin"
+        
+        target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+      
+
+    
+      
+
+      
+      <a href="
+          javascript:location.href = 'mailto:' + ['mail','brndjsmith.net'].join('@')" aria-label="email"
+        
+        target="_blank" rel="noopener">
+        <i class="fas fa-envelope"></i>
+      </a>
+      
+
+    
+
+    
+
+  </div> <!-- .sidebar-bottom -->
+
+</div><!-- #sidebar -->
+
+
+    <!--
+  The Top Bar
+-->
+
+<div id="topbar-wrapper" class="row justify-content-center topbar-down">
+  <div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between">
+    <span id="breadcrumb">
+
+    
+
+    
+
+      
+
+        
+          
+
+        
+
+      
+
+        
+        <span>
+          
+          
+          <a href="/">
+            Posts
+          </a>
+        </span>
+
+        
+
+      
+
+        
+          <span>All-Army CyberStakes 4 - Cryptography (Really Senseless Admins)</span>
+
+        
+
+      
+
+    
+
+    </span><!-- endof #breadcrumb -->
+
+    <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i>
+
+    <div id="topbar-title">
+      Post
+    </div>
+
+    <i id="search-trigger" class="fas fa-search fa-fw"></i>
+    <span id="search-wrapper" class="align-items-center">
+      <i class="fas fa-search fa-fw"></i>
+      <input class="form-control" id="search-input" type="search"
+        aria-label="search" autocomplete="off" placeholder="Search...">
+      <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i>
+    </span>
+    <span id="search-cancel" >Cancel</span>
+  </div>
+
+</div>
+
+
+    <div id="main-wrapper">
+      <div id="main">
+
+        <!--
+  Refactor the HTML structure.
+-->
+
+
+
+<!--
+  In order to allow a wide table to scroll horizontally,
+  we suround the markdown table with `<div class="table-wrapper">` and `</div>`
+-->
+
+
+<!--
+  Fixed kramdown code highlight rendering:
+  https://github.com/penibelst/jekyll-compress-html/issues/101
+  https://github.com/penibelst/jekyll-compress-html/issues/71#issuecomment-188144901
+-->
+
+
+<!-- Add attribute 'hide-bullet' to the checkbox list -->
+
+
+
+
+<!-- return -->
+<div class="row">
+
+  <div id="post-wrapper" class="col-12 col-lg-11 col-xl-8">
+
+    <div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4">
+
+      <h1 data-toc-skip>All-Army CyberStakes 4 - Cryptography (Really Senseless Admins)</h1>
+
+      <div class="post-meta text-muted d-flex flex-column">
+        <!-- Published date and author -->
+        <div>
+          <span class="semi-bold">
+            Bernard Smith
+          </span>
+          <!--
+  Date format snippet
+  See: /assets/js/_utils/timeage.js
+-->
+
+
+
+
+
+<span class="timeago "
+  
+    data-toggle="tooltip"
+    data-placement="bottom"
+    title="Thu, 14 May 2020, 01:00 HST"
+  
+
+  
+  prep="on" >
+
+  
+  
+
+  
+    14 May 2020
+  
+
+  <i class="unloaded">2020-05-14T01:00:00-10:00</i>
+
+</span>
+
+        </div>
+
+        <div>
+          <!-- lastmod -->
+          
+
+          <!-- read time -->
+          <!--
+  Calculate the post's reading time, and display the word count in tooltip
+ -->
+
+
+<!-- words per minute  -->
+
+
+
+
+
+
+
+<!-- return element -->
+<span class="readtime" data-toggle="tooltip" data-placement="bottom" title="326 words">1 min</span>
+
+
+          <!-- page views -->
+          
+
+        </div>
+
+      </div> <!-- .post-meta -->
+
+      <div class="post-content">
+
+        
+
+        <h1 id="really-senseless-admins-35-points">Really Senseless Admins (35 Points)</h1>
+
+<p>Here, we are provided with two files: <code class="language-plaintext highlighter-rouge">flag.enc</code>, containing a very large decimal number, and <code class="language-plaintext highlighter-rouge">params.txt</code>, containing three decimal numbers, <code class="language-plaintext highlighter-rouge">p</code>, <code class="language-plaintext highlighter-rouge">q</code>, and <code class="language-plaintext highlighter-rouge">e</code>. Based on the challenge’s title (<strong>R</strong>eally <strong>S</strong>enseless <strong>A</strong>dmins), these numbers must be the parameters that generate the <em>RSA</em> private key which decrypts the flag. Using the tool provided by <a href="https://www.cryptool.org/en/cto-highlights/rsa-step-by-step">CrypTool</a>, we can easily generate the key and decrypt the flag by simply copying and pasting the values into it. However, it’s still worthwhile to understand the underlying theory behind how RSA works, for both knowledge purposes and to help in a later challenge. You can read into it <a href="https://en.wikipedia.org/wiki/RSA_(cryptosystem)#Key_generation">here</a>.</p>
+
+<p>After decrypting the message contained in <code class="language-plaintext highlighter-rouge">flag.enc</code>, we get a slightly smaller decimal number. One thing to remember is that all information contained in memory is stored as and can by represented by a number. Hexadecimal numbers are used since it’s easy to represent individual bytes of data with it. Every 4-bits of data are represented by one hex number, so a byte (8-bits) is represented by two hex numbers. For example, the string <code class="language-plaintext highlighter-rouge">ABCDE</code> is represented in hex as <code class="language-plaintext highlighter-rouge">0x4142434445</code>.</p>
+
+<p>We can also represent these hex numbers as a normal decimal number. If we convert the previous hex number into decimal, we can also write the string <code class="language-plaintext highlighter-rouge">ABCDE</code> as the number <code class="language-plaintext highlighter-rouge">280284578885</code>. Keep in mind, this is an unusual way to represent strings since, unlike hex, a small change in any character will drastically change the entire decimal number. Changing the string to <code class="language-plaintext highlighter-rouge">BBCDE</code> causes it to become the number <code class="language-plaintext highlighter-rouge">284579546181</code>, while its hex version simply sees a change in the first two places, <code class="language-plaintext highlighter-rouge">0x4242434445</code>.</p>
+
+<p>To get the flag, we just need to apply this principle in the reverse direction: Convert the decimal number into hex and then decode each byte into its character equivalent. We can easily perform this task by using <a href="https://gchq.github.io/CyberChef/#recipe=To_Base(16)From_Hex('Auto')&amp;input=MTA0ODczMzQwNDU5MDU0OTI0MTgxMTE1MjkyNTQ2MzE1OTEzMDkyNjcwNTAwNDkwNTE1ODI2NDE3NDgxMzQx">CyberChef</a> again.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre>Decimal Plaintext: 104873340459054924181115292546315913092670500490515826417481341
+Hex Plaintext:     0x4143497b5072316d33735f54214d337a5f34373533393062367d
+ASCII Plaintext:   ACI{Pr1m3s_T!M3z_475390b6}
+</pre></td></tr></tbody></table></code></div></div>
+
+<!--The operation of RSA depends on three key values, `e`, `d`, and `n`. `e` is called the *encryption exponent*, and combined with `n` makes up the *public key*. `d` is called the *decryption exponent*, and combined with `n` makes up the *private key*. These two keys have a relationship where anything that is encrypted by the *public key* can **only** be decrypted by the *private key*. And the reverse applies too; anything encrypted by the *private key* can only be decrypted by the *public key*.-->
+
+
+
+      </div>
+
+      <div class="post-tail-wrapper text-muted">
+
+        <!-- categories -->
+        
+        <div class="post-meta mb-3">
+          <i class="far fa-folder-open fa-fw mr-1"></i>
+          
+            <a href='/categories/ctf/'>CTF</a>,
+            <a href='/categories/allarmycyberstakes4/'>AllArmyCyberStakes4</a>
+        </div>
+        
+
+        <!-- tags -->
+        
+        <div class="post-tags">
+          <i class="fa fa-tags fa-fw mr-1"></i>
+          
+          <a href="/tags/cryptography/"
+            class="post-tag no-text-decoration" >cryptography</a>
+          
+          </div>
+        
+
+        <div class="post-tail-bottom
+          d-flex justify-content-between align-items-center mt-3 pt-5 pb-2">
+          
+          <div class="license-wrapper">
+            This post is licensed under
+            <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+            by the author.
+          </div>
+          
+
+          <!--
+ Post sharing snippet
+-->
+
+<div class="share-wrapper">
+  <span class="share-label text-muted mr-1">Share</span>
+  <span class="share-icons">
+    
+    
+
+    
+      
+        <a href="https://twitter.com/intent/tweet?text=All-Army CyberStakes 4 - Cryptography (Really Senseless Admins) - Bernard Smith&url=https://bernardsmith0892.github.io//posts/acictf4-rsa/" data-toggle="tooltip" data-placement="top"
+          title="Twitter" target="_blank" rel="noopener" aria-label="Twitter">
+          <i class="fa-fw fab fa-twitter"></i>
+        </a>
+    
+      
+        <a href="https://www.facebook.com/sharer/sharer.php?title=All-Army CyberStakes 4 - Cryptography (Really Senseless Admins) - Bernard Smith&u=https://bernardsmith0892.github.io//posts/acictf4-rsa/" data-toggle="tooltip" data-placement="top"
+          title="Facebook" target="_blank" rel="noopener" aria-label="Facebook">
+          <i class="fa-fw fab fa-facebook-square"></i>
+        </a>
+    
+      
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://bernardsmith0892.github.io//posts/acictf4-rsa/" data-toggle="tooltip" data-placement="top"
+          title="Linkedin" target="_blank" rel="noopener" aria-label="Linkedin">
+          <i class="fa-fw fab fa-linkedin"></i>
+        </a>
+    
+
+    <i class="fa-fw fas fa-link small" onclick="copyLink()"
+        data-toggle="tooltip" data-placement="top" title="Copy link"></i>
+
+  </span>
+</div>
+
+
+        </div><!-- .post-tail-bottom -->
+
+      </div><!-- div.post-tail -->
+
+    </div> <!-- .post -->
+
+
+  </div> <!-- #post-wrapper -->
+
+  
+
+  
+
+  <!--
+  The Pannel on right side (Desktop views)
+-->
+
+<div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down">
+
+  <div class="access">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+
+
+  
+    <div id="access-tags">
+      <span>Trending Tags</span>
+      <div class="d-flex flex-wrap mt-3 mb-1 mr-3">
+
+      
+        
+        <a class="post-tag" href="/tags/cryptography/">cryptography</a>
+      
+        
+        <a class="post-tag" href="/tags/reverse-engineering/">reverse_engineering</a>
+      
+
+      </div>
+    </div>
+  
+  </div> <!-- .access -->
+
+  
+
+</div> <!-- #panel-wrapper -->
+
+
+</div> <!-- .row -->
+
+<div class="row">
+  <div class="col-12 col-lg-11 col-xl-8">
+    <div id="post-extend-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4">
+
+    <!--
+ Recommend the other 3 posts according to the tags and categories of the current post,
+ if the number is not enough, use the other latest posts to supplement.
+-->
+
+<!-- The total size of related posts  -->
+
+
+<!-- An random integer that bigger than 0  -->
+
+
+<!-- Equals to TAG_SCORE / {max_categories_hierarchy}  -->
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+
+
+
+<!-- Fill with the other newlest posts  -->
+
+
+
+
+
+
+  <div id="related-posts" class="mt-5 mb-2 mb-sm-4">
+    <h3 class="pt-2 mt-1 mb-4 ml-1"
+      data-toc-skip>Further Reading</h3>
+    <div class="card-deck mb-4">
+    
+      
+      
+      <div class="card">
+        <a href="/posts/acictf4-rotateme/">
+          <div class="card-body">
+            <!--
+  Date format snippet
+  See: /assets/js/_utils/timeage.js
+-->
+
+
+
+
+
+<span class="timeago small"
+  
+
+  
+   >
+
+  
+  
+
+  
+    13 May 2020
+  
+
+  <i class="unloaded">2020-05-13T00:00:00-10:00</i>
+
+</span>
+
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>All-Army CyberStakes 4 - Cryptography (Rotate Me)</h3>
+            <div class="text-muted small">
+              <p>
+                
+
+
+
+
+
+                Rotate Me (5 Points)
+
+This one is a very simple problem, especially considering it’s only worth 5 points. We start with a text file that contains enciphered text, which already seems to be in the e...
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    
+      
+      
+      <div class="card">
+        <a href="/posts/acictf4-otp/">
+          <div class="card-body">
+            <!--
+  Date format snippet
+  See: /assets/js/_utils/timeage.js
+-->
+
+
+
+
+
+<span class="timeago small"
+  
+
+  
+   >
+
+  
+  
+
+  
+    15 May 2020
+  
+
+  <i class="unloaded">2020-05-15T02:00:00-10:00</i>
+
+</span>
+
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>All-Army CyberStakes 4 - Cryptography (Over Time: Paid)</h3>
+            <div class="text-muted small">
+              <p>
+                
+
+
+
+
+
+                Over Time: Paid (50 Points)
+
+This is where the challegnes start getting more difficult. This problem starts with two files again: document.encrypted, which contains 15 lines of hex, and source.py, ...
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    
+      
+      
+      <div class="card">
+        <a href="/posts/acictf4-speakplainly/">
+          <div class="card-body">
+            <!--
+  Date format snippet
+  See: /assets/js/_utils/timeage.js
+-->
+
+
+
+
+
+<span class="timeago small"
+  
+
+  
+   >
+
+  
+  
+
+  
+    16 May 2020
+  
+
+  <i class="unloaded">2020-05-16T03:00:00-10:00</i>
+
+</span>
+
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>All-Army CyberStakes 4 - Cryptography (Speak Plainly)</h3>
+            <div class="text-muted small">
+              <p>
+                
+
+
+
+
+
+                Speak Plainly (150 Points)
+
+This problem diverts from the previous ones by providing us with a website instead. The hints bring a lot of attention to the website’s login cookies, so we try creating...
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    
+    </div> <!-- .card-deck -->
+  </div> <!-- #related-posts -->
+
+
+
+    <!--
+  Navigation buttons at the bottom of the post.
+-->
+
+<div class="post-navigation d-flex justify-content-between">
+  
+  <a href="/posts/acictf4-rotateme/" class="btn btn-outline-primary"
+    prompt="Older">
+    <p>All-Army CyberStakes 4 - Cryptography (Rotate Me)</p>
+  </a>
+  
+
+  
+  <a href="/posts/acictf4-otp/" class="btn btn-outline-primary"
+    prompt="Newer">
+    <p>All-Army CyberStakes 4 - Cryptography (Over Time: Paid)</p>
+  </a>
+  
+
+</div>
+
+
+    
+
+    </div> <!-- #post-extend-wrapper -->
+
+  </div> <!-- .col-* -->
+
+</div> <!-- .row -->
+
+
+
+        <!--
+  The Footer
+-->
+
+<footer class="d-flex w-100 justify-content-center">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="footer-left">
+      <p class="mb-0">
+        © 2021
+        <a href="https://twitter.com/BernardSmith892">Bernard Smith</a>.
+        
+        <span data-toggle="tooltip" data-placement="top"
+          title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span>
+        
+      </p>
+    </div>
+
+    <div class="footer-right">
+      <p class="mb-0">
+        Powered by
+        <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a>
+        with
+        <a href="https://github.com/cotes2020/jekyll-theme-chirpy"
+          target="_blank" rel="noopener">Chirpy</a>
+        theme.
+      </p>
+    </div>
+
+  </div> <!-- div.d-flex -->
+</footer>
+
+
+      </div>
+
+      <!--
+  The Search results
+-->
+<div id="search-result-wrapper" class="d-flex justify-content-center unloaded">
+  <div class="col-12 col-sm-11 post-content">
+    <div id="search-hints">
+      <h4 class="text-muted mb-4">Trending Tags</h4>
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+
+
+      
+        
+        <a class="post-tag" href="/tags/cryptography/">cryptography</a>
+      
+        
+        <a class="post-tag" href="/tags/reverse-engineering/">reverse_engineering</a>
+      
+
+    </div>
+    <div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div>
+  </div>
+</div>
+
+
+    </div> <!-- #main-wrapper -->
+
+    
+
+    <div id="mask"></div>
+
+    <a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button">
+      <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!--
+  Jekyll Simple Search loader
+  See: <https://github.com/christian-fei/Simple-Jekyll-Search>
+-->
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.7.3/dest/simple-jekyll-search.min.js"></script>
+
+<script>
+SimpleJekyllSearch({
+  searchInput: document.getElementById('search-input'),
+  resultsContainer: document.getElementById('search-results'),
+  json: '/assets/js/data/search.json',
+  searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">  <a href="https://bernardsmith0892.github.io/{url}">{title}</a>  <div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">    {categories}    {tags}  </div>  <p>{snippet}</p></div>',
+  noResultsText: '<p class="mt-5">Oops! No result founds.</p>',
+  templateMiddleware: function(prop, value, template) {
+    if (prop === 'categories') {
+      if (value === '') {
+        return `${value}`;
+      } else {
+        return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`;
+      }
+    }
+
+    if (prop === 'tags') {
+      if (value === '') {
+        return `${value}`;
+      } else {
+        return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`;
+      }
+    }
+  }
+});
+</script>
+
+
+  </body>
+
+</html>
+
