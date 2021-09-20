@@ -1,7 +1,7 @@
 [
   
   {
-    "title": "H@CktivityCon 2021 CTF Writeups",
+    "title": "H@cktivityCon 2021 CTF Writeups",
     "url": "/posts/Hacktivity2021/",
     "categories": "CTF, H@cktivity2021",
     "tags": "cryptography, web_security, programming",
@@ -12,7 +12,7 @@
 
 
 
-    "snippet": "WarmupsSix Four Over Two (50 points)We are provided with a short text file containing the string: EBTGYYLHPNQTINLEGRSTOMDCMZRTIMBXGY2DKMJYGVSGIOJRGE2GMOLDGBSWM7IK. Based on the name of the challenge, this could potentially be a Base32-encoded string. (Because \\(\\frac{64}{2} = 32\\)) We test our th..."
+    "snippet": "Had a lot of fun with this CTF and it’s always nice to see my amateur radio and infosec hobbies mixing together. Actually got around to doing a writeup this year too! I sometimes wonder if I should ever try joining a team for one of these, instead of always competing as a “solo” team. Maybe I’d d..."
   },
   
   {
