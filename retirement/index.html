@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js" integrity="sha256-bC3LCZCwKeehY6T4fFi9VfOU0gztUa+S4cnkIhVPZ5E=" crossorigin="anonymous"></script>
+
+    <title>Retirement Calculator</title>
+  </head>
+  <body>
+
+    <nav class="navbar navbar-light bg-light mb-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><b>Equivalent Retirement Calculator</b></a>
+        </div>
+    </nav>
+        
+    <div class="container">
+        <div class="row">
+            <div class="col input-group input-group-sm mb-3">
+                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date that DFAS uses to determine your years of service for pay. (Usually the same as your EAD Date)">Pay Date</button> 
+                <input type="month" class="form-control" id="payDate" value="2013-03">
+            </div>
+            <div class="col input-group input-group-sm mb-3">
+                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date you entered active duty.">EAD Date</button> 
+                <input type="month" class="form-control" id="eadDate" value="2014-06">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col input-group input-group-sm mb-3">
+                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date you plan to leave military service">ETS Date</button> 
+                <input type="month" class="form-control" id="etsDate" value="2022-12">
+            </div>
+            <div class="col input-group input-group-sm mb-3">
+                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="If you stayed in the military, how many years would you have served before retiring?">Military Service</button> 
+                <input type="number" class="form-control" id="milRetireYOS" value="20" onblur="validateInput('milRetireYOS', 0, 50)">
+                <span class="input-group-text">years</span> 
+            </div>
+        </div>
+        <div class="row">
+            <div class="col input-group input-group-sm mb-3">
+                <span class="input-group-text bg-outline-primary text-primary">Birthday</span> 
+                <input type="month" class="form-control" id="birthday" value="1992-08">
+            </div>
+            <div class="col input-group input-group-sm mb-3">
+                <span class="input-group-text bg-outline-primary text-primary">Life Expectancy</span> 
+                <input type="number" class="form-control" id="lifeExpectancy" value="85" onblur="validateInput('lifeExpectancy', 0, 100)">
+                <span class="input-group-text">years</span> 
+            </div>
+        </div>
+        <div class="row">
+            <div class="col input-group input-group-sm mb-3">
+                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="After you ETS, how many additional years you do plan to work beyond when you could have retired in the military?">Delay Retirement By</button> 
+                <input type="number" class="form-control" id="civRetireOffset" value="0" onblur="validateInput('civRetireOffset', 0, 50)">
+                <span class="input-group-text">years</span> 
+            </div>
+            <div class="col input-group input-group-sm mb-3">
+                <button class="input-group-text bg-outline-primary text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="The retirement system you're enrolled in">Retirement</button> 
+                <select class="form-select" id="retireSystem">
+                    <option value=.02>BRS (2%)</option>
+                    <option value=.025>Legacy (2.5%)</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col input-group input-group-sm mb-3">
+                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="How much your pay, pension, and withdrawals increase by each year to account for inflation">COLA Increase Rate</button> 
+                <input type="number" class="form-control" id="colaRate" value="3" step="1" onblur="validateInput('colaRate', 0, 20)">
+                <span class="input-group-text">%</span> 
+            </div>
+            <div class="col input-group input-group-sm mb-3">
+                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="How much your savings grow by each year">Savings Return Rate</button> 
+                <input type="number" class="form-control" id="savingsReturnRate" value="5" step="1" onblur="validateInput('savingsReturnRate', 0, 20)">
+                <span class="input-group-text">%</span> 
+            </div>
+        </div>
+
+        <!-- Button to calculate retirement plan --> 
+        <button id="calcRetirementButton" class="btn btn-primary mb-3 me-3" onclick="calculateRetirementPlan()">Calculate Retirement Plan</button>
+        <span id="calcSpinner" class="" role="status"></span>
+
+        <!-- Retirement Calculations -->
+        <div class="row">
+            <ul class="col list-group list-group-horizontal mb-3">
+                <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="The initial value of the military pension upon retirement. (If you're planning for a delayed retirement, the second value shows the pension COLA-adjusted to that date.)"><b>Military Pension</b></li><li class="list-group-item w-50" id="pension"></li>
+            </ul>
+            <ul class="col list-group list-group-horizontal mb-3">
+                <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="The savings you need upon retirement to withdraw the same amount as the military pension. Also accounts for the pension's COLA increase each year."><b>Required Savings</b></li><li class="list-group-item w-50" id="requiredSavings"></li>
+            </ul>
+        </div>
+
+        <div class="row">
+            <ul class="col list-group list-group-horizontal mb-3">
+                <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="How much money you need to save each month after your ETS to match the military pension."><b>Monthly Deposits</b></li><li class="list-group-item w-50" id="monthlySavings"><li>
+            </ul>
+            <ul class="col list-group list-group-horizontal mb-3">
+                <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="How much money you need to save every year after your ETS to match the military pension."><b>Annual Deposits</b></li><li class="list-group-item w-50" id="annualSavings"></li>
+            </ul>
+        </div>
+
+        <!-- Detailed graphs and tables -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist" hidden>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="savingsTable-tab" data-bs-toggle="tab" data-bs-target="#savingsTable" type="button" role="tab" aria-controls="savingsTable" aria-selected="true">Savings Plan Table</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="savingsChartTab-tab" data-bs-toggle="tab" data-bs-target="#savingsChartTab" type="button" role="tab" aria-controls="savingsChartTab" aria-selected="false">Savings Plan Chart</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="withdrawalTableTab-tab" data-bs-toggle="tab" data-bs-target="#withdrawalTableTab" type="button" role="tab" aria-controls="withdrawalTableTab" aria-selected="false">Retirement Payout Table</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="withdrawalChartTab-tab" data-bs-toggle="tab" data-bs-target="#withdrawalChartTab" type="button" role="tab" aria-controls="withdrawalChartTab" aria-selected="false">Retirement Payout Chart</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <!-- Retirement Plan Table -->
+            <div class="tab-pane fade show active" id="savingsTable" role="tabpanel" aria-labelledby="savingsTable-tab">
+                <table class="table table-striped" id="retireTable"></table>
+            </div>
+
+            <!-- Retirement Plan Chart -->
+            <div class="tab-pane fade" id="savingsChartTab" role="tabpanel" aria-labelledby="savingsChartTab-tab">
+                <canvas id="savingsChart"></canvas>
+            </div>
+
+            <!-- Retirement Payouts Table -->
+            <div class="tab-pane fade" id="withdrawalTableTab" role="tabpanel" aria-labelledby="withdrawalTableTab-tab">
+                <table class="table table-striped" id="withdrawalTable"></table>
+            </div>
+
+            <!-- Retirement Plan Chart -->
+            <div class="tab-pane fade" id="withdrawalChartTab" role="tabpanel" aria-labelledby="withdrawalChart-tab">
+                <canvas id="withdrawalChart"></canvas> 
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
+
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    <script src="retirement.js"></script>
+  </body>
+</html>
