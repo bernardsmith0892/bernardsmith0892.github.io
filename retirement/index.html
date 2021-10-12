@@ -14,7 +14,6 @@
     <title>Retirement Calculator</title>
   </head>
   <body>
-
     <nav class="navbar navbar-light bg-light mb-3">
         <div class="container-fluid">
             <a class="navbar-brand" href="#"><b>Equivalent Retirement Calculator</b></a>
@@ -24,21 +23,29 @@
     <div class="container">
         <div class="row">
             <div class="col input-group input-group-sm mb-3">
-                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date that DFAS uses to determine your years of service for pay. (Usually the same as your EAD Date)">Pay Date</button> 
+                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date that DFAS uses to determine your years of service for pay. (Usually the same as your EAD Date)">Pay Date 
+                    &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                </button> 
                 <input type="month" class="form-control" id="payDate" value="2013-03">
             </div>
             <div class="col input-group input-group-sm mb-3">
-                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date you entered active duty.">EAD Date</button> 
+                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date you entered active duty.">EAD Date
+                    &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                </button> 
                 <input type="month" class="form-control" id="eadDate" value="2014-06">
             </div>
         </div>
         <div class="row">
             <div class="col input-group input-group-sm mb-3">
-                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date you plan to leave military service">ETS Date</button> 
+                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date you plan to leave military service.">ETS Date
+                    &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                </button> 
                 <input type="month" class="form-control" id="etsDate" value="2022-12">
             </div>
             <div class="col input-group input-group-sm mb-3">
-                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="If you stayed in the military, how many years would you have served before retiring?">Military Service</button> 
+                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="If you stayed in the military, how many years would you have served before retiring?">Military Service
+                    &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                </button> 
                 <input type="number" class="form-control" id="milRetireYOS" value="20" onblur="validateInput('milRetireYOS', 0, 50)">
                 <span class="input-group-text">years</span> 
             </div>
@@ -56,12 +63,16 @@
         </div>
         <div class="row">
             <div class="col input-group input-group-sm mb-3">
-                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="After you ETS, how many additional years you do plan to work beyond when you could have retired in the military?">Delay Retirement By</button> 
+                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="After you ETS, how many additional years you do plan to work beyond when you could have retired in the military?">Delay Retirement By
+                    &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                </button> 
                 <input type="number" class="form-control" id="civRetireOffset" value="0" onblur="validateInput('civRetireOffset', 0, 50)">
                 <span class="input-group-text">years</span> 
             </div>
             <div class="col input-group input-group-sm mb-3">
-                <button class="input-group-text bg-outline-primary text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="The retirement system you're enrolled in">Retirement</button> 
+                <button class="input-group-text bg-outline-primary text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="The retirement system you're enrolled in.">Retirement
+                    &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                </button> 
                 <select class="form-select" id="retireSystem">
                     <option value=.02>BRS (2%)</option>
                     <option value=.025>Legacy (2.5%)</option>
@@ -70,37 +81,68 @@
         </div>
         <div class="row">
             <div class="col input-group input-group-sm mb-3">
-                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="How much your pay, pension, and withdrawals increase by each year to account for inflation">COLA Increase Rate</button> 
+                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The rate of annual cost-of-living adjustments to your pay, pension, and withdrawals to account for inflation.">COLA Rate
+                    &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                </button> 
                 <input type="number" class="form-control" id="colaRate" value="3" step="1" onblur="validateInput('colaRate', 0, 20)">
                 <span class="input-group-text">%</span> 
             </div>
             <div class="col input-group input-group-sm mb-3">
-                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="How much your savings grow by each year">Savings Return Rate</button> 
+                <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The annual return rate for your retirement savings.">Savings Return Rate
+                    &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                </button> 
                 <input type="number" class="form-control" id="savingsReturnRate" value="5" step="1" onblur="validateInput('savingsReturnRate', 0, 20)">
                 <span class="input-group-text">%</span> 
             </div>
         </div>
 
-        <!-- Button to calculate retirement plan --> 
-        <button id="calcRetirementButton" class="btn btn-primary mb-3 me-3" onclick="calculateRetirementPlan()">Calculate Retirement Plan</button>
-        <span id="calcSpinner" class="" role="status"></span>
+        <!-- Buttons -->
+        <div class="row">
+            <!-- Calculate retirement plan --> 
+            <div class="col">
+                <button id="calcRetirementButton" class="btn btn-primary mb-3 me-3" onclick="calculateRetirementPlan()">Calculate Retirement Plan</button>
+                <span id="calcSpinner" class="spinner-border" role="status" hidden></span>
+            </div>
+
+            <!-- Change Promotion Timeline -->
+            <div class="col">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="careerPathButton">Career Path: Officer</button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="setDefaultTimeline('E')">Enlisted</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="setDefaultTimeline('W')">Tech Warrant</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="setDefaultTimeline('O')">Officer</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#timelineModal" onclick="showPromotionTimeline()">Show Detailed Timeline</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
         <!-- Retirement Calculations -->
         <div class="row">
             <ul class="col list-group list-group-horizontal mb-3">
-                <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="The initial value of the military pension upon retirement. (If you're planning for a delayed retirement, the second value shows the pension COLA-adjusted to that date.)"><b>Military Pension</b></li><li class="list-group-item w-50" id="pension"></li>
+                <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="The initial value of the military pension upon retirement. (If you're planning for a delayed retirement, the second value shows the pension COLA-adjusted to that date.)"><b>Military Pension</b>
+                    &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                </li><li class="list-group-item w-50" id="pension"></li>
             </ul>
             <ul class="col list-group list-group-horizontal mb-3">
-                <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="The savings you need upon retirement to withdraw the same amount as the military pension. Also accounts for the pension's COLA increase each year."><b>Required Savings</b></li><li class="list-group-item w-50" id="requiredSavings"></li>
+                <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="The savings you need upon retirement to withdraw the same amount as the military pension. Also accounts for the pension's COLA increase each year."><b>Required Savings</b> 
+                    &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                </li><li class="list-group-item w-50" id="requiredSavings"></li>
             </ul>
         </div>
 
         <div class="row">
             <ul class="col list-group list-group-horizontal mb-3">
-                <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="How much money you need to save each month after your ETS to match the military pension."><b>Monthly Deposits</b></li><li class="list-group-item w-50" id="monthlySavings"><li>
+                <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="How much money you need to save each month after your ETS to match the military pension."><b>Monthly Deposits</b> 
+                    &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                </li><li class="list-group-item w-50" id="monthlySavings"><li>
             </ul>
             <ul class="col list-group list-group-horizontal mb-3">
-                <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="How much money you need to save every year after your ETS to match the military pension."><b>Annual Deposits</b></li><li class="list-group-item w-50" id="annualSavings"></li>
+                <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="How much money you need to save every year after your ETS to match the military pension."><b>Annual Deposits</b> 
+                    &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                </li><li class="list-group-item w-50" id="annualSavings"></li>
             </ul>
         </div>
 
@@ -136,16 +178,37 @@
                 <table class="table table-striped" id="withdrawalTable"></table>
             </div>
 
-            <!-- Retirement Plan Chart -->
+            <!-- Retirement Payouts Chart -->
             <div class="tab-pane fade" id="withdrawalChartTab" role="tabpanel" aria-labelledby="withdrawalChart-tab">
                 <canvas id="withdrawalChart"></canvas> 
             </div>
         </div>
     </div>
 
+
+    <!-- Change Promotion Timeline Modal -->
+    <div class="modal fade" id="timelineModal" tabindex="-1" aria-labelledby="timelineModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="timelineModalLabel">Change Promotion Timeline</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body d-flex justify-content-center">
+            <table class="table table-sm w-auto" id="timelineTable"> </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-sm btn-primary" onclick="savePromotionTimeline()">Save changes</button>
+        </div>
+        </div>
+    </div>
+    </div> 
+
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
 
+    <!-- Bootstrap: Enable tooltips -->
     <script>
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
