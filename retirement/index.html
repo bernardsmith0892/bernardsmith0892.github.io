@@ -26,13 +26,13 @@
                 <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date that DFAS uses to determine your years of service for pay. (Usually the same as your EAD Date)">Pay Date 
                     &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                 </button> 
-                <input type="month" class="form-control" id="payDate" value="2013-03">
+                <input type="month" class="form-control" id="payDate">
             </div>
             <div class="col input-group input-group-sm mb-3">
                 <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date you entered active duty.">EAD Date
                     &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                 </button> 
-                <input type="month" class="form-control" id="eadDate" value="2014-06">
+                <input type="month" class="form-control" id="eadDate">
             </div>
         </div>
         <div class="row">
@@ -40,7 +40,7 @@
                 <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date you plan to leave military service.">ETS Date
                     &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                 </button> 
-                <input type="month" class="form-control" id="etsDate" value="2022-12">
+                <input type="month" class="form-control" id="etsDate">
             </div>
             <div class="col input-group input-group-sm mb-3">
                 <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="If you stayed in the military, how many years would you have served before retiring?">Military Service
@@ -53,7 +53,7 @@
         <div class="row">
             <div class="col input-group input-group-sm mb-3">
                 <span class="input-group-text bg-outline-primary text-primary">Birthday</span> 
-                <input type="month" class="form-control" id="birthday" value="1992-08">
+                <input type="month" class="form-control" id="birthday">
             </div>
             <div class="col input-group input-group-sm mb-3">
                 <span class="input-group-text bg-outline-primary text-primary">Life Expectancy</span> 
@@ -84,7 +84,7 @@
                 <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The rate of annual cost-of-living adjustments to your pay, pension, and withdrawals to account for inflation.">COLA Rate
                     &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                 </button> 
-                <input type="number" class="form-control" id="colaRate" value="3" step="1" onblur="validateInput('colaRate', 0, 20)">
+                <input type="number" class="form-control" id="colaRate" value="2.75" step="1" onblur="validateInput('colaRate', 0, 20)">
                 <span class="input-group-text">%</span> 
             </div>
             <div class="col input-group input-group-sm mb-3">
