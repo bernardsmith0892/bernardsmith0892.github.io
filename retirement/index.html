@@ -97,15 +97,15 @@
         </div>
 
         <!-- Buttons -->
-        <div class="row">
+        <div class="row align-items-center mb-3">
             <!-- Calculate retirement plan --> 
-            <div class="col">
-                <button id="calcRetirementButton" class="btn btn-primary mb-3 me-3" onclick="calculateRetirementPlan()">Calculate Retirement Plan</button>
+            <div class="col-6">
+                <button id="calcRetirementButton" class="btn btn-primary" onclick="calculateRetirementPlan()">Calculate Retirement Plan</button>
                 <span id="calcSpinner" class="spinner-border" role="status" hidden></span>
             </div>
 
             <!-- Change Promotion Timeline -->
-            <div class="col">
+            <div class="col-3">
                 <div class="btn-group">
                     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="careerPathButton">Career Path: Officer</button>
                     <ul class="dropdown-menu">
@@ -115,6 +115,15 @@
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#timelineModal" onclick="showPromotionTimeline()">Show Detailed Timeline</a></li>
                     </ul>
+                </div>
+            </div>
+
+            <div class="col-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="reservesCheck">
+                    <label class="form-check-label" for="reservesCheck">
+                        Transferring to Reserves after ETS
+                    </label>
                 </div>
             </div>
         </div>
