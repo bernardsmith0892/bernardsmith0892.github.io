@@ -208,6 +208,9 @@ function retirementLength(funds, annualReturnRate, annualWithdrawal, colaRate, s
     var colaIncreases = 0;
     var monthlyWithdrawal = annualWithdrawal / 12;
     var monthlyReturnRate = annualReturnRate / 12;
+    if (reduction != null && reduction[0] < 0) {
+        monthlyWithdrawal -= reduction[1] / 12;
+    }
     if (verbose) {
         console.log("Months,Funds,Change,Withdrawal");
     }
@@ -431,7 +434,7 @@ function createSavingsTable(savingsPlan, tableId) {
     var thead = document.createElement('thead');
     var tbody = document.createElement('tbody');
     // Add table headers
-    var headers = ['Date', 'Pay Grade', 'Military Monthly Pay', 'Required Monthly Savings', 'Equivalent Annual Civilian Pay'];
+    var headers = ['Date', 'Pay Grade', 'Active-Duty Monthly Pay', 'Required Monthly Savings', 'Equivalent Annual Civilian Pay'];
     var newRow = thead.insertRow();
     for (var i in headers) {
         var newCell = document.createElement('th');
@@ -479,7 +482,7 @@ function createSavingsChart(savingsPlan, returnRate, chartId) {
         labels: [],
         datasets: [
             {
-                label: 'Military Monthly Pay',
+                label: 'Active-Duty Monthly Pay',
                 data: [],
                 backgroundColor: 'rgba(75, 192, 192, 0.6)',
                 order: 2
@@ -616,7 +619,7 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
     var tableOutput = document.createDocumentFragment();
     var thead = document.createElement('thead');
     var tbody = document.createElement('tbody');
-    var headers = ['Date', 'Savings Balance', 'Pension / Withdrawal', 'Balance Change'];
+    var headers = ['Date', 'Savings Balance', 'Withdrawal', 'Balance Change'];
     var newRow = thead.insertRow();
     for (var i in headers) {
         var newCell = document.createElement('th');
@@ -627,19 +630,22 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
     tableOutput.appendChild(thead);
     // Add table rows
     var moneyStyle = { style: "currency", currency: "USD" };
-    var months = 0;
     var colaIncreases = 0;
     var totalMonths = monthsDifference(startDate, endDate);
     var balance = startFunds;
     var lastBalance = startFunds;
-    for (var months_1 = 0; months_1 < totalMonths; ++months_1) {
+    // If we've already passed our reserves retirement date, reduce our withdrawals now
+    if (reduction != null && reduction[0] < 0) {
+        monthlyWithdrawal -= reduction[1] / 12;
+    }
+    for (var months = 0; months < totalMonths; ++months) {
         // Go forward one month and raise withdrawal rate if it's January
-        var currentDate = addMonths(startDate, months_1);
+        var currentDate = addMonths(startDate, months);
         if (currentDate.getUTCMonth() == 0) {
             monthlyWithdrawal *= (1 + colaRate);
             colaIncreases++;
         }
-        if (reduction != null && months_1 == reduction[0]) {
+        if (reduction != null && months == reduction[0]) {
             monthlyWithdrawal -= (reduction[1] / 12) * Math.pow((1 + colaRate), (colaIncreases));
         }
         // Add new row to the table
@@ -754,13 +760,13 @@ function calculateRetirementPlan() {
                     lifeExpectancyDate = addMonths(birthday, lifeExpectancy * 12);
                     savingsTime = civRetireDate.getUTCFullYear() - etsDate.getUTCFullYear();
                     retirementLength = lifeExpectancyDate.getUTCFullYear() - civRetireDate.getUTCFullYear();
-                    greyAreaYears = monthsDifference(milRetireDate, sixtyBirthday) / 12;
+                    greyAreaYears = monthsDifference(civRetireDate, sixtyBirthday) / 12;
                     predictions = predictPay(etsDate, milRetireDate, eadDate, payDate, colaRate, promotionTimeline, payscale, bah2, bas);
                     monthlyPension = predictions["High 3"] * milTotalYOS * retirementSystem;
                     annualPension = predictions["High 3"] * milTotalYOS * retirementSystem * 12;
                     activePoints = 365 * monthsDifference(eadDate, etsDate) / 12;
                     reservesPoints = 72 * monthsDifference(etsDate, milRetireDate) / 12;
-                    reservesPension = predictions["High 3"] * milTotalYOS * (activePoints + reservesPoints) / 360 * retirementSystem;
+                    reservesPension = predictions["High 3"] * (activePoints + reservesPoints) / 360 * retirementSystem * 12;
                     adjustedPension = annualPension * Math.pow((1 + colaRate), civRetireOffset);
                     adjustedReservesPension = reservesPension * Math.pow((1 + colaRate), Math.floor(monthsDifference(milRetireDate, sixtyBirthday) / 12));
                     reduction = reservesTransfer ? [greyAreaYears * 12, reservesPension] : null;
@@ -768,7 +774,8 @@ function calculateRetirementPlan() {
                     savingsPlan = equivalentRetirement(reqSavings, savingsTime, savingsReturnRate, predictions["Predicted Pay"], colaRate, reduction);
                     moneyStyle = { style: "currency", currency: "USD" };
                     monthlyDeposit = depositsNeeded(reqSavings, 0, savingsReturnRate, savingsTime);
-                    document.getElementById("pension").textContent = "" + (reservesTransfer ? reservesPension : annualPension).toLocaleString("en-US", moneyStyle) + (civRetireOffset != 0 ? " (" + (reservesTransfer ? adjustedReservesPension : adjustedPension).toLocaleString("en-US", moneyStyle) + ")" : "");
+                    document.getElementById("pension").textContent = "" + annualPension.toLocaleString("en-US", moneyStyle) + (civRetireOffset != 0 ? " (" + adjustedPension.toLocaleString("en-US", moneyStyle) + ")" : "");
+                    document.getElementById("reservesPension").textContent = reservesTransfer ? reservesPension.toLocaleString("en-US", moneyStyle) + " (" + adjustedReservesPension.toLocaleString("en-US", moneyStyle) + ")" : "N/A";
                     document.getElementById("requiredSavings").textContent = reqSavings.toLocaleString("en-US", moneyStyle);
                     document.getElementById("monthlySavings").textContent = monthlyDeposit.toLocaleString("en-US", moneyStyle);
                     document.getElementById("annualSavings").textContent = (monthlyDeposit * 12).toLocaleString("en-US", moneyStyle);
