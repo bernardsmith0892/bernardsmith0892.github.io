@@ -280,14 +280,6 @@ function calcReservesPension(startDate, endDate, startingPoints, retirementSyste
     var percent = ((endDate.getUTCFullYear() - startDate.getUTCFullYear()) * 73 + startingPoints) / 360 * retirementSystem;
     return high3 * percent;
 }
-function reservesRequiredSavings(greyAreaYears, retiredYears, activeDutyPension, reservesPension, annualReturnRate, colaRate, accuracy, startMonth, verbose) {
-    if (accuracy === void 0) { accuracy = 1.0; }
-    if (startMonth === void 0) { startMonth = 0; }
-    if (verbose === void 0) { verbose = false; }
-    var reduction = [greyAreaYears * 12, reservesPension];
-    var retiredSavings = requiredSavings(retiredYears + greyAreaYears, activeDutyPension, annualReturnRate, colaRate, accuracy, startMonth, reduction, verbose);
-    return retiredSavings;
-}
 /**
  * Generate a table showing pay for a person over their military career.
  * @param startDate - Date to begin predictions from. (e.g. ETS date or EAD date)
@@ -715,7 +707,7 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
  */
 function calculateRetirementPlan() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, _b, bas, etsDate, milTotalYOS, civRetireOffset, birthday, lifeExpectancy, eadDate, payDate, colaRate, savingsReturnRate, retirementSystem, reservesTransfer, milRetireDate, civRetireDate, sixtyBirthday, lifeExpectancyDate, savingsTime, retirementLength, greyAreaYears, predictions, monthlyPension, annualPension, activePoints, reservesPoints, reservesPension, adjustedPension, adjustedReservesPension, reduction, reqSavings, savingsPlan, moneyStyle, monthlyDeposit;
+        var _a, _b, bas, etsDate, milTotalYOS, civRetireOffset, birthday, lifeExpectancy, eadDate, payDate, colaRate, savingsReturnRate, retirementReturnRate, retirementSystem, reservesTransfer, milRetireDate, civRetireDate, sixtyBirthday, lifeExpectancyDate, savingsTime, retirementLength, greyAreaYears, predictions, monthlyPension, annualPension, activePoints, reservesPoints, reservesPension, adjustedPension, adjustedReservesPension, reduction, reqSavings, savingsPlan, moneyStyle, monthlyDeposit;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -752,6 +744,7 @@ function calculateRetirementPlan() {
                     payDate = document.getElementById("payDate").valueAsDate;
                     colaRate = document.getElementById("colaRate").valueAsNumber / 100;
                     savingsReturnRate = document.getElementById("savingsReturnRate").valueAsNumber / 100;
+                    retirementReturnRate = document.getElementById("retirementReturnRate").valueAsNumber / 100;
                     retirementSystem = parseFloat(document.getElementById("retireSystem").value);
                     reservesTransfer = document.getElementById("reservesCheck").checked;
                     milRetireDate = addMonths(eadDate, milTotalYOS * 12);
@@ -770,7 +763,7 @@ function calculateRetirementPlan() {
                     adjustedPension = annualPension * Math.pow((1 + colaRate), civRetireOffset);
                     adjustedReservesPension = reservesPension * Math.pow((1 + colaRate), Math.floor(monthsDifference(milRetireDate, sixtyBirthday) / 12));
                     reduction = reservesTransfer ? [greyAreaYears * 12, reservesPension] : null;
-                    reqSavings = requiredSavings(retirementLength, adjustedPension, savingsReturnRate, colaRate, 1, civRetireDate.getUTCMonth(), reduction);
+                    reqSavings = requiredSavings(retirementLength, adjustedPension, retirementReturnRate, colaRate, 1, civRetireDate.getUTCMonth(), reduction);
                     savingsPlan = equivalentRetirement(reqSavings, savingsTime, savingsReturnRate, predictions["Predicted Pay"], colaRate, reduction);
                     moneyStyle = { style: "currency", currency: "USD" };
                     monthlyDeposit = depositsNeeded(reqSavings, 0, savingsReturnRate, savingsTime);
@@ -781,7 +774,7 @@ function calculateRetirementPlan() {
                     document.getElementById("annualSavings").textContent = (monthlyDeposit * 12).toLocaleString("en-US", moneyStyle);
                     createSavingsTable(savingsPlan, "retireTable");
                     createSavingsChart(savingsPlan, savingsReturnRate, "savingsChart");
-                    createWithdrawalTableAndChart(reqSavings, adjustedPension / 12, civRetireDate, lifeExpectancyDate, colaRate, savingsReturnRate, "withdrawalTable", "withdrawalChart", reduction);
+                    createWithdrawalTableAndChart(reqSavings, adjustedPension / 12, civRetireDate, lifeExpectancyDate, colaRate, retirementReturnRate, "withdrawalTable", "withdrawalChart", reduction);
                     // Stop spinner icon and reveal tabs
                     document.getElementById("myTab").removeAttribute("hidden");
                     document.getElementById("calcSpinner").hidden = true;
