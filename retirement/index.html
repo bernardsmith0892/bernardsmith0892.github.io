@@ -22,8 +22,12 @@
         
     <div class="container">
 
-        <!-- User Input Accordion Menus -->
-        <div class="accordion mb-3">
+        <!-- 
+            ******************************
+            * User Input Accordion Menus *
+            ******************************
+        -->
+        <form class="accordion mb-3" onsubmit="calculateRetirementPlan(); return false;">
             <!-- Personal Data: Information about the User -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="datesMenu">
@@ -33,72 +37,41 @@
                 </h2>
                 <div id="datesMenu-collapse" class="accordion-collapse collapse show" aria-labelledby="datesMenu">
                     <div class="container mt-3">
-                        <div class="row">
+                        <div class="row mb-3">
                             <!-- Basic Active Service Date -->
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm mb-3 justify-content-center">
-                                    <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date you entered active duty.">Active Service Date
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date you entered active duty.">Active Service Date
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="month" class="form-control" id="eadDate">
+                                    <input type="month" class="form-control" id="eadDate" required>
                                 </div>
                             </div>
                             <!-- Pay Entry Base Date -->
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm mb-3">
-                                    <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date that DFAS uses to determine your years of service for pay. (Usually the same as your Active Service Date)">Pay Entry Base Date 
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date that DFAS uses to determine your years of service for pay. (Usually the same as your Active Service Date)">Pay Entry Base Date 
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="month" class="form-control" id="payDate">
+                                    <input type="month" class="form-control" id="payDate" required>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <!-- ETS Date -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-sm mb-3">
-                                    <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date you plan to leave active-duty service.">ETS Date
-                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
-                                    </button> 
-                                    <input type="month" class="form-control" id="etsDate">
-                                </div>
-                            </div>
                             <!-- Planned Total Active-Duty Service -->
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm mb-3">
-                                    <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="If you stayed on active-duty, how many years would you have served before retiring?">Active-Duty Service
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="How many years would you serve on active-duty before retiring?">Retirement Years
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="milRetireYOS" value="20" onblur="validateInput('milRetireYOS', 0, 50)">
+                                    <input type="number" class="form-control" id="milRetireYOS" value="20" onblur="validateInput('milRetireYOS', 0, 50)" required>
                                     <span class="input-group-text">years</span> 
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <!-- Birthday -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-sm mb-3">
-                                    <span class="input-group-text bg-outline-primary text-primary">Birthday</span> 
-                                    <input type="month" class="form-control" id="birthday">
-                                </div>
-                            </div>
-                            <!-- Life Expectancy -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-sm mb-3">
-                                    <span class="input-group-text bg-outline-primary text-primary">Life Expectancy</span> 
-                                    <input type="number" class="form-control" id="lifeExpectancy" value="85" onblur="validateInput('lifeExpectancy', 0, 100)">
-                                    <span class="input-group-text">years</span> 
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
                             <!-- Retirement System -->
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm mb-3">
-                                    <button class="input-group-text bg-outline-primary text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="The retirement system you're enrolled in.">Retirement
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The retirement system you're enrolled in.">Retirement
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
                                     <select class="form-select" id="retireSystem">
@@ -107,22 +80,27 @@
                                     </select>
                                 </div>
                             </div>
-                            <!-- Transfer to Reserves Checkbox -->
-                            <div class="col-md-6 mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="reservesCheck">
-                                    <label class="form-check-label" for="reservesCheck">
-                                        <b>Transferring to Reserves after ETS</b>
-                                    </label>
+
+                            <!-- Birthday -->
+                            <div class="col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text bg-outline-primary text-primary">Birthday</span> 
+                                    <input type="month" class="form-control" id="birthday" required>
                                 </div>
                             </div>
-                        </div>
+                            <!-- Life Expectancy -->
+                            <div class="col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text bg-outline-primary text-primary">Life Expectancy</span> 
+                                    <input type="number" class="form-control" id="lifeExpectancy" value="85" onblur="validateInput('lifeExpectancy', 0, 100)" required>
+                                    <span class="input-group-text">years</span> 
+                                </div>
+                            </div>
 
-                        <div class="row mb-3">
                             <!-- Change Promotion Timeline -->
                             <div class="col-md-6">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="careerPathButton">Career Path: Officer</button>
+                                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="careerPathButton">Career Path: Officer</button>
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" href="#" onclick="setDefaultTimeline('E')">Enlisted</a></li>
                                         <li><a class="dropdown-item" href="#" onclick="setDefaultTimeline('W')">Tech Warrant</a></li>
@@ -130,6 +108,77 @@
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#timelineModal" onclick="showPromotionTimeline()">Show Detailed Timeline</a></li>
                                     </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alternative Plans: Results from getting out or transferring to the reserves -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="alternativesMenu">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#alternativesMenu-collapse" aria-expanded="false" aria-controls="alternativesMenu-collapse">
+                        <b>Alternative COAs</b>
+                    </button>
+                </h2>
+                <div id="alternativesMenu-collapse" class="accordion-collapse collapse" aria-labelledby="alternativesMenu">
+                    <div class="container mt-3">
+                        <div class="row">
+                            <!-- Course of Action Selector -->
+                            <div class="col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="What COA do you want to make a prediction for?">Course of Action
+                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                                    </button> 
+                                    <select class="form-select" id="coaSelect" onchange="setETSDateRequirement()" required>
+                                        <option selected value="0">Stay on Active-Duty</option>
+                                        <option value="1">Transfer to the Reserves</option>
+                                        <option value="2">Fully Leave Military Service</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- ETS Date -->
+                            <div class="col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date you plan to leave active-duty service.">ETS Date
+                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                                    </button> 
+                                    <input type="month" class="form-control" id="etsDate">
+                                </div>
+                            </div>
+
+                            <!-- Delay Retirement By... -->
+                            <div class="col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="If you leave active-duty, how many extra years are you willing to work beyond what would have been your active-duty retirement date?">Delay Retirement By
+                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                                    </button> 
+                                    <input type="number" class="form-control" id="civRetireOffset" value="0" onblur="validateInput('civRetireOffset', 0, 50)">
+                                    <span class="input-group-text">years</span> 
+                                </div>
+                            </div>
+
+                            <!-- Reduce Withdrawals By -->
+                            <div class="col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Set your target annuity as a percentage of the active-duty pension. Supports reductions and increases.">% of Active-Duty Pension
+                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                                    </button> 
+                                    <input type="number" class="form-control" id="annuityAdjustment" value="100" onblur="validateInput('annuityAdjustment', 0, 1000)">
+                                    <span class="input-group-text">%</span> 
+                                </div>
+                            </div>
+
+                            <!-- % of Active-Duty Pay after ETS -->
+                            <div class="col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="What percentage of your potential active-duty pay do you require for your civilian pay? This is before adding any required savings.">Civilian Pay Ratio
+                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                                    </button> 
+                                    <input type="number" class="form-control" id="payAdjustment" value="100" onblur="validateInput('payAdjustment', 0, 1000)">
+                                    <span class="input-group-text">%</span> 
                                 </div>
                             </div>
                         </div>
@@ -141,7 +190,7 @@
             <!-- Market Performance: Information about the Return Rates and Inflation -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="marketMenu">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#marketMenu-collapse" aria-expanded="false" aria-controls="marketMenu-collapse">
+                    <button class="accordion-button collapsed" type="button" type="button" data-bs-toggle="collapse" data-bs-target="#marketMenu-collapse" aria-expanded="false" aria-controls="marketMenu-collapse">
                         <b>Market Performance</b>
                     </button>
                 </h2>
@@ -151,7 +200,7 @@
                             <!-- COLA Rates -->
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm mb-3">
-                                    <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The rate of annual cost-of-living adjustments to your pay, pension, and withdrawals to account for inflation.">COLA Rate
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The rate of annual cost-of-living adjustments to your pay, pension, and withdrawals to account for inflation.">COLA Rate
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
                                     <input type="number" class="form-control" id="colaRate" value="2.75" step="1" onblur="validateInput('colaRate', 0, 20)">
@@ -161,34 +210,22 @@
                             <!-- Savings Return Rate -->
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm mb-3">
-                                    <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The annual return rate for your savings before you retire.">Savings Return Rate
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The annual return rate for your savings before you retire.">Savings Return Rate
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
                                     <input type="number" class="form-control" id="savingsReturnRate" value="7" step="1" onblur="validateInput('savingsReturnRate', 0, 20)">
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
                             <!-- Retirement Return Rate -->
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm mb-3">
-                                    <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The annual return rate for your savings during retirement.">Retirement Return Rate
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The annual return rate for your savings during retirement.">Retirement Return Rate
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
                                     <input type="number" class="form-control" id="retirementReturnRate" value="5" step="1" onblur="validateInput('retirementReturnRate', 0, 20)">
                                     <span class="input-group-text">%</span> 
-                                </div>
-                            </div>
-                            <!-- Delay Retirement By... -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-sm mb-3">
-                                    <button class="input-group-text bg-outline-primary text-primary" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="If you ETS, how many extra years are you willing to work beyond your potential active-duty retirement date?">Delay Retirement By
-                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
-                                    </button> 
-                                    <input type="number" class="form-control" id="civRetireOffset" value="0" onblur="validateInput('civRetireOffset', 0, 50)">
-                                    <span class="input-group-text">years</span> 
                                 </div>
                             </div>
                         </div>
@@ -197,58 +234,63 @@
                 </div>
             </div>
 
-        </div>
-
-        <!-- Buttons -->
-        <div class="row">
-            <!-- Calculate retirement plan --> 
-            <div class="col mb-3">
-                <button id="calcRetirementButton" class="btn btn-primary me-3" onclick="calculateRetirementPlan()">Calculate Retirement Plan</button>
-                <span id="calcSpinner" class="spinner-border align-middle" role="status" hidden></span>
+            <!-- Calculate retirement plan button --> 
+            <div class="row mt-3">
+                <div class="col mb-3">
+                    <button id="calcRetirementButton" class="btn btn-primary me-3" type="submit">Calculate Retirement Plan</button>
+                    <span id="calcSpinner" class="spinner-border align-middle" role="status" hidden></span>
+                </div>
             </div>
-        </div>
+        </form>
 
-        <!-- Retirement Calculations -->
+
+        <!-- 
+            ***************************
+            * Retirement Calculations *
+            ***************************
+        -->
         <div class="container">
-            <div class="row justify-content-center">
-                <ul class="col-md-6 list-group list-group-horizontal mb-3">
-                    <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="The savings you need upon retirement to withdraw the same amount as the active-duty pension. Also accounts for the pension's COLA increase each year."><b>Required Savings</b> 
+            <div class="row">
+                <ul class="col-md-6 list-group list-group-horizontal mb-3" hidden id="requiredSavingsGroup">
+                    <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="The savings you would need upon retirement to withdraw the same amount as the active-duty pension. Also accounts for the pension's COLA increase each year."><b>Required Savings</b> 
                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                     </li><li class="list-group-item w-50" id="requiredSavings"></li>
                 </ul>
-            </div>
 
-            <div class="row">
-                <ul class="col-md-6 list-group list-group-horizontal mb-3">
+                <ul class="col-md-6 list-group list-group-horizontal mb-3" hidden id="pensionGroup">
                     <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="The initial value of the active-duty pension upon retirement. (If you're planning for a delayed retirement, the second value shows the pension COLA-adjusted to that date)"><b>Active-Duty Pension</b>
                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                     </li><li class="list-group-item w-50" id="pension"></li>
                 </ul>
-                <ul class="col-md-6 list-group list-group-horizontal mb-3">
+
+                <ul class="col-md-6 list-group list-group-horizontal mb-3" hidden id="monthlySavingsGroup">
+                    <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="How much money you need to save each month after your ETS to match the active-duty pension."><b>Monthly Deposits</b> 
+                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                    </li><li class="list-group-item w-50" id="monthlySavings"><li>
+                </ul>
+                
+                <ul class="col-md-6 list-group list-group-horizontal mb-3" hidden id="annualSavingsGroup">
+                    <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="How much money you need to save every year after your ETS to match the active-duty pension."><b>Annual Deposits</b> 
+                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                    </li><li class="list-group-item w-50" id="annualSavings"></li>
+                </ul>
+
+                <ul class="col-md-6 list-group list-group-horizontal mb-3" hidden id="reservesPensionGroup">
                     <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="The initial value of the reservist pension upon retirement with its COLA-adjusted value at age 60 in parentheses."><b>Reservist Pension</b>
                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                     </li><li class="list-group-item w-50" id="reservesPension"></li>
                 </ul>
             </div>
 
-            <div class="row">
-                <ul class="col-md-6 list-group list-group-horizontal mb-3">
-                    <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="How much money you need to save each month after your ETS to match the active-duty pension."><b>Monthly Deposits</b> 
-                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
-                    </li><li class="list-group-item w-50" id="monthlySavings"><li>
-                </ul>
-                <ul class="col-md-6 list-group list-group-horizontal mb-3">
-                    <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="How much money you need to save every year after your ETS to match the active-duty pension."><b>Annual Deposits</b> 
-                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
-                    </li><li class="list-group-item w-50" id="annualSavings"></li>
-                </ul>
-            </div>
-
-            <!-- Detailed graphs and tables -->
+            <!--
+                ******************************
+                * Detailed graphs and tables *
+                ******************************
+            -->
             <div class="row">
                 <ul class="nav nav-tabs" id="myTab" role="tablist" hidden>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="savingsTable-tab" data-bs-toggle="tab" data-bs-target="#savingsTable" type="button" role="tab" aria-controls="savingsTable" aria-selected="true">Savings Plan Table</button>
+                        <button class="nav-link active" id="retireTableTab-tab" data-bs-toggle="tab" data-bs-target="#retireTableTab" type="button" role="tab" aria-controls="retireTableTab" aria-selected="true">Savings Plan Table</button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="savingsChartTab-tab" data-bs-toggle="tab" data-bs-target="#savingsChartTab" type="button" role="tab" aria-controls="savingsChartTab" aria-selected="false">Savings Plan Chart</button>
@@ -263,7 +305,7 @@
 
                 <div class="tab-content" id="myTabContent">
                     <!-- Retirement Plan Table -->
-                    <div class="tab-pane fade show active" id="savingsTable" role="tabpanel" aria-labelledby="savingsTable-tab">
+                    <div class="tab-pane fade show active" id="retireTableTab" role="tabpanel" aria-labelledby="retireTableTab-tab">
                         <table class="table table-striped" id="retireTable"></table>
                     </div>
 
