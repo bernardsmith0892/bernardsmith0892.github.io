@@ -122,13 +122,22 @@ function annualGains(startFunds, annualReturnRate) {
     return calculateInterest(startFunds, annualReturnRate, 1, 12);
 }
 /**
- * Calculate the difference in months between two dates.
+ * Calculate the difference in months between two dates. Does not consider partial months.
  * @param startDate - Starting date.
  * @param endDate - Ending date.
  * @returns {number} The months difference between the two dates.
  */
 function monthsDifference(startDate, endDate) {
     return (endDate.getFullYear() * 12 + endDate.getUTCMonth()) - (startDate.getFullYear() * 12 + startDate.getUTCMonth());
+}
+/**
+ * Calculate the difference in years between two dates. Allows for partial years.
+ * @param startDate - Starting date.
+ * @param endDate - Ending date.
+ * @returns {number} The years difference between the two dates.
+ */
+function yearsDifference(startDate, endDate) {
+    return monthsDifference(startDate, endDate) / 12;
 }
 /**
  * Adds months to a given date. Performs all calculations on the months value.
@@ -373,11 +382,12 @@ function predictPay(startDate, endDate, eadDate, payDate, annualRaiseRate, promo
  * @param {boolean} [verbose=false] - Print the table to the console.
  * @returns List of dictionaries containing the savings plan.
  */
-function equivalentRetirement(targetSavings, years, annualReturnRate, predictedPay, colaRate, payAdjustment, endDate, verbose) {
+function equivalentRetirement(targetSavings, years, annualReturnRate, predictedPay, colaRate, startingPrincipal, payAdjustment, endDate, verbose) {
+    if (startingPrincipal === void 0) { startingPrincipal = 0; }
     if (payAdjustment === void 0) { payAdjustment = 1.0; }
     if (endDate === void 0) { endDate = null; }
     if (verbose === void 0) { verbose = false; }
-    var monthlyDeposit = depositsNeeded(targetSavings, 0, annualReturnRate, years);
+    var monthlyDeposit = depositsNeeded(targetSavings, startingPrincipal, annualReturnRate, years);
     var startDate = predictedPay[0]["Date"];
     var currentPrediction = { "Date": startDate };
     var savingsPlan = [];
@@ -483,7 +493,7 @@ function createSavingsTable(savingsPlan, tableId) {
         strOutput += "\"" + savingsPlan[i]["Grade"] + "\",";
         strOutput += "\"" + savingsPlan[i]["Mil Monthly"].toLocaleString("en-US", moneyStyle) + "\",";
         strOutput += "\"" + savingsPlan[i]["Monthly Deposit"].toLocaleString("en-US", moneyStyle) + "\",";
-        strOutput += "\"" + savingsPlan[i]["Civ Annual"].toLocaleString("en-US", moneyStyle) + "\",";
+        strOutput += "\"" + savingsPlan[i]["Civ Annual"].toLocaleString("en-US", moneyStyle) + "\"";
     }
     tableOutput.appendChild(tbody);
     table.appendChild(tableOutput);
@@ -697,7 +707,7 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
         strOutput += "\"" + currentDate.toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' }) + "\",";
         strOutput += "\"" + balance.toLocaleString("en-US", moneyStyle) + "\",";
         strOutput += "\"" + monthlyWithdrawal.toLocaleString("en-US", moneyStyle) + "\",";
-        strOutput += "\"" + (balance - lastBalance).toLocaleString("en-US", moneyStyle) + "\",";
+        strOutput += "\"" + (balance - lastBalance).toLocaleString("en-US", moneyStyle) + "\"";
         // Add data to chart
         data.labels.push(currentDate.toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' }));
         data.datasets[0].data.push(balance);
@@ -797,6 +807,7 @@ function getDOMInputs(dates, inputs) {
     if (inputs.COA != COA.ActiveDuty) {
         dates.etsDate = document.getElementById("etsDate").valueAsDate;
     }
+    inputs.startingPrincipal = document.getElementById("startingPrincipal").valueAsNumber;
     inputs.civRetireOffset = document.getElementById("civRetireOffset").valueAsNumber;
     inputs.annuityAdjustment = document.getElementById("annuityAdjustment").valueAsNumber / 100;
     inputs.payAdjustment = document.getElementById("payAdjustment").valueAsNumber / 100;
@@ -845,7 +856,7 @@ function calculateRetirementPlan() {
                     civRetireDate = addMonths(milRetireDate, inputs.civRetireOffset * 12);
                     sixtyBirthday = addMonths(dates.birthday, 60 * 12);
                     lifeExpectancyDate = addMonths(dates.birthday, inputs.lifeExpectancy * 12);
-                    greyAreaYears = monthsDifference(civRetireDate, sixtyBirthday) / 12;
+                    greyAreaYears = yearsDifference(civRetireDate, sixtyBirthday);
                     /* ************************
                        * Perform calculations *
                        ************************ */
@@ -856,22 +867,22 @@ function calculateRetirementPlan() {
                         inputs.civRetireOffset = 0;
                         civRetireDate = milRetireDate;
                     }
-                    retirementLength = lifeExpectancyDate.getUTCFullYear() - civRetireDate.getUTCFullYear();
+                    retirementLength = yearsDifference(civRetireDate, lifeExpectancyDate);
                     predictions = predictPay(dates.etsDate, milRetireDate, dates.eadDate, dates.payDate, inputs.colaRate, promotionTimeline, payscale, bah2, bas);
                     monthlyPension = predictions["High 3"] * inputs.milTotalYOS * inputs.retirementSystem;
                     annualPension = predictions["High 3"] * inputs.milTotalYOS * inputs.retirementSystem * 12;
-                    activePoints = 365 * monthsDifference(dates.eadDate, dates.etsDate) / 12;
-                    reservesPoints = 72 * monthsDifference(dates.etsDate, milRetireDate) / 12;
+                    activePoints = 365 * yearsDifference(dates.eadDate, dates.etsDate);
+                    reservesPoints = 72 * yearsDifference(dates.etsDate, milRetireDate);
                     adjustedPension = annualPension * Math.pow((1 + inputs.colaRate), inputs.civRetireOffset) * inputs.annuityAdjustment;
                     reservesPension = predictions["High 3"] * (activePoints + reservesPoints) / 360 * inputs.retirementSystem * 12;
-                    adjustedReservesPension = reservesPension * Math.pow((1 + inputs.colaRate), Math.floor(monthsDifference(milRetireDate, sixtyBirthday) / 12)) * inputs.annuityAdjustment;
+                    adjustedReservesPension = reservesPension * Math.pow((1 + inputs.colaRate), Math.floor(yearsDifference(milRetireDate, sixtyBirthday))) * inputs.annuityAdjustment;
                     reduction = (inputs.COA == COA.Reserves) ? [greyAreaYears * 12, reservesPension] : null;
                     reqSavings = requiredSavings(retirementLength, adjustedPension, inputs.retirementReturnRate, inputs.colaRate, 1, civRetireDate.getUTCMonth(), reduction);
                     moneyStyle = { style: "currency", currency: "USD" };
                     // The Required Savings output will always be shown for every case
                     document.getElementById("requiredSavings").textContent = reqSavings.toLocaleString("en-US", moneyStyle);
                     document.getElementById("requiredSavingsGroup").hidden = false;
-                    startingFunds = 0;
+                    startingFunds = inputs.startingPrincipal;
                     // Case for not staying on active-duty
                     if (inputs.COA != COA.ActiveDuty) {
                         document.getElementById("pension").textContent = "" + annualPension.toLocaleString("en-US", moneyStyle) + (inputs.civRetireOffset != 0 ? " (" + adjustedPension.toLocaleString("en-US", moneyStyle) + ")" : "");
@@ -884,9 +895,9 @@ function calculateRetirementPlan() {
                             document.getElementById("reservesPensionGroup").hidden = true;
                         }
                         // Assume savings start from ETS date
-                        savingsTime = civRetireDate.getUTCFullYear() - dates.etsDate.getUTCFullYear();
-                        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, inputs.payAdjustment);
-                        monthlyDeposit = depositsNeeded(reqSavings, 0, inputs.savingsReturnRate, savingsTime);
+                        savingsTime = yearsDifference(dates.etsDate, civRetireDate);
+                        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, inputs.startingPrincipal, inputs.payAdjustment);
+                        monthlyDeposit = depositsNeeded(reqSavings, inputs.startingPrincipal, inputs.savingsReturnRate, savingsTime);
                         document.getElementById("monthlySavings").textContent = monthlyDeposit.toLocaleString("en-US", moneyStyle);
                         document.getElementById("annualSavings").textContent = (monthlyDeposit * 12).toLocaleString("en-US", moneyStyle);
                         // Hide and display required outputs
@@ -897,8 +908,8 @@ function calculateRetirementPlan() {
                     // Case for staying on active-duty
                     else {
                         // Assume savings was done from the start of Active-Duty service
-                        savingsTime = milRetireDate.getUTCFullYear() - dates.eadDate.getUTCFullYear();
-                        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, inputs.payAdjustment, milRetireDate);
+                        savingsTime = yearsDifference(dates.etsDate, milRetireDate);
+                        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, 0, inputs.payAdjustment, milRetireDate);
                         startingFunds = savingsAfterDeposits(0, savingsPlan[0]["Monthly Deposit"], inputs.savingsReturnRate, monthsDifference(dates.eadDate, new Date()));
                         // Do not account for the civRetireOffset variable
                         document.getElementById("pension").textContent = "" + annualPension.toLocaleString("en-US", moneyStyle);
