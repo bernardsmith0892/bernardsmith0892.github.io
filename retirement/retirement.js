@@ -821,7 +821,7 @@ function getDOMInputs(dates, inputs) {
  */
 function calculateRetirementPlan() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, _b, bas, dates, inputs, milRetireDate, civRetireDate, sixtyBirthday, lifeExpectancyDate, greyAreaYears, retirementLength, predictions, monthlyPension, annualPension, activePoints, reservesPoints, adjustedPension, reservesPension, adjustedReservesPension, reduction, reqSavings, moneyStyle, savingsTime, startingFunds, savingsPlan, monthlyDeposit, savingsTableData, savingsTableButton, withdrawalTableData, withdrawalTableButton;
+        var _a, _b, bas, dates, inputs, milRetireDate, civRetireDate, sixtyBirthday, lifeExpectancyDate, greyAreaYears, retirementLength, predictions, reductionFactor, monthlyPension, annualPension, activePoints, reservesPoints, adjustedPension, reservesPension, adjustedReservesPension, reduction, reqSavings, moneyStyle, savingsTime, startingFunds, savingsPlan, monthlyDeposit, savingsTableData, savingsTableButton, withdrawalTableData, withdrawalTableButton;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -869,8 +869,9 @@ function calculateRetirementPlan() {
                     }
                     retirementLength = yearsDifference(civRetireDate, lifeExpectancyDate);
                     predictions = predictPay(dates.etsDate, milRetireDate, dates.eadDate, dates.payDate, inputs.colaRate, promotionTimeline, payscale, bah2, bas);
-                    monthlyPension = predictions["High 3"] * inputs.milTotalYOS * inputs.retirementSystem;
-                    annualPension = predictions["High 3"] * inputs.milTotalYOS * inputs.retirementSystem * 12;
+                    reductionFactor = 1.0 - (inputs.milTotalYOS < 20 ? Math.ceil((20 - inputs.milTotalYOS) * 12) * 0.01 / 12 : 0);
+                    monthlyPension = predictions["High 3"] * inputs.milTotalYOS * inputs.retirementSystem * reductionFactor;
+                    annualPension = predictions["High 3"] * inputs.milTotalYOS * inputs.retirementSystem * 12 * reductionFactor;
                     activePoints = 365 * yearsDifference(dates.eadDate, dates.etsDate);
                     reservesPoints = 72 * yearsDifference(dates.etsDate, milRetireDate);
                     adjustedPension = annualPension * Math.pow((1 + inputs.colaRate), inputs.civRetireOffset) * inputs.annuityAdjustment;
