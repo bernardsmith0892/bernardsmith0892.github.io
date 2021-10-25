@@ -11,12 +11,19 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js" integrity="sha256-bC3LCZCwKeehY6T4fFi9VfOU0gztUa+S4cnkIhVPZ5E=" crossorigin="anonymous"></script>
 
-    <title>Retirement Calculator</title>
+    <title>Military Retirement Value Calculator</title>
   </head>
   <body>
-    <nav class="navbar navbar-light bg-light mb-3">
+    <nav class="navbar navbar-expand navbar-light bg-light mb-3">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><b>Equivalent Retirement Calculator</b></a>
+            <span class="navbar-brand mb-0 h1" href="#">Military Retirement Value Calculator</span>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="modal" data-bs-target="#aboutPageModal" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
         
@@ -106,7 +113,7 @@
                                         <li><a class="dropdown-item" href="#" onclick="setDefaultTimeline('W')">Tech Warrant</a></li>
                                         <li><a class="dropdown-item" href="#" onclick="setDefaultTimeline('O')">Officer</a></li>
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#timelineModal" onclick="showPromotionTimeline()">Show Detailed Timeline</a></li>
+                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#timelineModal" onclick="showPromotionTimeline()">Adjust Promotion Timeline</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -328,6 +335,72 @@
         </div>
     </div>
 
+    <!-- About Page Modal -->
+    <div class="modal fade" id="aboutPageModal" tabindex="-1" aria-labelledby="aboutPageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="aboutPageModalLabel">About</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <h5>Overview</h5>
+            <p>This tool was designed for a very specific purpose: To calculate how much savings you would need to match the value of a potential active-duty military pension.</p>
+            <p>It does this by developing a retirement plan with the following requirements:</p>
+            <ul>
+                <li>Your initial withdrawals from savings must match what you would receive from an active-duty pension.</li>
+                <li>The amount of your withdrawals will increase overtime to match the cost-of-living adjustments (COLA) that the military pension gets.</li>
+                <li>Your savings must last from your retirement age to your predicted life expectancy.</li>
+            </ul>
+            <p>You also have the option to download Excel/CSV versions of the tables to perform your own calculations. The download buttons are at the bottom of the tables.</p>
+
+            <h5>Courses of Action</h5>
+            <p>There are three scenarios this tool can consider:</p>
+            <ul>
+                <li><b>If you stay on active-duty until retirement:</b> This scenario calculates the equivalent value of your potential active-duty pension, how much the government is currently "saving" for you each month, and how much the government has already "saved" for you. You can use this as a retention tool, or to compare the values of retirement pensions between different timelines. (For example - Retire at 20 years or retire at 24 years) It currently does not accurately account for sub-20 year retirements, such as with TERA.</li>
+                <li><b>If you completely ETS from military service:</b> This scenario calculates how much you will need to save, starting from your ETS date, in order to match the active-duty pension.</li>
+                <li><b>If you ETS and transfer into the reserves:</b> This scenario is very similar to the previous one. The primary difference is that it also considers the value of your reservist pension at 60 years old to reduce your withdrawal requirements.</li>
+            </ul>
+
+            <h5>Assumptions</h5>
+            <p>The calculator makes the following assumptions:</p>
+            <ul>
+                <li>For reserves retirement, it assumes that you will earn 72 retirement points each year after you ETS from active-duty.</li>
+                <li>Any market return rates and inflation rates are constant.</li>
+                <li>Annual military pay raises and cost-of-living adjustments are equal to the inflation rate.</li>
+                <li>That you would have received BAH at the BAH II rate.</li>
+                <li>That you do not start saving until you ETS.</li>
+                <li>That you will save the same amount of money per month.</li>
+            </ul>
+
+            <h5>Outputs</h5>
+            <p>The calculator will provide the following outputs:</p>
+            <ul>
+                <li>The predicted value for your active-duty pension.</li>
+                <li>Savings needed to match that pension during retirement.</li>
+                <li>How much you need to save per month to match it by your retirement date.</li>
+            </ul>
+            <p>It also provides the following tables and charts, which you may also download:</p>
+            <ul>
+                <li>
+                    <b>Savings Plan Table/Chart:</b> This output shows you three primary data points:
+                    <ol>
+                        <li>How much your compensation would have been on active-duty.</li>
+                        <li>How much you will need to save to meet the savings goal by your retirement date.</li>
+                        <li>How much your annual civilian pay needs to be to match your active-duty compensation, even with your savings requirement. <i>(Active-Duty Pay + Savings Requirement = Civilian Pay Requirement)</i></li>
+                    </ol>
+                </li>
+                <li>
+                    <b>Retirement Payout Table/Chart:</b> This output lets you see how your savings is depleted during your retirement. If you're calculating for a reserves retirement, it also shows you when and by how much your withdrawal requirement is reduced from the reserves pension.
+                </li>
+            </ul>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+    </div>
 
     <!-- Change Promotion Timeline Modal -->
     <div class="modal fade" id="timelineModal" tabindex="-1" aria-labelledby="timelineModalLabel" aria-hidden="true">

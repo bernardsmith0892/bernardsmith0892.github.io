@@ -445,6 +445,7 @@ function validateInput(id, min, max) {
  */
 function createSavingsTable(savingsPlan, tableId) {
     var table = document.getElementById(tableId);
+    var strOutput = "";
     removeChildNodes(table);
     var tableOutput = document.createDocumentFragment();
     var thead = document.createElement('thead');
@@ -456,6 +457,7 @@ function createSavingsTable(savingsPlan, tableId) {
         var newCell = document.createElement('th');
         newCell.setAttribute('scope', 'col');
         newCell.textContent = headers[i];
+        strOutput += (i != '0' ? ',' : '') + headers[i];
         newRow.appendChild(newCell);
     }
     tableOutput.appendChild(thead);
@@ -463,6 +465,7 @@ function createSavingsTable(savingsPlan, tableId) {
     var moneyStyle = { style: "currency", currency: "USD" };
     for (var i in savingsPlan) {
         var newRow_1 = tbody.insertRow();
+        strOutput += '\n';
         // Add header cell
         var headerCell = document.createElement('th');
         headerCell.textContent = savingsPlan[i]["Date"].toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' });
@@ -473,9 +476,16 @@ function createSavingsTable(savingsPlan, tableId) {
         newRow_1.insertCell().textContent = savingsPlan[i]["Mil Monthly"].toLocaleString("en-US", moneyStyle);
         newRow_1.insertCell().textContent = savingsPlan[i]["Monthly Deposit"].toLocaleString("en-US", moneyStyle);
         newRow_1.insertCell().textContent = savingsPlan[i]["Civ Annual"].toLocaleString("en-US", moneyStyle);
+        // Add text to CSV output
+        strOutput += "\"" + savingsPlan[i]["Date"].toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' }) + "\",";
+        strOutput += "\"" + savingsPlan[i]["Grade"] + "\",";
+        strOutput += "\"" + savingsPlan[i]["Mil Monthly"].toLocaleString("en-US", moneyStyle) + "\",";
+        strOutput += "\"" + savingsPlan[i]["Monthly Deposit"].toLocaleString("en-US", moneyStyle) + "\",";
+        strOutput += "\"" + savingsPlan[i]["Civ Annual"].toLocaleString("en-US", moneyStyle) + "\",";
     }
     tableOutput.appendChild(tbody);
     table.appendChild(tableOutput);
+    return strOutput;
 }
 /**
  * Create a savings plan graph on an HTML canvas using a given savings plan and annual return rate.
@@ -633,6 +643,7 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
     // Add table header
     var table = document.getElementById(tableId);
     removeChildNodes(table);
+    var strOutput = "";
     var tableOutput = document.createDocumentFragment();
     var thead = document.createElement('thead');
     var tbody = document.createElement('tbody');
@@ -642,6 +653,7 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
         var newCell = document.createElement('th');
         newCell.setAttribute('scope', 'col');
         newCell.textContent = headers[i];
+        strOutput += (i != '0' ? ',' : '') + headers[i];
         newRow.appendChild(newCell);
     }
     tableOutput.appendChild(thead);
@@ -667,6 +679,7 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
         }
         // Add new row to the table
         var newRow_2 = tbody.insertRow();
+        strOutput += '\n';
         // Add header cell
         var headerCell = document.createElement('th');
         headerCell.textContent = currentDate.toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' });
@@ -676,6 +689,11 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
         newRow_2.insertCell().textContent = balance.toLocaleString("en-US", moneyStyle);
         newRow_2.insertCell().textContent = monthlyWithdrawal.toLocaleString("en-US", moneyStyle);
         newRow_2.insertCell().textContent = (balance - lastBalance).toLocaleString("en-US", moneyStyle);
+        // Add data to CSV output
+        strOutput += "\"" + currentDate.toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' }) + "\",";
+        strOutput += "\"" + balance.toLocaleString("en-US", moneyStyle) + "\",";
+        strOutput += "\"" + monthlyWithdrawal.toLocaleString("en-US", moneyStyle) + "\",";
+        strOutput += "\"" + (balance - lastBalance).toLocaleString("en-US", moneyStyle) + "\",";
         // Add data to chart
         data.labels.push(currentDate.toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' }));
         data.datasets[0].data.push(balance);
@@ -726,6 +744,7 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
             }
         }
     });
+    return strOutput;
 }
 // Sets the ETS Date input as required for the Reserves and Full ETS options
 function setETSDateRequirement() {
@@ -737,6 +756,17 @@ function setETSDateRequirement() {
         document.getElementById("etsDate").required = true;
     }
 }
+function createDownloadButton(filename, data, buttonText, classAttr) {
+    if (classAttr === void 0) { classAttr = 'btn btn-primary'; }
+    var element = document.createElement('a');
+    var b64_data = btoa(data);
+    element.setAttribute('class', classAttr);
+    element.setAttribute('href', "data:text/plain;base64," + b64_data);
+    element.setAttribute('download', filename);
+    element.textContent = buttonText;
+    return element;
+}
+// Retrieves values from all DOM input fields and places them in the provided dictionaries
 function getDOMInputs(dates, inputs) {
     // Personal Data
     dates.eadDate = document.getElementById("eadDate").valueAsDate;
@@ -763,7 +793,7 @@ function getDOMInputs(dates, inputs) {
  */
 function calculateRetirementPlan() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, _b, bas, dates, inputs, milRetireDate, civRetireDate, sixtyBirthday, lifeExpectancyDate, greyAreaYears, retirementLength, predictions, monthlyPension, annualPension, activePoints, reservesPoints, adjustedPension, reservesPension, adjustedReservesPension, reduction, reqSavings, moneyStyle, savingsTime, startingFunds, savingsPlan, monthlyDeposit;
+        var _a, _b, bas, dates, inputs, milRetireDate, civRetireDate, sixtyBirthday, lifeExpectancyDate, greyAreaYears, retirementLength, predictions, monthlyPension, annualPension, activePoints, reservesPoints, adjustedPension, reservesPension, adjustedReservesPension, reduction, reqSavings, moneyStyle, savingsTime, startingFunds, savingsPlan, monthlyDeposit, savingsTableData, withdrawalTableData;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -861,9 +891,11 @@ function calculateRetirementPlan() {
                         document.getElementById("monthlySavingsGroup").hidden = true;
                         document.getElementById("annualSavingsGroup").hidden = true;
                     }
-                    createSavingsTable(savingsPlan, "retireTable");
+                    savingsTableData = createSavingsTable(savingsPlan, "retireTable");
                     createSavingsChart(savingsPlan, inputs.savingsReturnRate, "savingsChart", startingFunds);
-                    createWithdrawalTableAndChart(reqSavings, adjustedPension / 12, civRetireDate, lifeExpectancyDate, inputs.colaRate, inputs.retirementReturnRate, "withdrawalTable", "withdrawalChart", reduction);
+                    document.getElementById("retireTableTab").appendChild(createDownloadButton('savings.csv', savingsTableData, 'Download CSV', 'btn btn-primary mb-3'));
+                    withdrawalTableData = createWithdrawalTableAndChart(reqSavings, adjustedPension / 12, civRetireDate, lifeExpectancyDate, inputs.colaRate, inputs.retirementReturnRate, "withdrawalTable", "withdrawalChart", reduction);
+                    document.getElementById("withdrawalTableTab").appendChild(createDownloadButton('withdrawals.csv', withdrawalTableData, 'Download CSV', 'btn btn-primary mb-3'));
                     // Stop spinner icon and reveal tabs
                     document.getElementById("myTab").hidden = false;
                     document.getElementById("calcSpinner").hidden = true;
