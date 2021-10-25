@@ -439,13 +439,14 @@ function validateInput(id, min, max) {
     document.getElementById(id).value = value.toString();
 }
 /**
- * Create an HTML table based on a given savings plan.
+ * Create an HTML table based on a given savings plan. Also returns a CSV string representation of the table.
  * @param savingsPlan
  * @param tableId - ID of table element to clear and populate
+ * @returns {string} - CSV representation of the table.
  */
 function createSavingsTable(savingsPlan, tableId) {
-    var table = document.getElementById(tableId);
     var strOutput = "";
+    var table = document.getElementById(tableId);
     removeChildNodes(table);
     var tableOutput = document.createDocumentFragment();
     var thead = document.createElement('thead');
@@ -457,6 +458,7 @@ function createSavingsTable(savingsPlan, tableId) {
         var newCell = document.createElement('th');
         newCell.setAttribute('scope', 'col');
         newCell.textContent = headers[i];
+        // Add headers to CSV string. Do not prepend a comma for the first header.
         strOutput += (i != '0' ? ',' : '') + headers[i];
         newRow.appendChild(newCell);
     }
@@ -593,7 +595,7 @@ function createSavingsChart(savingsPlan, returnRate, chartId, startingFunds) {
     });
 }
 /**
- * Create HTML table and Chart.js graph for predicted withdrawals from retirement savings.
+ * Create HTML table and Chart.js graph for predicted withdrawals from retirement savings. Also returns a CSV string representation of the table.
  * @param startFunds - Retirement savings.
  * @param monthlyWithdrawal - Initial monthly withdrawals.
  * @param startDate - Start date of retirement.
@@ -602,6 +604,7 @@ function createSavingsChart(savingsPlan, returnRate, chartId, startingFunds) {
  * @param interestRate - Rate of return for savings balance.
  * @param tableId - HTML Table Element ID to create the table in.
  * @param chartId - HTML Canvas ID to create the graph on.
+ * @returns {string} - CSV representation of the table.
  */
 function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate, endDate, colaRate, interestRate, tableId, chartId, reduction) {
     if (reduction === void 0) { reduction = null; }
@@ -653,6 +656,7 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
         var newCell = document.createElement('th');
         newCell.setAttribute('scope', 'col');
         newCell.textContent = headers[i];
+        // Add headers to CSV string. Do not prepend a comma for the first header.
         strOutput += (i != '0' ? ',' : '') + headers[i];
         newRow.appendChild(newCell);
     }
@@ -756,14 +760,27 @@ function setETSDateRequirement() {
         document.getElementById("etsDate").required = true;
     }
 }
-function createDownloadButton(filename, data, buttonText, classAttr) {
+/**
+ * Creates a button to download a given string
+ * @param filename - Filename for the downloaded file
+ * @param data - Data to download from this button
+ * @param buttonText - Text to put on the button
+ * @param classAttr - Class attributes to set for the button. Defaults to a primary color Bootstrap button.
+ * @returns {HTMLAnchorElement} - Anchor element to add to the DOM
+ */
+function createDownloadButton(filename, data, buttonText, classAttr, id) {
     if (classAttr === void 0) { classAttr = 'btn btn-primary'; }
+    if (id === void 0) { id = null; }
     var element = document.createElement('a');
     var b64_data = btoa(data);
     element.setAttribute('class', classAttr);
     element.setAttribute('href', "data:text/plain;base64," + b64_data);
     element.setAttribute('download', filename);
     element.textContent = buttonText;
+    // If an ID value is given, add it to this button 
+    if (id) {
+        element.setAttribute('id', id);
+    }
     return element;
 }
 // Retrieves values from all DOM input fields and places them in the provided dictionaries
@@ -793,7 +810,7 @@ function getDOMInputs(dates, inputs) {
  */
 function calculateRetirementPlan() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, _b, bas, dates, inputs, milRetireDate, civRetireDate, sixtyBirthday, lifeExpectancyDate, greyAreaYears, retirementLength, predictions, monthlyPension, annualPension, activePoints, reservesPoints, adjustedPension, reservesPension, adjustedReservesPension, reduction, reqSavings, moneyStyle, savingsTime, startingFunds, savingsPlan, monthlyDeposit, savingsTableData, withdrawalTableData;
+        var _a, _b, bas, dates, inputs, milRetireDate, civRetireDate, sixtyBirthday, lifeExpectancyDate, greyAreaYears, retirementLength, predictions, monthlyPension, annualPension, activePoints, reservesPoints, adjustedPension, reservesPension, adjustedReservesPension, reduction, reqSavings, moneyStyle, savingsTime, startingFunds, savingsPlan, monthlyDeposit, savingsTableData, savingsTableButton, withdrawalTableData, withdrawalTableButton;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -892,10 +909,24 @@ function calculateRetirementPlan() {
                         document.getElementById("annualSavingsGroup").hidden = true;
                     }
                     savingsTableData = createSavingsTable(savingsPlan, "retireTable");
+                    savingsTableButton = document.getElementById("retireTableDownload");
                     createSavingsChart(savingsPlan, inputs.savingsReturnRate, "savingsChart", startingFunds);
-                    document.getElementById("retireTableTab").appendChild(createDownloadButton('savings.csv', savingsTableData, 'Download CSV', 'btn btn-primary mb-3'));
+                    // Overwrite download button data, if it already exists. Create it, if it doesn't exist.
+                    if (savingsTableButton) {
+                        savingsTableButton.href = createDownloadButton('savings.csv', savingsTableData, 'Download CSV', 'btn btn-primary mb-3', 'retireTableDownload').href;
+                    }
+                    else {
+                        document.getElementById("retireTableTab").appendChild(createDownloadButton('savings.csv', savingsTableData, 'Download CSV', 'btn btn-primary mb-3', 'retireTableDownload'));
+                    }
                     withdrawalTableData = createWithdrawalTableAndChart(reqSavings, adjustedPension / 12, civRetireDate, lifeExpectancyDate, inputs.colaRate, inputs.retirementReturnRate, "withdrawalTable", "withdrawalChart", reduction);
-                    document.getElementById("withdrawalTableTab").appendChild(createDownloadButton('withdrawals.csv', withdrawalTableData, 'Download CSV', 'btn btn-primary mb-3'));
+                    withdrawalTableButton = document.getElementById("withdrawalTableDownload");
+                    // Overwrite download button data, if it already exists. Create it, if it doesn't exist.
+                    if (withdrawalTableButton) {
+                        withdrawalTableButton.href = createDownloadButton('withdrawals.csv', withdrawalTableData, 'Download CSV', 'btn btn-primary mb-3', 'withdrawalTableDownload').href;
+                    }
+                    else {
+                        document.getElementById("withdrawalTableTab").appendChild(createDownloadButton('withdrawals.csv', withdrawalTableData, 'Download CSV', 'btn btn-primary mb-3', 'withdrawalTableDownload'));
+                    }
                     // Stop spinner icon and reveal tabs
                     document.getElementById("myTab").hidden = false;
                     document.getElementById("calcSpinner").hidden = true;
@@ -904,6 +935,11 @@ function calculateRetirementPlan() {
         });
     });
 }
+/*
+    ****************************************************
+    * Code to Create and Manipulate Promotion Timeline *
+    ****************************************************
+*/
 function createUpDownButtonCell(id) {
     var upDownCell = document.createElement('td');
     upDownCell.setAttribute("class", "align-items-center");
