@@ -34,7 +34,7 @@
             * User Input Accordion Menus *
             ******************************
         -->
-        <form class="accordion mb-3" onsubmit="calculateRetirementPlan(); return false;">
+        <form class="accordion mb-3" onsubmit="document.getElementById('calcSpinner').style.visibility = 'visible'; setTimeout(function(){ calculateRetirementPlan(); document.getElementById('calcSpinner').style.visibility = 'hidden';}, 20); return false;">
             <!-- Personal Data: Information about the User -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="datesMenu">
@@ -51,7 +51,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date you entered active duty.">Active Service Date
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="month" class="form-control" id="eadDate" required>
+                                    <input type="month" class="form-control" id="eadDate" min="1901-01" max="2100-12" required>
                                 </div>
                             </div>
                             <!-- Pay Entry Base Date -->
@@ -60,17 +60,17 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date that DFAS uses to determine your years of service for pay. (Usually the same as your Active Service Date)">Pay Entry Base Date 
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="month" class="form-control" id="payDate" required>
+                                    <input type="month" class="form-control" id="payDate" min="1901-01" max="2100-12" required>
                                 </div>
                             </div>
 
                             <!-- Planned Total Active-Duty Service -->
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm mb-3">
-                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="How many years would you serve on active-duty before retiring?">Retirement Years
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="How many years would you serve on active-duty before retiring?">Planned Years of Svc
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="milRetireYOS" value="20" onblur="validateInput('milRetireYOS', 0, 50)" required>
+                                    <input type="number" class="form-control" id="milRetireYOS" value="20" min="0" max="50" required>
                                     <span class="input-group-text">years</span> 
                                 </div>
                             </div>
@@ -78,7 +78,7 @@
                             <!-- Retirement System -->
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm mb-3">
-                                    <button class="input-group-text bg-outline-primary text-primary" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The retirement system you're enrolled in.">Retirement
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The retirement system you're enrolled in.">Retirement System
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
                                     <select class="form-select" id="retireSystem">
@@ -92,14 +92,14 @@
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm mb-3">
                                     <span class="input-group-text bg-outline-primary text-primary">Birthday</span> 
-                                    <input type="month" class="form-control" id="birthday" required>
+                                    <input type="month" class="form-control" id="birthday" min="1901-01" max="2100-12" required>
                                 </div>
                             </div>
                             <!-- Life Expectancy -->
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm mb-3">
                                     <span class="input-group-text bg-outline-primary text-primary">Life Expectancy</span> 
-                                    <input type="number" class="form-control" id="lifeExpectancy" value="85" onblur="validateInput('lifeExpectancy', 0, 100)" required>
+                                    <input type="number" class="form-control" id="lifeExpectancy" value="85" min="0" max="200" required>
                                     <span class="input-group-text">years</span> 
                                 </div>
                             </div>
@@ -152,7 +152,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The date you plan to leave active-duty service.">ETS Date
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="month" class="form-control" id="etsDate">
+                                    <input type="month" class="form-control" id="etsDate" min="1901-01" max="2100-12">
                                 </div>
                             </div>
 
@@ -163,7 +163,7 @@
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
                                     <span class="input-group-text">$</span> 
-                                    <input type="number" class="form-control" id="startingPrincipal" value="0" onblur="validateInput('startingPrincipal', 0, 1000000000)">
+                                    <input type="number" class="form-control" id="startingPrincipal" value="0" step="0.01" min="0" max="100000000">
                                 </div>
                             </div>
 
@@ -173,7 +173,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="If you leave active-duty, how many extra years are you willing to work beyond what would have been your active-duty retirement date?">Delay Retirement By
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="civRetireOffset" value="0" onblur="validateInput('civRetireOffset', 0, 50)">
+                                    <input type="number" class="form-control" id="civRetireOffset" value="0" step="1" min="0" max="1000">
                                     <span class="input-group-text">years</span> 
                                 </div>
                             </div>
@@ -184,7 +184,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Set your target annuity as a percentage of the active-duty pension. Supports reductions and increases.">% of Active-Duty Pension
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="annuityAdjustment" value="100" onblur="validateInput('annuityAdjustment', 0, 1000)">
+                                    <input type="number" class="form-control" id="annuityAdjustment" value="100" step="0.1" min="0" max="100">
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
@@ -195,7 +195,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="What percentage of your potential active-duty pay do you require for your civilian pay? This is before adding any required savings.">Civilian Pay Ratio
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="payAdjustment" value="100" onblur="validateInput('payAdjustment', 0, 1000)">
+                                    <input type="number" class="form-control" id="payAdjustment" value="100" step="0.1" min="0" max="1000">
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
@@ -215,39 +215,131 @@
                 <div id="marketMenu-collapse" class="accordion-collapse collapse" aria-labelledby="marketMenu">
                     <div class="container mt-3">
                         <div class="row">
+
+                            <!-- Calculation Mode Selector -->
+                            <div class="col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Monte Carlo performs a large number of trials with randomized market performance. Linear assumes a constant market performance.">Estimation Model
+                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                                    </button> 
+                                    <select class="form-select" id="modeSelect" onchange="setCalculationMode()">
+                                        <option selected value="M">Monte Carlo</option>
+                                        <option value="L">Linear</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <!-- COLA Rates -->
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm mb-3">
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The rate of annual cost-of-living adjustments to your pay, pension, and withdrawals to account for inflation.">COLA Rate
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="colaRate" value="2.75" step="1" onblur="validateInput('colaRate', 0, 20)">
+                                    <input type="number" class="form-control" id="colaRate" value="2.7" step="0.1" min="0" max="20">
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
                             <!-- Savings Return Rate -->
-                            <div class="col-md-6">
+                            <div class="col-md-6" id="savingsReturnRateGroup" hidden>
                                 <div class="input-group input-group-sm mb-3">
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The annual return rate for your savings before you retire.">Savings Return Rate
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="savingsReturnRate" value="7" step="1" onblur="validateInput('savingsReturnRate', 0, 20)">
+                                    <input type="number" class="form-control" id="savingsReturnRate" value="7" step="0.1" min="0" max="20">
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
 
                             <!-- Retirement Return Rate -->
-                            <div class="col-md-6">
+                            <div class="col-md-6" id="retirementReturnRateGroup" hidden>
                                 <div class="input-group input-group-sm mb-3">
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The annual return rate for your savings during retirement.">Retirement Return Rate
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="retirementReturnRate" value="5" step="1" onblur="validateInput('retirementReturnRate', 0, 20)">
+                                    <input type="number" class="form-control" id="retirementReturnRate" value="5" step="0.1" min="0" max="20">
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
-                        </div>
 
+
+                            <!-- Savings Return Mean -->
+                            <div class="col-md-6" id="savingsReturnMeanGroup">
+                                <div class="input-group input-group-sm mb-3 justify-content-center">
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The mean return rate for your savings before you retire.">Savings Mean Return Rate
+                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                                    </button> 
+                                    <input type="number" class="form-control" id="savingsReturnMean" value="7" step="0.1" min="0" max="100">
+                                    <span class="input-group-text">%</span> 
+                                </div>
+                            </div>
+
+                            <!-- Savings Return Standard Deviation -->
+                            <div class="col-md-6" id="savingsReturnStdevGroup">
+                                <div class="input-group input-group-sm mb-3 justify-content-center">
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The volatility or standard deviation of your savings growth before you retire.">Savings Return Rate Volatility 
+                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                                    </button> 
+                                    <input type="number" class="form-control" id="savingsReturnStdev" value="14" step="0.1" min="0.1" max="500">
+                                    <span class="input-group-text">%</span> 
+                                </div>
+                            </div>
+
+                            <!-- Retirement Return Mean -->
+                            <div class="col-md-6" id="retirementReturnMeanGroup">
+                                <div class="input-group input-group-sm mb-3 justify-content-center">
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The mean return rate for your savings during your retirement.">Retirement Mean Return Rate
+                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                                    </button> 
+                                    <input type="number" class="form-control" id="retirementReturnMean" value="5" step="0.1" min="0.1" max="100">
+                                    <span class="input-group-text">%</span> 
+                                </div>
+                            </div>
+
+                            <!-- Retirement Return Standard Deviation -->
+                            <div class="col-md-6" id="retirementReturnStdevGroup">
+                                <div class="input-group input-group-sm mb-3 justify-content-center">
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The volatility or standard deviation of your savings growth during your retirement.">Retirement Return Rate Volatility 
+                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                                    </button> 
+                                    <input type="number" class="form-control" id="retirementReturnStdev" value="4" step="0.1" min="0.1" max="500">
+                                    <span class="input-group-text">%</span> 
+                                </div>
+                            </div>
+
+                            <!-- Savings Monte Carlo Score -->
+                            <div class="col-md-6" id="minMonteCarloScoreGroup">
+                                <div class="input-group input-group-sm mb-3 justify-content-center">
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The approximate success rate needed for your savings plan. Success is defined as gaining enough funds to meet the required savings goal.">Savings Plan Monte Carlo Score
+                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                                    </button> 
+                                    <input type="number" class="form-control" id="savingsMonteCarloScore" value="50" step="1" min="0" max="100">
+                                    <span class="input-group-text">%</span> 
+                                </div>
+                            </div>
+
+                            <!-- Retirement Monte Carlo Score -->
+                            <div class="col-md-6" id="maxMonteCarloScoreGroup">
+                                <div class="input-group input-group-sm mb-3 justify-content-center">
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The approximate success rate needed for your savings after retirement. Success is defined as still being able to withdraw funds until your life expectancy.">Retirement Monte Carlo Score
+                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                                    </button> 
+                                    <input type="number" class="form-control" id="retirementMonteCarloScore" value="80" step="1" min="0" max="100">
+                                    <span class="input-group-text">%</span> 
+                                </div>
+                            </div>
+
+                            <!-- Monte Carlo Iterations -->
+                            <div class="col-md-6" id="monteCarloTrialsGroup">
+                                <div class="input-group input-group-sm mb-3 justify-content-center">
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="How many trial runs a Monte Carlo simulation performs. More trials makes the results more consistent, but requires more computing time.">Number of Trials
+                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                                    </button> 
+                                    <input type="number" class="form-control" id="monteCarloTrials" value="1000" step="1" min="0" max="100000">
+                                    <span class="input-group-text">%</span> 
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -256,7 +348,7 @@
             <div class="row mt-3">
                 <div class="col mb-3">
                     <button id="calcRetirementButton" class="btn btn-primary me-3" type="submit">Calculate Retirement Plan</button>
-                    <span id="calcSpinner" class="spinner-border align-middle" role="status" hidden></span>
+                    <span id="calcSpinner" class="spinner-border align-middle" role="status" style="visibility:hidden"></span>
                 </div>
             </div>
         </form>
@@ -355,55 +447,61 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <h5>Overview</h5>
-            <p>This tool was designed for a very specific purpose: To calculate how much savings you would need to match the value of a potential active-duty military pension. It does this by developing a retirement plan with the following requirements:</p>
-            <ul>
-                <li>Your initial withdrawals from savings must match what you would receive from an active-duty pension.</li>
-                <li>The amount of your withdrawals will increase overtime to match the cost-of-living adjustments (COLA) that the military pension gets.</li>
-                <li>Your savings must last from your retirement age to your predicted life expectancy.</li>
-            </ul>
-            <p>You also have the option to download Excel/CSV versions of the tables to perform your own calculations. The download buttons are at the bottom of the tables.</p>
-
-            <h5>Courses of Action</h5>
-            <p>There are three scenarios this tool can consider:</p>
-            <ul>
-                <li><b>If you stay on active-duty until retirement:</b> This scenario calculates the equivalent value of your potential active-duty pension, how much the government is currently "saving" for you each month, and how much the government has already "saved" for you. You can use this as a retention tool or to compare the values of retirement pensions between different timelines. (For example - Retire at 20 years or retire at 24 years) Also supports calculating early retirements under TERA.</li>
-                <li><b>If you completely ETS from military service:</b> This scenario calculates how much you will need to save, starting from your ETS date, in order to match the active-duty pension.</li>
-                <li><b>If you ETS and transfer into the reserves:</b> This scenario is very similar to the previous one. The primary difference is that it also considers the value of your reservist pension at 60 years old to reduce your withdrawal requirements.</li>
-            </ul>
-
-            <h5>Assumptions</h5>
-            <p>The calculator makes the following assumptions:</p>
-            <ul>
-                <li>For reserves retirement, it assumes that you will earn 72 retirement points each year after you ETS from active-duty.</li>
-                <li>Any market return rates and inflation rates are constant.</li>
-                <li>Annual military pay raises and cost-of-living adjustments are equal to the inflation rate.</li>
-                <li>That you would have received BAH at the BAH II rate.</li>
-                <li>That you will save the same amount of money per month.</li>
-            </ul>
-
-            <h5>Outputs</h5>
-            <p>The calculator will provide the following outputs:</p>
-            <ul>
-                <li>The predicted value for your active-duty pension.</li>
-                <li>Savings needed to match that pension during retirement.</li>
-                <li>How much you need to save per month to match it by your retirement date.</li>
-            </ul>
-            <p>It also provides the following tables and charts, which you may also download:</p>
-            <ul>
-                <li>
-                    <b>Savings Plan Table/Chart:</b> This output shows you three primary data points:
-                    <ol>
-                        <li>How much your compensation would have been on active-duty.</li>
-                        <li>How much you will need to save to meet the savings goal by your retirement date.</li>
-                        <li>How much your annual civilian pay needs to be to match your active-duty compensation, even with your savings requirement. <i>(Active-Duty Pay + Savings Requirement = Civilian Pay Requirement)</i></li>
-                    </ol>
-                </li>
-                <li>
-                    <b>Retirement Payout Table/Chart:</b> This output lets you see how your savings is depleted during your retirement. If you're calculating for a reserves retirement, it also shows you when and by how much your withdrawal requirement is reduced from the reserves pension.
-                </li>
-            </ul>
-        </div>
+        <h5 id="introduction">Introduction</h5>
+<p>I&#39;ve noticed a lot of issues with how some tools estimate the overall value of the military pension. The most common method I&#39;ve seen is to simply add up how much you would earn from the pension over your lifetime. (i.e. <code>Life Expectancy (years) x Pension Annuity ($ per year) = Total Pension Value</code>) According to this method, someone who retires as an O-5 at 42 and lives to 85 will have a pension &quot;worth&quot; $5,921,350 under Hi-3. (There&#39;s a reason why the official DoD retirement calculator uses this method.) By looking at this, the naive assumption is that you would need to save up almost <em>$6 million</em> by the time you&#39;re 42 in order to match the value of the military pension. A near impossible task, even if you never joined the military and started saving from 22 years old!</p>
+<p>However, this method is extremely faulty. Of course, it would be completely true if you&#39;re planning to put all of your retirement savings under your mattress to earn a 0% return rate. But most people usually put their life savings in retirement accounts that gain value over time. If you consider this, the savings you would need to match the pension&#39;s value is greatly reduced. In fact, with a modest 3% return rate, the savings requirement for the previous scenario is cut to &quot;only&quot; $3 million.</p>
+<p>This tool was designed to estimate how much in <em>savings</em> you would need to match an active-duty pension, rather than how much money you will earn from the pension. It does this by developing a retirement plan with the following requirements:</p>
+<ul>
+<li>Your initial withdrawals from savings must match what you would receive from an active-duty pension.</li>
+<li>The amount of your withdrawals will increase to match the cost-of-living adjustments (COLA) that the military pension gets.</li>
+<li>Your savings must last from your retirement age to your predicted life expectancy.</li>
+</ul>
+<h5 id="disclaimer">Disclaimer</h5>
+<p>I hope this tool can serve as a useful <em>part</em> of your retirement and career planning, however I must stress that these are <em>estimates</em> and I cannot make any guarantees about the accuracy of the results. It makes a lot of bold assumptions about the future of the stock market, cost-of-living, and inflation. While I certainly did not attempt to make the tool <em>inaccurate</em>, it unfortunately cannot predict the future with a measurable accuracy. I cannot guarantee that if the tool tells you save <code>$XYZ</code> every month that you will have <code>$ABC</code> by your retirement year, nor if it tells you to have <code>$ABC</code> in retirement savings that it will last you for the rest of your life. Regardless, I still hope that this does serve useful to you and helps you make a better informed decision about your career and future. </p>
+<h5 id="scenarios">Scenarios</h5>
+<p>There are three scenarios this tool can consider:</p>
+<ol>
+<li><strong>If you stay on active-duty until retirement:</strong> This scenario estimates the equivalent value of your potential active-duty pension, how much the government is currently &quot;saving&quot; for you each month, and how much the government has already &quot;saved&quot; for you. You can use this as a retention tool or to compare the values of retirement pensions between different timelines. (For example - Retire at 20 years or retire at 24 years) Also supports calculating early retirements under TERA.</li>
+<li><strong>If you completely ETS from military service:</strong> This scenario estimates how much you will need to save, starting from your ETS date, in order to match the active-duty pension.</li>
+<li><strong>If you ETS and transfer into the reserves:</strong> This scenario is very similar to the previous one. The primary difference is that it also considers the value of your reservist pension at 60 years old to reduce your withdrawal requirements.</li>
+</ol>
+<p>If you wish to consider other scenarios, you also have the option to download Excel/CSV versions of the tables to perform additional calculations. The download buttons are at the bottom of the tables.</p>
+<h5 id="assumptions">Assumptions</h5>
+<p>The calculator makes the following assumptions:</p>
+<ul>
+<li>Annual military pay raises and cost-of-living adjustments are equal to the inflation rate.</li>
+<li>You would have received BAH at the BAH II rate.</li>
+<li>You will save the same amount of money per month.</li>
+<li>For reserves retirement, it assumes that you will earn 72 retirement points each year after you ETS from active-duty.</li>
+</ul>
+<h5 id="outputs">Outputs</h5>
+<p>The calculator will provide the following outputs:</p>
+<ul>
+<li>The predicted value for your active-duty pension.</li>
+<li>Savings needed to match that pension during retirement.</li>
+<li>How much you will need to save per month to match it by your retirement date.</li>
+</ul>
+<p>It also provides several tables and charts to show detailed information. You may download the tables as CSV files:</p>
+<ul>
+<li><p><strong>Savings Plan Table:</strong> This shows you three primary data points:</p>
+<ol>
+<li>How much your compensation would have been on active-duty.</li>
+<li>How much you will need to save to meet the savings goal by your retirement date.</li>
+<li>How much your annual civilian pay needs to be to match your active-duty compensation in addition to your savings requirement. ( <code>Active-Duty Pay + Savings Requirement = Civilian Pay Requirement</code> )</li>
+</ol>
+</li>
+<li><p><strong>Retirement Payout Table:</strong> This lets you see how your savings is depleted during retirement. If you&#39;re calculating for a reserves retirement, it also shows you when and by how much your withdrawal requirement is reduced from the reserves pension.</p>
+</li>
+<li><p><strong>Charts:</strong> In <em>Linear</em> mode, the charts will simply represent the values in the tables. In <em>Monte Carlo</em> mode, the charts will display three overlapping shaded areas that show the percentile ranges of the results.</p>
+<ul>
+<li>Green (25th to 75th percentiles): 50% of the simulated results ended up within this area.</li>
+<li>Red (10th to 90th percentiles): 80% of the simulated results ended up within this area. 15% of these were better than the green results and 15% were worse.</li>
+<li>Grey (1st to 99th percentiles): Shows the remaining range of the simulated results. 9% of these were better than the best red results and 9% were worse than the poor red results.</li>
+<li>Blue (average outcome): This is the line showing the average/median result from the simulations. 50% of results were better than this line and 50% of results were worse.</li>
+</ul>
+</li>
+</ul>
+</div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>

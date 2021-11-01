@@ -70,6 +70,32 @@ var COA;
     COA[COA["Reserves"] = 1] = "Reserves";
     COA[COA["FullETS"] = 2] = "FullETS";
 })(COA || (COA = {}));
+var Mode;
+(function (Mode) {
+    Mode[Mode["Linear"] = 0] = "Linear";
+    Mode[Mode["MonteCarlo"] = 1] = "MonteCarlo";
+})(Mode || (Mode = {}));
+var calculationMode = Mode.MonteCarlo;
+function percentileCalc(data, percentile) {
+    data.sort(function (a, b) { return a - b; });
+    var pos = (data.length - 1) * percentile;
+    // If pos is a whole number, return that index
+    if (pos % 1 == 0 || pos + 1 > data.length - 1) {
+        return data[pos];
+    }
+    else {
+        var index = Math.floor(pos);
+        var remainder = pos % 1;
+        return data[index] + remainder * (data[index + 1] - data[index]);
+    }
+}
+function percentileList(data, percentile) {
+    var outList = {};
+    for (var month in data) {
+        outList[month] = percentileCalc(data[month], percentile);
+    }
+    return outList;
+}
 /**
  * Compute compound interest.
  * @param P - Principal: Starting funds.
@@ -264,51 +290,232 @@ function retirementLength(funds, annualReturnRate, annualWithdrawal, colaRate, s
     }
 }
 /**
- * Performs a binary-search to determine how much savings are needed to sustain a specified withdrawal rate for a given number of years.
+ * Determines how much savings are needed to sustain a specified withdrawal rate for a given number of years. Calculates it based on monthly withdrawals and compounding.
  * @param yearsRequired - How many years the savings need to last.
- * @param annualWithdrawal - How much will be withdrawn each year. Is divided into monthly withdrawals.
+ * @param annualWithdrawal - How much will be initially withdrawn each year? Is divided into monthly withdrawals.
  * @param annualReturnRate - The annual return rate for the savings in decimal. (0.05, not 5%)
  * @param colaRate - Rate of annual cost-of-living adjustments in decimal. (0.03, not 3%) Used to increase withdrawals to compensate for inflation.
- * @param {number} [accuracy=1.0] - How many years above `yearsRequired` can the result be?
  * @param {number} [startMonth=0] - The 0-indexed month retirement will start. Used to determine correct time for COLA increases.
  * @param {[number,number]} [reduction=null] - Defined if we're calculating for a reserves retirement. [0] is how many months before reaching full retirement. [1] is the reserves pension.
  * @param {boolean} [verbose=false] - Print value of funds over time to the console.
  * @returns {number} Retirement savings needed.
  */
-function requiredSavings(yearsRequired, annualWithdrawal, annualReturnRate, colaRate, accuracy, startMonth, reduction, verbose) {
-    if (accuracy === void 0) { accuracy = 1.0; }
+function requiredSavings(yearsRequired, annualWithdrawal, annualReturnRate, colaRate, startMonth, reduction, verbose) {
     if (startMonth === void 0) { startMonth = 0; }
     if (reduction === void 0) { reduction = null; }
     if (verbose === void 0) { verbose = false; }
-    var upperLimit = annualWithdrawal * yearsRequired;
-    if (colaRate != 0) {
-        upperLimit = (annualWithdrawal * (1 - Math.pow((1 + colaRate), yearsRequired))) / (1 - (1 + colaRate)); // Sum of finite exponential series
+    var funds = 0;
+    var monthlyWithdrawal = (annualWithdrawal / 12) * Math.pow((1 + colaRate), (Math.floor((yearsRequired * 12 + startMonth) / 12)));
+    var monthlyReturnRate = annualReturnRate / 12;
+    // Apply reserves pension, if we have one
+    if (reduction != null) {
+        monthlyWithdrawal -= (reduction[1] / 12) * Math.pow((1 + colaRate), (Math.floor((yearsRequired * 12 + startMonth) / 12)));
     }
-    var lowerLimit = 0;
-    var funds = upperLimit / 2;
-    var calculatedYears = 0;
-    while ((calculatedYears < yearsRequired || calculatedYears > yearsRequired + accuracy) && Math.abs(upperLimit - lowerLimit) > 0.00001) {
-        calculatedYears = retirementLength(funds, annualReturnRate, annualWithdrawal, colaRate, startMonth, reduction);
-        if (verbose) {
-            console.log("$" + funds + " - " + calculatedYears + "(" + upperLimit + ", " + lowerLimit + ")");
+    for (var months = yearsRequired * 12; months >= 0; --months) {
+        funds += monthlyWithdrawal;
+        funds /= (1 + monthlyReturnRate);
+        if ((months + startMonth) % 12 == 0) {
+            monthlyWithdrawal /= (1 + colaRate);
         }
-        if (calculatedYears > yearsRequired + accuracy) {
-            upperLimit = funds;
-            funds = (upperLimit + lowerLimit) / 2;
-        }
-        else if (calculatedYears < yearsRequired) {
-            lowerLimit = funds;
-            funds = (upperLimit + lowerLimit) / 2;
+        // If we have a reserves pension, take it away when we go before age 60
+        if (reduction != null && months == reduction[0]) {
+            monthlyWithdrawal += (reduction[1] / 12) * Math.pow((1 + colaRate), (Math.floor((months + startMonth) / 12)));
         }
     }
     return funds;
 }
-function calcReservesPension(startDate, endDate, startingPoints, retirementSystem, high3) {
-    var percent = ((endDate.getUTCFullYear() - startDate.getUTCFullYear()) * 73 + startingPoints) / 360 * retirementSystem;
-    return high3 * percent;
-}
 function calc401kContributionRate(contributionLimit) {
     return contributionLimit / 12;
+}
+/**
+ * Returns a normal distribution value from a uniform distribution using the Box-Muller Transform. Used to convert a uniform distribution into a normal distribution.
+ * @param u1 - Sample 1 of the uniform distribution
+ * @param u2 - Sample 2 of the uniform distribution
+ * @param mean - Mean of the desired normal distribution
+ * @param stdev - Standard deviation of the desired normal distribution
+ * @returns Z0 of the transform.
+ */
+function boxMuller(u1, u2, mean, stdev) {
+    var magnitude = stdev * Math.sqrt(-2 * Math.log(u1));
+    return magnitude * Math.cos(2 * Math.PI * u2) + mean;
+}
+/**
+ * Returns a random value from a normal distribution.
+ * @param mean - Mean of the distribution
+ * @param stdev - Standard deviation of the distribution
+ * @returns - Random value
+ */
+function generateGaussianNoise(mean, stdev) {
+    if (mean === void 0) { mean = 0; }
+    if (stdev === void 0) { stdev = 1; }
+    return boxMuller(Math.random(), Math.random(), mean, stdev);
+}
+/**
+ * Run a series of Monte Carlo trials for how many years a given amount of funds will last in retirement and return the overall success rate.
+ * Returns an object containing the success rate for these parameters and data of the savings balance in each month across all trials.
+ */
+function retirementLengthMonteCarlo(funds, annualWithdrawal, savingsMean, savingsStdev, colaRate, successTime, numTrials, startMonth, reduction, data) {
+    if (colaRate === void 0) { colaRate = 0.0275; }
+    if (successTime === void 0) { successTime = 360; }
+    if (numTrials === void 0) { numTrials = 100; }
+    if (startMonth === void 0) { startMonth = 0; }
+    if (reduction === void 0) { reduction = null; }
+    if (data === void 0) { data = {}; }
+    var successes = 0;
+    for (var n = 0; n < numTrials; ++n) {
+        var endFunds = retirementLengthMonteCarloTrial(funds, annualWithdrawal, savingsMean, savingsStdev, colaRate, successTime, startMonth, reduction, data);
+        if (endFunds >= 0) {
+            successes++;
+        }
+    }
+    return {
+        Score: successes / numTrials,
+        Data: data
+    };
+}
+/**
+ * Run a Monte Carlo simulation for how many years a given amount of funds will last in retirement. Also adds the savings balance for the trial to the included `data` object.
+ * Returns the of months this retirement lasted.
+ */
+function retirementLengthMonteCarloTrial(funds, annualWithdrawal, savingsMean, savingsStdev, colaRate, successTime, startMonth, reduction, data, verbose) {
+    if (colaRate === void 0) { colaRate = 0.0275; }
+    if (successTime === void 0) { successTime = 360; }
+    if (startMonth === void 0) { startMonth = 0; }
+    if (reduction === void 0) { reduction = null; }
+    if (data === void 0) { data = {}; }
+    if (verbose === void 0) { verbose = false; }
+    var monthlyWithdrawal = annualWithdrawal / 12;
+    var marketRate = generateGaussianNoise(savingsMean, savingsStdev);
+    if (reduction != null && reduction[0] < 0) {
+        monthlyWithdrawal -= reduction[1] / 12;
+    }
+    if (verbose) {
+        console.log("Months,Funds,Market Rate,Withdrawal");
+    }
+    for (var months = 0; months < successTime; ++months) {
+        // At the start of every year, apply a COLA increase to the monthly withdrawal
+        if ((months + startMonth) % 12 == 0) {
+            monthlyWithdrawal *= (1 + colaRate);
+        }
+        // If we're calculating for a reserves retirement, account for the pension after reaching full retirement age
+        if (reduction != null && months == reduction[0]) {
+            monthlyWithdrawal -= reduction[1] / 12 * Math.pow((1 + colaRate), Math.floor((months + startMonth) / 12));
+        }
+        marketRate = generateGaussianNoise(savingsMean, savingsStdev);
+        if (data[months] == null) {
+            data[months] = [funds];
+        }
+        else {
+            data[months].push(funds);
+        }
+        if (verbose) {
+            console.log(months + "," + funds.toFixed(2) + "," + (100 * marketRate).toFixed(2) + "," + monthlyWithdrawal.toFixed(2));
+        }
+        funds = (funds - monthlyWithdrawal) * (1 + marketRate / 12);
+    }
+    return funds;
+}
+/**
+ * Performs a binary-search to determine how much savings are needed to sustain a specified withdrawal rate for a given number of years based on a required Monte Carlo success rate.
+ */
+function requiredSavingsMonteCarlo(yearsRequired, annualWithdrawal, savingsMean, savingsStdev, colaRate, startMonth, scoreLow, scoreHigh, reduction, numTrials, verbose) {
+    if (startMonth === void 0) { startMonth = 0; }
+    if (scoreLow === void 0) { scoreLow = .80; }
+    if (scoreHigh === void 0) { scoreHigh = .90; }
+    if (reduction === void 0) { reduction = null; }
+    if (numTrials === void 0) { numTrials = 100; }
+    if (verbose === void 0) { verbose = false; }
+    // Establish upper and lower bounds by assuming a constant return rate of one standard deviation above and below the mean.
+    var upperLimit = requiredSavings(yearsRequired, annualWithdrawal, savingsMean - savingsStdev, colaRate, startMonth, reduction);
+    var lowerLimit = requiredSavings(yearsRequired, annualWithdrawal, savingsMean + savingsStdev, colaRate, startMonth, reduction);
+    var funds = (upperLimit + lowerLimit) / 2;
+    var trial = { Score: 0, Data: null };
+    while ((trial.Score < scoreLow || trial.Score > scoreHigh) && Math.abs(upperLimit - lowerLimit) > 0.00001) {
+        trial = retirementLengthMonteCarlo(funds, annualWithdrawal, savingsMean, savingsStdev, colaRate, yearsRequired * 12, numTrials, startMonth, reduction);
+        if (verbose) {
+            console.log("$" + funds + " - " + trial.Score + "(" + upperLimit + ", " + lowerLimit + ")");
+        }
+        if (trial.Score > scoreHigh) {
+            upperLimit = funds;
+            funds = (upperLimit + lowerLimit) / 2;
+        }
+        else if (trial.Score < scoreLow) {
+            lowerLimit = funds;
+            funds = (upperLimit + lowerLimit) / 2;
+        }
+    }
+    return {
+        Savings: funds,
+        Data: trial.Data
+    };
+}
+/**
+ * Determines how much your monthly deposit must be to reach a savings goal within
+ *  a specified time period.
+ * @param goalFunds - The target savings goal.
+ * @param startFunds - Savings available at the start of the period.
+ * @param annualReturnRate - Annual interest rate in decimal. (0.05, not 5%)
+ * @param years - Savings time period. Accepts fractional years. (1.5 years === 18 months)
+ * @returns {number} Monthly deposit needed to reach the savings goal.
+ */
+function depositsNeededMonteCarlo(goalFunds, startFunds, savingsMean, savingsStdev, years, scoreLow, scoreHigh, numTrials) {
+    if (scoreLow === void 0) { scoreLow = 0.8; }
+    if (scoreHigh === void 0) { scoreHigh = 0.9; }
+    if (numTrials === void 0) { numTrials = 100; }
+    var months = years * 12;
+    var upperRate = (savingsMean - savingsStdev) / 12;
+    var upperLimit = upperRate != 0 ? (upperRate * (goalFunds - startFunds * Math.pow((1 + upperRate), months))) / (Math.pow((1 + upperRate), months) - 1) : (goalFunds - startFunds) / months;
+    var lowerRate = (savingsMean + savingsStdev) / 12;
+    var lowerLimit = lowerRate != 0 ? (lowerRate * (goalFunds - startFunds * Math.pow((1 + lowerRate), months))) / (Math.pow((1 + lowerRate), months) - 1) : (goalFunds - startFunds) / months;
+    var monthlyDeposit = (upperLimit + lowerLimit) / 2;
+    var trial = { Score: 0, Data: null };
+    while ((trial.Score < scoreLow || trial.Score > scoreHigh) && Math.abs(upperLimit - lowerLimit) > 0.00001) {
+        trial = depositsNeededMonteCarloTest(monthlyDeposit, goalFunds, startFunds, savingsMean, savingsStdev, years, numTrials);
+        if (trial.Score > scoreHigh) {
+            upperLimit = monthlyDeposit;
+            monthlyDeposit = (upperLimit + lowerLimit) / 2;
+        }
+        else if (trial.Score < scoreLow) {
+            lowerLimit = monthlyDeposit;
+            monthlyDeposit = (upperLimit + lowerLimit) / 2;
+        }
+    }
+    return {
+        Deposit: monthlyDeposit,
+        Data: trial
+    };
+}
+function depositsNeededMonteCarloTest(monthlyDeposit, goalFunds, startFunds, savingsMean, savingsStdev, years, numTrials) {
+    if (numTrials === void 0) { numTrials = 100; }
+    var successes = 0;
+    var data = {};
+    for (var n = 0; n < numTrials; ++n) {
+        var trial = depositsNeededMonteCarloTrial(monthlyDeposit, startFunds, savingsMean, savingsStdev, years, data);
+        if (trial > goalFunds) {
+            successes++;
+        }
+    }
+    return {
+        Score: successes / numTrials,
+        Data: data
+    };
+}
+function depositsNeededMonteCarloTrial(monthlyDeposit, startFunds, savingsMean, savingsStdev, years, data) {
+    if (data === void 0) { data = {}; }
+    var marketRate;
+    var savings = startFunds;
+    for (var month = 0; month < years * 12; ++month) {
+        marketRate = generateGaussianNoise(savingsMean, savingsStdev) / 12;
+        savings *= 1 + marketRate;
+        savings += monthlyDeposit;
+        if (data[month] == null) {
+            data[month] = [savings];
+        }
+        else {
+            data[month].push(savings);
+        }
+    }
+    return savings;
 }
 /**
  * Generate a table showing pay for a person over their military career.
@@ -382,12 +589,11 @@ function predictPay(startDate, endDate, eadDate, payDate, annualRaiseRate, promo
  * @param {boolean} [verbose=false] - Print the table to the console.
  * @returns List of dictionaries containing the savings plan.
  */
-function equivalentRetirement(targetSavings, years, annualReturnRate, predictedPay, colaRate, startingPrincipal, payAdjustment, endDate, verbose) {
+function equivalentRetirement(targetSavings, years, annualReturnRate, predictedPay, colaRate, startingPrincipal, monthlyDeposit, payAdjustment, endDate, verbose) {
     if (startingPrincipal === void 0) { startingPrincipal = 0; }
     if (payAdjustment === void 0) { payAdjustment = 1.0; }
     if (endDate === void 0) { endDate = null; }
     if (verbose === void 0) { verbose = false; }
-    var monthlyDeposit = depositsNeeded(targetSavings, startingPrincipal, annualReturnRate, years);
     var startDate = predictedPay[0]["Date"];
     var currentPrediction = { "Date": startDate };
     var savingsPlan = [];
@@ -605,6 +811,196 @@ function createSavingsChart(savingsPlan, returnRate, chartId, startingFunds) {
     });
 }
 /**
+ * Create a savings plan graph on an HTML canvas using a given savings plan and annual return rate.
+ * @param savingsData
+ * @param chartId - HTML element ID for desired canvas.
+ * @param returnRate
+ */
+function createMonteCarloChart(savingsData, startDate, chartId) {
+    // Create data for percentiles
+    var percentile50 = percentileList(savingsData, 0.50);
+    var percentile25 = percentileList(savingsData, 0.25);
+    var percentile75 = percentileList(savingsData, 0.75);
+    var percentile10 = percentileList(savingsData, 0.10);
+    var percentile90 = percentileList(savingsData, 0.90);
+    var percentile1 = percentileList(savingsData, 0.01);
+    var percentile99 = percentileList(savingsData, 0.99);
+    // Destroy current chart if it exists
+    // @ts-ignore
+    if (Chart.getChart(chartId) != null) {
+        // @ts-ignore
+        Chart.getChart(chartId).destroy();
+    }
+    // Grab context for the HTML canvas
+    var ctx = document.getElementById(chartId).getContext('2d');
+    // Setup Chart.js data.
+    var data = {
+        // Labels are months
+        labels: [],
+        datasets: [
+            {
+                label: 'Avg. Outcome',
+                data: [],
+                borderColor: 'rgb(0, 102, 204)',
+                pointRadius: 0,
+                pointHitRadius: 5
+            },
+            {
+                label: '25th Percentile',
+                data: [],
+                borderColor: 'rgba(0, 204, 0, 0.7)',
+                backgroundColor: 'rgba(0, 204, 0, 0.3)',
+                pointRadius: 0,
+                pointHitRadius: 5
+            },
+            {
+                label: '75th Percentile',
+                data: [],
+                borderColor: 'rgba(0, 204, 0, 0.7)',
+                backgroundColor: 'rgba(0, 204, 0, 0.3)',
+                pointRadius: 0,
+                pointHitRadius: 5,
+                fill: 1
+            },
+            {
+                label: '10th Percentile',
+                data: [],
+                borderColor: 'rgba(204, 0, 0, 0.7)',
+                backgroundColor: 'rgba(204, 0, 0, 0.3)',
+                pointRadius: 0,
+                pointHitRadius: 5
+            },
+            {
+                label: '90th Percentile',
+                data: [],
+                borderColor: 'rgba(204, 0, 0, 0.7)',
+                backgroundColor: 'rgba(204, 0, 0, 0.3)',
+                pointRadius: 0,
+                pointHitRadius: 5,
+                fill: 3
+            },
+            {
+                label: '1st Percentile',
+                data: [],
+                borderColor: 'rgba(211, 211, 211, 0.3)',
+                backgroundColor: 'rgba(211, 211, 211, 0.3)',
+                pointRadius: 0,
+                pointHitRadius: 5
+            },
+            {
+                label: '99th Percentile',
+                data: [],
+                borderColor: 'rgba(211, 211, 211, 0.3)',
+                backgroundColor: 'rgba(211, 211, 211, 0.3)',
+                pointRadius: 0,
+                pointHitRadius: 5,
+                fill: 5
+            },
+        ]
+    };
+    // Populate data
+    for (var month in savingsData) {
+        // Push data into Chart.js
+        data.labels.push(addMonths(startDate, parseInt(month)).toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' }));
+        data.datasets[0].data.push(percentile50[month]);
+        data.datasets[1].data.push(percentile25[month]);
+        data.datasets[2].data.push(percentile75[month]);
+        data.datasets[3].data.push(percentile10[month]);
+        data.datasets[4].data.push(percentile90[month]);
+        data.datasets[5].data.push(percentile1[month]);
+        data.datasets[6].data.push(percentile99[month]);
+    }
+    // Generate the Chart.js object
+    // @ts-ignore
+    new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+            plugins: {
+                legend: {
+                    labels: {
+                        generateLabels: function (chart) {
+                            return [
+                                {
+                                    text: 'Avg. Outcome',
+                                    fillStyle: 'rgb(0, 102, 204)',
+                                    datasetIndex: 0
+                                },
+                                {
+                                    text: '25th-75th Percentile',
+                                    fillStyle: 'rgba(0, 204, 0)',
+                                    datasetIndex: 1
+                                },
+                                {
+                                    text: '10th-90th Percentile',
+                                    fillStyle: 'rgba(204, 0, 0)',
+                                    datasetIndex: 2
+                                },
+                                {
+                                    text: '1st-99th Percentile',
+                                    fillStyle: 'rgba(211, 211, 211)',
+                                    datasetIndex: 3
+                                },
+                            ];
+                        }
+                    },
+                    onClick: function (e, legendItem, legend) {
+                        var index = legendItem.datasetIndex;
+                        var ci = legend.chart;
+                        var datasets;
+                        switch (index) {
+                            case 0:
+                                datasets = [
+                                    ci.getDatasetMeta(0)
+                                ];
+                                break;
+                            case 1:
+                                datasets = [
+                                    ci.getDatasetMeta(1),
+                                    ci.getDatasetMeta(2),
+                                ];
+                                break;
+                            case 2:
+                                datasets = [
+                                    ci.getDatasetMeta(3),
+                                    ci.getDatasetMeta(4),
+                                ];
+                                break;
+                            case 3:
+                                datasets = [
+                                    ci.getDatasetMeta(5),
+                                    ci.getDatasetMeta(6),
+                                ];
+                                break;
+                            default:
+                                break;
+                        }
+                        datasets.forEach(function (meta) {
+                            meta.hidden = meta.hidden == null ? !meta.hidden : null;
+                        });
+                        ci.update();
+                    }
+                }
+            },
+            responsive: true,
+            scales: {
+                y: {
+                    position: 'right',
+                    title: {
+                        text: 'Savings Balance',
+                        display: true
+                    },
+                    ticks: {
+                        callback: function (value, index, values) {
+                            return value.toLocaleString("en-US", { style: "currency", currency: "USD" });
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+/**
  * Create HTML table and Chart.js graph for predicted withdrawals from retirement savings. Also returns a CSV string representation of the table.
  * @param startFunds - Retirement savings.
  * @param monthlyWithdrawal - Initial monthly withdrawals.
@@ -660,7 +1056,7 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
     var tableOutput = document.createDocumentFragment();
     var thead = document.createElement('thead');
     var tbody = document.createElement('tbody');
-    var headers = ['Date', 'Savings Balance', 'Withdrawal', 'Balance Change'];
+    var headers = ['Date', 'Savings Balance', 'Market Gains', 'Withdrawal', 'Balance Change'];
     var newRow = thead.insertRow();
     for (var i in headers) {
         var newCell = document.createElement('th');
@@ -677,6 +1073,8 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
     var totalMonths = monthsDifference(startDate, endDate);
     var balance = startFunds;
     var lastBalance = startFunds;
+    var gains;
+    var change;
     // If we've already passed our reserves retirement date, reduce our withdrawals now
     if (reduction != null && reduction[0] < 0) {
         monthlyWithdrawal -= reduction[1] / 12;
@@ -691,6 +1089,9 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
         if (reduction != null && months == reduction[0]) {
             monthlyWithdrawal -= (reduction[1] / 12) * Math.pow((1 + colaRate), (colaIncreases));
         }
+        gains = calculateInterest(balance, interestRate / 12, 1, 1) - balance;
+        change = gains - monthlyWithdrawal;
+        balance += change;
         // Add new row to the table
         var newRow_2 = tbody.insertRow();
         strOutput += '\n';
@@ -701,25 +1102,25 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
         newRow_2.appendChild(headerCell);
         // Add remaining cells
         newRow_2.insertCell().textContent = balance.toLocaleString("en-US", moneyStyle);
+        newRow_2.insertCell().textContent = gains.toLocaleString("en-US", moneyStyle);
         newRow_2.insertCell().textContent = monthlyWithdrawal.toLocaleString("en-US", moneyStyle);
-        newRow_2.insertCell().textContent = (balance - lastBalance).toLocaleString("en-US", moneyStyle);
+        newRow_2.insertCell().textContent = change.toLocaleString("en-US", moneyStyle);
         // Add data to CSV output
         strOutput += "\"" + currentDate.toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' }) + "\",";
         strOutput += "\"" + balance.toLocaleString("en-US", moneyStyle) + "\",";
+        strOutput += "\"" + gains.toLocaleString("en-US", moneyStyle) + "\",";
         strOutput += "\"" + monthlyWithdrawal.toLocaleString("en-US", moneyStyle) + "\",";
-        strOutput += "\"" + (balance - lastBalance).toLocaleString("en-US", moneyStyle) + "\"";
+        strOutput += "\"" + change.toLocaleString("en-US", moneyStyle) + "\"";
         // Add data to chart
         data.labels.push(currentDate.toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' }));
         data.datasets[0].data.push(balance);
-        data.datasets[1].data.push(balance - lastBalance);
-        if (balance - lastBalance >= 0) {
+        data.datasets[1].data.push(change);
+        if (change >= 0) {
             data.datasets[1].backgroundColor.push(green);
         }
         else {
             data.datasets[1].backgroundColor.push(red);
         }
-        lastBalance = balance;
-        balance = calculateInterest(balance - monthlyWithdrawal, interestRate / 12, 1, 1);
     }
     // Create the table
     tableOutput.appendChild(tbody);
@@ -815,18 +1216,24 @@ function getDOMInputs(dates, inputs) {
     inputs.colaRate = document.getElementById("colaRate").valueAsNumber / 100;
     inputs.savingsReturnRate = document.getElementById("savingsReturnRate").valueAsNumber / 100;
     inputs.retirementReturnRate = document.getElementById("retirementReturnRate").valueAsNumber / 100;
+    // Monte Carlo Performance
+    inputs.savingsReturnMean = document.getElementById("savingsReturnMean").valueAsNumber / 100;
+    inputs.savingsReturnStdev = document.getElementById("savingsReturnStdev").valueAsNumber / 100;
+    inputs.retirementReturnMean = document.getElementById("retirementReturnMean").valueAsNumber / 100;
+    inputs.retirementReturnStdev = document.getElementById("retirementReturnStdev").valueAsNumber / 100;
+    inputs.savingsMonteCarloScore = document.getElementById("savingsMonteCarloScore").valueAsNumber / 100;
+    inputs.retirementMonteCarloScore = document.getElementById("retirementMonteCarloScore").valueAsNumber / 100;
+    inputs.monteCarloTrials = document.getElementById("monteCarloTrials").valueAsNumber;
 }
 /**
  * Calculate retirement plan upon a button press from the user. Fetches JSON data, values from input fields, and outputs the results to the webpage.
  */
 function calculateRetirementPlan() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, _b, bas, dates, inputs, milRetireDate, civRetireDate, sixtyBirthday, lifeExpectancyDate, greyAreaYears, retirementLength, predictions, reductionFactor, monthlyPension, annualPension, activePoints, reservesPoints, adjustedPension, reservesPension, adjustedReservesPension, reduction, reqSavings, moneyStyle, savingsTime, startingFunds, savingsPlan, monthlyDeposit, savingsTableData, savingsTableButton, withdrawalTableData, withdrawalTableButton;
+        var _a, _b, bas, dates, inputs, milRetireDate, civRetireDate, sixtyBirthday, lifeExpectancyDate, greyAreaYears, retirementLength, predictions, reductionFactor, annualPension, activePoints, reservesPoints, adjustedPension, reservesPension, adjustedReservesPension, reduction, reqSavings, monteCarloSavingsResults, moneyStyle, savingsTime, monthlyDeposit, startingFunds, savingsPlan, monteCarloDepositsResults, totalCareerTime, savingsTableData, savingsTableButton, withdrawalTableData, withdrawalTableButton;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
-                    // Start spinner icon
-                    document.getElementById("calcSpinner").hidden = false;
                     if (!(payscale !== null && payscale !== void 0)) return [3 /*break*/, 1];
                     _a = payscale;
                     return [3 /*break*/, 4];
@@ -870,7 +1277,6 @@ function calculateRetirementPlan() {
                     retirementLength = yearsDifference(civRetireDate, lifeExpectancyDate);
                     predictions = predictPay(dates.etsDate, milRetireDate, dates.eadDate, dates.payDate, inputs.colaRate, promotionTimeline, payscale, bah2, bas);
                     reductionFactor = 1.0 - (inputs.milTotalYOS < 20 ? Math.ceil((20 - inputs.milTotalYOS) * 12) * 0.01 / 12 : 0);
-                    monthlyPension = predictions["High 3"] * inputs.milTotalYOS * inputs.retirementSystem * reductionFactor;
                     annualPension = predictions["High 3"] * inputs.milTotalYOS * inputs.retirementSystem * 12 * reductionFactor;
                     activePoints = 365 * yearsDifference(dates.eadDate, dates.etsDate);
                     reservesPoints = 72 * yearsDifference(dates.etsDate, milRetireDate);
@@ -878,7 +1284,13 @@ function calculateRetirementPlan() {
                     reservesPension = predictions["High 3"] * (activePoints + reservesPoints) / 360 * inputs.retirementSystem * 12;
                     adjustedReservesPension = reservesPension * Math.pow((1 + inputs.colaRate), Math.floor(yearsDifference(milRetireDate, sixtyBirthday))) * inputs.annuityAdjustment;
                     reduction = (inputs.COA == COA.Reserves) ? [greyAreaYears * 12, reservesPension] : null;
-                    reqSavings = requiredSavings(retirementLength, adjustedPension, inputs.retirementReturnRate, inputs.colaRate, 1, civRetireDate.getUTCMonth(), reduction);
+                    if (calculationMode == Mode.MonteCarlo) {
+                        monteCarloSavingsResults = requiredSavingsMonteCarlo(retirementLength, adjustedPension, inputs.retirementReturnMean, inputs.retirementReturnStdev, inputs.colaRate, civRetireDate.getUTCMonth(), inputs.retirementMonteCarloScore, inputs.retirementMonteCarloScore + 0.01, reduction, inputs.monteCarloTrials);
+                        reqSavings = monteCarloSavingsResults.Savings;
+                    }
+                    else {
+                        reqSavings = requiredSavings(retirementLength, adjustedPension, inputs.retirementReturnRate, inputs.colaRate, civRetireDate.getUTCMonth(), reduction);
+                    }
                     moneyStyle = { style: "currency", currency: "USD" };
                     // The Required Savings output will always be shown for every case
                     document.getElementById("requiredSavings").textContent = reqSavings.toLocaleString("en-US", moneyStyle);
@@ -897,8 +1309,14 @@ function calculateRetirementPlan() {
                         }
                         // Assume savings start from ETS date
                         savingsTime = yearsDifference(dates.etsDate, civRetireDate);
-                        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, inputs.startingPrincipal, inputs.payAdjustment);
-                        monthlyDeposit = depositsNeeded(reqSavings, inputs.startingPrincipal, inputs.savingsReturnRate, savingsTime);
+                        if (calculationMode == Mode.MonteCarlo) {
+                            monteCarloDepositsResults = depositsNeededMonteCarlo(reqSavings, inputs.startingPrincipal, inputs.savingsReturnMean, inputs.savingsReturnStdev, savingsTime, inputs.savingsMonteCarloScore, inputs.savingsMonteCarloScore + 0.01, inputs.monteCarloTrials);
+                            monthlyDeposit = monteCarloDepositsResults.Deposit;
+                        }
+                        else {
+                            monthlyDeposit = depositsNeeded(reqSavings, inputs.startingPrincipal, inputs.savingsReturnRate, savingsTime);
+                        }
+                        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, inputs.startingPrincipal, monthlyDeposit, inputs.payAdjustment);
                         document.getElementById("monthlySavings").textContent = monthlyDeposit.toLocaleString("en-US", moneyStyle);
                         document.getElementById("annualSavings").textContent = (monthlyDeposit * 12).toLocaleString("en-US", moneyStyle);
                         // Hide and display required outputs
@@ -908,10 +1326,15 @@ function calculateRetirementPlan() {
                     }
                     // Case for staying on active-duty
                     else {
-                        // Assume savings was done from the start of Active-Duty service
-                        savingsTime = yearsDifference(dates.etsDate, milRetireDate);
-                        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, 0, inputs.payAdjustment, milRetireDate);
-                        startingFunds = savingsAfterDeposits(0, savingsPlan[0]["Monthly Deposit"], inputs.savingsReturnRate, monthsDifference(dates.eadDate, new Date()));
+                        totalCareerTime = yearsDifference(dates.eadDate, milRetireDate);
+                        savingsTime = yearsDifference(new Date(), milRetireDate);
+                        monthlyDeposit = depositsNeeded(reqSavings, 0, inputs.savingsReturnRate, totalCareerTime);
+                        startingFunds = savingsAfterDeposits(0, monthlyDeposit, inputs.savingsReturnRate, monthsDifference(dates.eadDate, new Date()));
+                        if (calculationMode == Mode.MonteCarlo) {
+                            monteCarloDepositsResults = depositsNeededMonteCarlo(reqSavings, startingFunds, inputs.savingsReturnMean, inputs.savingsReturnStdev, savingsTime, inputs.savingsMonteCarloScore, inputs.savingsMonteCarloScore + 0.01, inputs.monteCarloTrials);
+                            monthlyDeposit = monteCarloDepositsResults.Deposit;
+                        }
+                        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, 0, monthlyDeposit, inputs.payAdjustment, milRetireDate);
                         // Do not account for the civRetireOffset variable
                         document.getElementById("pension").textContent = "" + annualPension.toLocaleString("en-US", moneyStyle);
                         // Hide and display required outputs
@@ -922,7 +1345,12 @@ function calculateRetirementPlan() {
                     }
                     savingsTableData = createSavingsTable(savingsPlan, "retireTable");
                     savingsTableButton = document.getElementById("retireTableDownload");
-                    createSavingsChart(savingsPlan, inputs.savingsReturnRate, "savingsChart", startingFunds);
+                    if (calculationMode == Mode.MonteCarlo) {
+                        createMonteCarloChart(monteCarloDepositsResults.Data.Data, dates.etsDate, "savingsChart");
+                    }
+                    else {
+                        createSavingsChart(savingsPlan, inputs.savingsReturnRate, "savingsChart", startingFunds);
+                    }
                     // Overwrite download button data, if it already exists. Create it, if it doesn't exist.
                     if (savingsTableButton) {
                         savingsTableButton.href = createDownloadButton('savings.csv', savingsTableData, 'Download CSV', 'btn btn-primary mb-3', 'retireTableDownload').href;
@@ -931,6 +1359,9 @@ function calculateRetirementPlan() {
                         document.getElementById("retireTableTab").appendChild(createDownloadButton('savings.csv', savingsTableData, 'Download CSV', 'btn btn-primary mb-3', 'retireTableDownload'));
                     }
                     withdrawalTableData = createWithdrawalTableAndChart(reqSavings, adjustedPension / 12, civRetireDate, lifeExpectancyDate, inputs.colaRate, inputs.retirementReturnRate, "withdrawalTable", "withdrawalChart", reduction);
+                    if (calculationMode == Mode.MonteCarlo) {
+                        createMonteCarloChart(monteCarloSavingsResults.Data, civRetireDate, "withdrawalChart");
+                    }
                     withdrawalTableButton = document.getElementById("withdrawalTableDownload");
                     // Overwrite download button data, if it already exists. Create it, if it doesn't exist.
                     if (withdrawalTableButton) {
@@ -939,9 +1370,8 @@ function calculateRetirementPlan() {
                     else {
                         document.getElementById("withdrawalTableTab").appendChild(createDownloadButton('withdrawals.csv', withdrawalTableData, 'Download CSV', 'btn btn-primary mb-3', 'withdrawalTableDownload'));
                     }
-                    // Stop spinner icon and reveal tabs
+                    // Reveal tabs
                     document.getElementById("myTab").hidden = false;
-                    document.getElementById("calcSpinner").hidden = true;
                     return [2 /*return*/];
             }
         });
@@ -1203,6 +1633,47 @@ function setDefaultTimeline(careerPath) {
             break;
     }
     showPromotionTimeline();
+}
+function setCalculationMode() {
+    var calcSelect = document.getElementById("modeSelect");
+    switch (calcSelect.value) {
+        case "L":
+            calculationMode = Mode.Linear;
+            document.getElementById("savingsReturnRateGroup").hidden = false;
+            document.getElementById("retirementReturnRateGroup").hidden = false;
+            document.getElementById("savingsReturnMeanGroup").hidden = true;
+            document.getElementById("savingsReturnStdevGroup").hidden = true;
+            document.getElementById("retirementReturnMeanGroup").hidden = true;
+            document.getElementById("retirementReturnStdevGroup").hidden = true;
+            document.getElementById("minMonteCarloScoreGroup").hidden = true;
+            document.getElementById("maxMonteCarloScoreGroup").hidden = true;
+            document.getElementById("monteCarloTrialsGroup").hidden = true;
+            break;
+        case "M":
+            calculationMode = Mode.MonteCarlo;
+            document.getElementById("savingsReturnRateGroup").hidden = true;
+            document.getElementById("retirementReturnRateGroup").hidden = true;
+            document.getElementById("savingsReturnMeanGroup").hidden = false;
+            document.getElementById("savingsReturnStdevGroup").hidden = false;
+            document.getElementById("retirementReturnMeanGroup").hidden = false;
+            document.getElementById("retirementReturnStdevGroup").hidden = false;
+            document.getElementById("minMonteCarloScoreGroup").hidden = false;
+            document.getElementById("maxMonteCarloScoreGroup").hidden = false;
+            document.getElementById("monteCarloTrialsGroup").hidden = false;
+            break;
+        default:
+            calculationMode = Mode.Linear;
+            document.getElementById("savingsReturnRateGroup").hidden = false;
+            document.getElementById("retirementReturnRateGroup").hidden = false;
+            document.getElementById("savingsReturnMeanGroup").hidden = true;
+            document.getElementById("savingsReturnStdevGroup").hidden = true;
+            document.getElementById("retirementReturnMeanGroup").hidden = true;
+            document.getElementById("retirementReturnStdevGroup").hidden = true;
+            document.getElementById("minMonteCarloScoreGroup").hidden = true;
+            document.getElementById("maxMonteCarloScoreGroup").hidden = true;
+            document.getElementById("monteCarloTrialsGroup").hidden = true;
+            break;
+    }
 }
 /**
  * Create an HTML table based on a given dictionary.
