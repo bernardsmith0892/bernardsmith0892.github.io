@@ -448,8 +448,8 @@
         </div>
         <div class="modal-body">
         <h5 id="introduction">Introduction</h5>
-<p>I&#39;ve noticed a lot of issues with how some tools estimate the overall value of the military pension. The most common method I&#39;ve seen is to simply add up how much you would earn from the pension over your lifetime. (i.e. <code>Life Expectancy (years) x Pension Annuity ($ per year) = Total Pension Value</code>) According to this method, someone who retires as an O-5 at 42 and lives to 85 will have a pension &quot;worth&quot; $5,921,350 under Hi-3. (There&#39;s a reason why the official DoD retirement calculator uses this method.) By looking at this, the naive assumption is that you would need to save up almost <em>$6 million</em> by the time you&#39;re 42 in order to match the value of the military pension. A near impossible task, even if you never joined the military and started saving from 22 years old!</p>
-<p>However, this method is extremely faulty. Of course, it would be completely true if you&#39;re planning to put all of your retirement savings under your mattress to earn a 0% return rate. But most people usually put their life savings in retirement accounts that gain value over time. If you consider this, the savings you would need to match the pension&#39;s value is greatly reduced. In fact, with a modest 3% return rate, the savings requirement for the previous scenario is cut to &quot;only&quot; $3 million.</p>
+<p>I've noticed a lot of issues with how some tools estimate the overall value of the military pension. The most common method I've seen is to simply add up how much you would earn from the pension over your lifetime. (i.e. <code>Life Expectancy (years) x Pension Annuity ($ per year) = Total Pension Value</code>) According to this method, someone who retires as an O-5 at 42 and lives to 85 will have a pension &quot;worth&quot; $5,921,350 under Hi-3. (There's a reason why the official DoD retirement calculator uses this method.) By looking at this, the naive assumption is that you would need to save up almost <em>$6 million</em> by the time you're 42 in order to match the value of the military pension. A near impossible task, even if you never joined the military and started saving from 22 years old!</p>
+<p>However, this method is extremely faulty. Of course, it would be completely true if you're planning to put all of your retirement savings under your mattress to earn a 0% return rate. But most people usually put their life savings in retirement accounts that gain value over time. If you consider this, the savings you would need to match the pension's value is greatly reduced. In fact, with a modest 3% return rate, the savings requirement for the previous scenario is cut to &quot;only&quot; $3 million.</p>
 <p>This tool was designed to estimate how much in <em>savings</em> you would need to match an active-duty pension, rather than how much money you will earn from the pension. It does this by developing a retirement plan with the following requirements:</p>
 <ul>
 <li>Your initial withdrawals from savings must match what you would receive from an active-duty pension.</li>
@@ -457,7 +457,7 @@
 <li>Your savings must last from your retirement age to your predicted life expectancy.</li>
 </ul>
 <h5 id="disclaimer">Disclaimer</h5>
-<p>I hope this tool can serve as a useful <em>part</em> of your retirement and career planning, however I must stress that these are <em>estimates</em> and I cannot make any guarantees about the accuracy of the results. It makes a lot of bold assumptions about the future of the stock market, cost-of-living, and inflation. While I certainly did not attempt to make the tool <em>inaccurate</em>, it unfortunately cannot predict the future with a measurable accuracy. I cannot guarantee that if the tool tells you save <code>$XYZ</code> every month that you will have <code>$ABC</code> by your retirement year, nor if it tells you to have <code>$ABC</code> in retirement savings that it will last you for the rest of your life. Regardless, I still hope that this does serve useful to you and helps you make a better informed decision about your career and future. </p>
+<p>I hope this tool can serve as a useful <em>part</em> of your retirement and career planning, however I must stress that these are <em>estimates</em> and I cannot make any guarantees about the accuracy of the results. It makes a lot of bold assumptions about the future of the stock market, cost-of-living, and inflation. While I certainly did not attempt to make the tool <em>inaccurate</em>, it unfortunately cannot predict the future with a measurable accuracy. I cannot guarantee that if the tool tells you save <code>$XYZ</code> every month that you will have <code>$ABC</code> by your retirement year, nor if it tells you to have <code>$ABC</code> in retirement savings that it will last you for the rest of your life. Regardless, I still hope that this does serve useful to you and helps you make a better informed decision about your career and future.</p>
 <h5 id="scenarios">Scenarios</h5>
 <p>There are three scenarios this tool can consider:</p>
 <ol>
@@ -483,21 +483,24 @@
 </ul>
 <p>It also provides several tables and charts to show detailed information. You may download the tables as CSV files:</p>
 <ul>
-<li><p><strong>Savings Plan Table:</strong> This shows you three primary data points:</p>
+<li>
+<p><strong>Savings Plan Table:</strong> This shows you three primary data points:</p>
 <ol>
 <li>How much your compensation would have been on active-duty.</li>
 <li>How much you will need to save to meet the savings goal by your retirement date.</li>
 <li>How much your annual civilian pay needs to be to match your active-duty compensation in addition to your savings requirement. ( <code>Active-Duty Pay + Savings Requirement = Civilian Pay Requirement</code> )</li>
 </ol>
 </li>
-<li><p><strong>Retirement Payout Table:</strong> This lets you see how your savings is depleted during retirement. If you&#39;re calculating for a reserves retirement, it also shows you when and by how much your withdrawal requirement is reduced from the reserves pension.</p>
+<li>
+<p><strong>Retirement Payout Table:</strong> This lets you see how your savings is depleted during retirement. If you're calculating for a reserves retirement, it also shows you when and by how much your withdrawal requirement is reduced from the reserves pension.</p>
 </li>
-<li><p><strong>Charts:</strong> In <em>Linear</em> mode, the charts will simply represent the values in the tables. In <em>Monte Carlo</em> mode, the charts will display three overlapping shaded areas that show the percentile ranges of the results.</p>
+<li>
+<p><strong>Charts:</strong> In <em>Linear</em> mode, the charts will simply represent the values in the tables. In <em>Monte Carlo</em> mode, the charts will display three overlapping shaded areas that show the percentile ranges of the results.</p>
 <ul>
-<li>Green (25th to 75th percentiles): 50% of the simulated results ended up within this area.</li>
-<li>Red (10th to 90th percentiles): 80% of the simulated results ended up within this area. 15% of these were better than the green results and 15% were worse.</li>
-<li>Grey (1st to 99th percentiles): Shows the remaining range of the simulated results. 9% of these were better than the best red results and 9% were worse than the poor red results.</li>
-<li>Blue (average outcome): This is the line showing the average/median result from the simulations. 50% of results were better than this line and 50% of results were worse.</li>
+<li><strong>Green (25th to 75th percentiles):</strong> 50% of the simulated results ended up within this area.</li>
+<li><strong>Red (10th to 90th percentiles):</strong> 80% of the simulated results ended up within this area. 15% of these were better than the green results and 15% were worse.</li>
+<li><strong>Grey (1st to 99th percentiles):</strong> Shows the remaining range of the simulated results. 9% of these were better than the best red results and 9% were worse than the poor red results.</li>
+<li><strong>Blue (average outcome):</strong> This is the line showing the average/median result from the simulations. 50% of results were better than this line and 50% of results were worse.</li>
 </ul>
 </li>
 </ul>
