@@ -76,6 +76,38 @@ var Mode;
     Mode[Mode["MonteCarlo"] = 1] = "MonteCarlo";
 })(Mode || (Mode = {}));
 var calculationMode = Mode.MonteCarlo;
+function fetchJSON() {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    if (!(payscale !== null && payscale !== void 0)) return [3 /*break*/, 1];
+                    _a = payscale;
+                    return [3 /*break*/, 4];
+                case 1: return [4 /*yield*/, fetch("./2021_payscale.json")];
+                case 2: return [4 /*yield*/, (_c.sent()).json()];
+                case 3:
+                    _a = _c.sent();
+                    _c.label = 4;
+                case 4:
+                    // Fetch payscale and BAH charts
+                    payscale = _a;
+                    if (!(bah2 !== null && bah2 !== void 0)) return [3 /*break*/, 5];
+                    _b = bah2;
+                    return [3 /*break*/, 8];
+                case 5: return [4 /*yield*/, fetch("./2021_bah2.json")];
+                case 6: return [4 /*yield*/, (_c.sent()).json()];
+                case 7:
+                    _b = _c.sent();
+                    _c.label = 8;
+                case 8:
+                    bah2 = _b;
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 function percentileCalc(data, percentile) {
     data.sort(function (a, b) { return a - b; });
     var pos = (data.length - 1) * percentile;
@@ -1229,153 +1261,143 @@ function getDOMInputs(dates, inputs) {
  * Calculate retirement plan upon a button press from the user. Fetches JSON data, values from input fields, and outputs the results to the webpage.
  */
 function calculateRetirementPlan() {
-    return __awaiter(this, void 0, void 0, function () {
-        var _a, _b, bas, dates, inputs, milRetireDate, civRetireDate, sixtyBirthday, lifeExpectancyDate, greyAreaYears, retirementLength, predictions, reductionFactor, annualPension, activePoints, reservesPoints, adjustedPension, reservesPension, adjustedReservesPension, reduction, reqSavings, monteCarloSavingsResults, moneyStyle, savingsTime, monthlyDeposit, startingFunds, savingsPlan, monteCarloDepositsResults, totalCareerTime, savingsTableData, savingsTableButton, withdrawalTableData, withdrawalTableButton;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
-                case 0:
-                    if (!(payscale !== null && payscale !== void 0)) return [3 /*break*/, 1];
-                    _a = payscale;
-                    return [3 /*break*/, 4];
-                case 1: return [4 /*yield*/, fetch("./2021_payscale.json")];
-                case 2: return [4 /*yield*/, (_c.sent()).json()];
-                case 3:
-                    _a = _c.sent();
-                    _c.label = 4;
-                case 4:
-                    // Fetch payscale and BAH charts
-                    payscale = _a;
-                    if (!(bah2 !== null && bah2 !== void 0)) return [3 /*break*/, 5];
-                    _b = bah2;
-                    return [3 /*break*/, 8];
-                case 5: return [4 /*yield*/, fetch("./2021_bah2.json")];
-                case 6: return [4 /*yield*/, (_c.sent()).json()];
-                case 7:
-                    _b = _c.sent();
-                    _c.label = 8;
-                case 8:
-                    bah2 = _b;
-                    bas = { "O": 266.18, "E": 386.50 };
-                    dates = {};
-                    inputs = {};
-                    getDOMInputs(dates, inputs);
-                    milRetireDate = addMonths(dates.eadDate, inputs.milTotalYOS * 12);
-                    civRetireDate = addMonths(milRetireDate, inputs.civRetireOffset * 12);
-                    sixtyBirthday = addMonths(dates.birthday, 60 * 12);
-                    lifeExpectancyDate = addMonths(dates.birthday, inputs.lifeExpectancy * 12);
-                    greyAreaYears = yearsDifference(civRetireDate, sixtyBirthday);
-                    /* ************************
-                       * Perform calculations *
-                       ************************ */
-                    if (inputs.COA == COA.ActiveDuty) {
-                        // Allows COLA-increases to work for the Active-Duty case
-                        dates.etsDate = new Date();
-                        inputs.annuityAdjustment = 1.0;
-                        inputs.civRetireOffset = 0;
-                        civRetireDate = milRetireDate;
-                    }
-                    retirementLength = yearsDifference(civRetireDate, lifeExpectancyDate);
-                    predictions = predictPay(dates.etsDate, milRetireDate, dates.eadDate, dates.payDate, inputs.colaRate, promotionTimeline, payscale, bah2, bas);
-                    reductionFactor = 1.0 - (inputs.milTotalYOS < 20 ? Math.ceil((20 - inputs.milTotalYOS) * 12) * 0.01 / 12 : 0);
-                    annualPension = predictions["High 3"] * inputs.milTotalYOS * inputs.retirementSystem * 12 * reductionFactor;
-                    activePoints = 365 * yearsDifference(dates.eadDate, dates.etsDate);
-                    reservesPoints = 72 * yearsDifference(dates.etsDate, milRetireDate);
-                    adjustedPension = annualPension * Math.pow((1 + inputs.colaRate), inputs.civRetireOffset) * inputs.annuityAdjustment;
-                    reservesPension = predictions["High 3"] * (activePoints + reservesPoints) / 360 * inputs.retirementSystem * 12;
-                    adjustedReservesPension = reservesPension * Math.pow((1 + inputs.colaRate), Math.floor(yearsDifference(milRetireDate, sixtyBirthday))) * inputs.annuityAdjustment;
-                    reduction = (inputs.COA == COA.Reserves) ? [greyAreaYears * 12, reservesPension] : null;
-                    if (calculationMode == Mode.MonteCarlo) {
-                        monteCarloSavingsResults = requiredSavingsMonteCarlo(retirementLength, adjustedPension, inputs.retirementReturnMean, inputs.retirementReturnStdev, inputs.colaRate, civRetireDate.getUTCMonth(), inputs.retirementMonteCarloScore, inputs.retirementMonteCarloScore + 0.01, reduction, inputs.monteCarloTrials);
-                        reqSavings = monteCarloSavingsResults.Savings;
-                    }
-                    else {
-                        reqSavings = requiredSavings(retirementLength, adjustedPension, inputs.retirementReturnRate, inputs.colaRate, civRetireDate.getUTCMonth(), reduction);
-                    }
-                    moneyStyle = { style: "currency", currency: "USD" };
-                    // The Required Savings output will always be shown for every case
-                    document.getElementById("requiredSavings").textContent = reqSavings.toLocaleString("en-US", moneyStyle);
-                    document.getElementById("requiredSavingsGroup").hidden = false;
-                    startingFunds = inputs.startingPrincipal;
-                    // Case for not staying on active-duty
-                    if (inputs.COA != COA.ActiveDuty) {
-                        document.getElementById("pension").textContent = "" + annualPension.toLocaleString("en-US", moneyStyle) + (inputs.civRetireOffset != 0 ? " (" + adjustedPension.toLocaleString("en-US", moneyStyle) + ")" : "");
-                        // Case for transferring to reserves
-                        if (inputs.COA == COA.Reserves) {
-                            document.getElementById("reservesPension").textContent = reservesPension.toLocaleString("en-US", moneyStyle) + " (" + adjustedReservesPension.toLocaleString("en-US", moneyStyle) + ")";
-                            document.getElementById("reservesPensionGroup").hidden = false;
-                        }
-                        else {
-                            document.getElementById("reservesPensionGroup").hidden = true;
-                        }
-                        // Assume savings start from ETS date
-                        savingsTime = yearsDifference(dates.etsDate, civRetireDate);
-                        if (calculationMode == Mode.MonteCarlo) {
-                            monteCarloDepositsResults = depositsNeededMonteCarlo(reqSavings, inputs.startingPrincipal, inputs.savingsReturnMean, inputs.savingsReturnStdev, savingsTime, inputs.savingsMonteCarloScore, inputs.savingsMonteCarloScore + 0.01, inputs.monteCarloTrials);
-                            monthlyDeposit = monteCarloDepositsResults.Deposit;
-                        }
-                        else {
-                            monthlyDeposit = depositsNeeded(reqSavings, inputs.startingPrincipal, inputs.savingsReturnRate, savingsTime);
-                        }
-                        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, inputs.startingPrincipal, monthlyDeposit, inputs.payAdjustment);
-                        document.getElementById("monthlySavings").textContent = monthlyDeposit.toLocaleString("en-US", moneyStyle);
-                        document.getElementById("annualSavings").textContent = (monthlyDeposit * 12).toLocaleString("en-US", moneyStyle);
-                        // Hide and display required outputs
-                        document.getElementById("pensionGroup").hidden = false;
-                        document.getElementById("monthlySavingsGroup").hidden = false;
-                        document.getElementById("annualSavingsGroup").hidden = false;
-                    }
-                    // Case for staying on active-duty
-                    else {
-                        totalCareerTime = yearsDifference(dates.eadDate, milRetireDate);
-                        savingsTime = yearsDifference(new Date(), milRetireDate);
-                        monthlyDeposit = depositsNeeded(reqSavings, 0, inputs.savingsReturnRate, totalCareerTime);
-                        startingFunds = savingsAfterDeposits(0, monthlyDeposit, inputs.savingsReturnRate, monthsDifference(dates.eadDate, new Date()));
-                        if (calculationMode == Mode.MonteCarlo) {
-                            monteCarloDepositsResults = depositsNeededMonteCarlo(reqSavings, startingFunds, inputs.savingsReturnMean, inputs.savingsReturnStdev, savingsTime, inputs.savingsMonteCarloScore, inputs.savingsMonteCarloScore + 0.01, inputs.monteCarloTrials);
-                            monthlyDeposit = monteCarloDepositsResults.Deposit;
-                        }
-                        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, 0, monthlyDeposit, inputs.payAdjustment, milRetireDate);
-                        // Do not account for the civRetireOffset variable
-                        document.getElementById("pension").textContent = "" + annualPension.toLocaleString("en-US", moneyStyle);
-                        // Hide and display required outputs
-                        document.getElementById("pensionGroup").hidden = false;
-                        document.getElementById("reservesPensionGroup").hidden = true;
-                        document.getElementById("monthlySavingsGroup").hidden = true;
-                        document.getElementById("annualSavingsGroup").hidden = true;
-                    }
-                    savingsTableData = createSavingsTable(savingsPlan, "retireTable");
-                    savingsTableButton = document.getElementById("retireTableDownload");
-                    if (calculationMode == Mode.MonteCarlo) {
-                        createMonteCarloChart(monteCarloDepositsResults.Data.Data, dates.etsDate, "savingsChart");
-                    }
-                    else {
-                        createSavingsChart(savingsPlan, inputs.savingsReturnRate, "savingsChart", startingFunds);
-                    }
-                    // Overwrite download button data, if it already exists. Create it, if it doesn't exist.
-                    if (savingsTableButton) {
-                        savingsTableButton.href = createDownloadButton('savings.csv', savingsTableData, 'Download CSV', 'btn btn-primary mb-3', 'retireTableDownload').href;
-                    }
-                    else {
-                        document.getElementById("retireTableTab").appendChild(createDownloadButton('savings.csv', savingsTableData, 'Download CSV', 'btn btn-primary mb-3', 'retireTableDownload'));
-                    }
-                    withdrawalTableData = createWithdrawalTableAndChart(reqSavings, adjustedPension / 12, civRetireDate, lifeExpectancyDate, inputs.colaRate, inputs.retirementReturnRate, "withdrawalTable", "withdrawalChart", reduction);
-                    if (calculationMode == Mode.MonteCarlo) {
-                        createMonteCarloChart(monteCarloSavingsResults.Data, civRetireDate, "withdrawalChart");
-                    }
-                    withdrawalTableButton = document.getElementById("withdrawalTableDownload");
-                    // Overwrite download button data, if it already exists. Create it, if it doesn't exist.
-                    if (withdrawalTableButton) {
-                        withdrawalTableButton.href = createDownloadButton('withdrawals.csv', withdrawalTableData, 'Download CSV', 'btn btn-primary mb-3', 'withdrawalTableDownload').href;
-                    }
-                    else {
-                        document.getElementById("withdrawalTableTab").appendChild(createDownloadButton('withdrawals.csv', withdrawalTableData, 'Download CSV', 'btn btn-primary mb-3', 'withdrawalTableDownload'));
-                    }
-                    // Reveal tabs
-                    document.getElementById("myTab").hidden = false;
-                    return [2 /*return*/];
-            }
-        });
-    });
+    var bas = { "O": 266.18, "E": 386.50 };
+    /* ************************************
+       * Get values from DOM input fields *
+       ************************************ */
+    var dates = {};
+    var inputs = {};
+    getDOMInputs(dates, inputs);
+    /* *************************
+       * Calculate Date Ranges *
+       ************************* */
+    var milRetireDate = addMonths(dates.eadDate, inputs.milTotalYOS * 12);
+    var civRetireDate = addMonths(milRetireDate, inputs.civRetireOffset * 12);
+    var sixtyBirthday = addMonths(dates.birthday, 60 * 12);
+    var lifeExpectancyDate = addMonths(dates.birthday, inputs.lifeExpectancy * 12);
+    var greyAreaYears = yearsDifference(civRetireDate, sixtyBirthday);
+    /* ************************
+       * Perform calculations *
+       ************************ */
+    if (inputs.COA == COA.ActiveDuty) {
+        // Allows COLA-increases to work for the Active-Duty case
+        dates.etsDate = new Date();
+        inputs.annuityAdjustment = 1.0;
+        inputs.civRetireOffset = 0;
+        civRetireDate = milRetireDate;
+    }
+    var retirementLength = yearsDifference(civRetireDate, lifeExpectancyDate);
+    var predictions = predictPay(dates.etsDate, milRetireDate, dates.eadDate, dates.payDate, inputs.colaRate, promotionTimeline, payscale, bah2, bas);
+    // Used for early retirement under TERA. Compute reduction factor if below 20 years. Set reduction factor to 1 if equal to or above 20 years.
+    var reductionFactor = 1.0 - (inputs.milTotalYOS < 20 ? Math.ceil((20 - inputs.milTotalYOS) * 12) * 0.01 / 12 : 0);
+    var annualPension = predictions["High 3"] * inputs.milTotalYOS * inputs.retirementSystem * 12 * reductionFactor;
+    var activePoints = 365 * yearsDifference(dates.eadDate, dates.etsDate);
+    var reservesPoints = 72 * yearsDifference(dates.etsDate, milRetireDate);
+    var adjustedPension = annualPension * Math.pow((1 + inputs.colaRate), inputs.civRetireOffset) * inputs.annuityAdjustment;
+    var reservesPension = predictions["High 3"] * (activePoints + reservesPoints) / 360 * inputs.retirementSystem * 12;
+    var adjustedReservesPension = reservesPension * Math.pow((1 + inputs.colaRate), Math.floor(yearsDifference(milRetireDate, sixtyBirthday))) * inputs.annuityAdjustment;
+    //  ** If we're calculating for a transfer into the reserves, schedule a reduction in our savings withdrawal requirement at Age 60
+    var reduction = (inputs.COA == COA.Reserves) ? [greyAreaYears * 12, reservesPension] : null;
+    // Determine total savings needed at retirement
+    var reqSavings;
+    var monteCarloSavingsResults;
+    if (calculationMode == Mode.MonteCarlo) {
+        monteCarloSavingsResults = requiredSavingsMonteCarlo(retirementLength, adjustedPension, inputs.retirementReturnMean, inputs.retirementReturnStdev, inputs.colaRate, civRetireDate.getUTCMonth(), inputs.retirementMonteCarloScore, inputs.retirementMonteCarloScore + 0.01, reduction, inputs.monteCarloTrials);
+        reqSavings = monteCarloSavingsResults.Savings;
+    }
+    else {
+        reqSavings = requiredSavings(retirementLength, adjustedPension, inputs.retirementReturnRate, inputs.colaRate, civRetireDate.getUTCMonth(), reduction);
+    }
+    /* ***************************
+       * Update DOM with outputs *
+       *************************** */
+    var moneyStyle = { style: "currency", currency: "USD" };
+    // The Required Savings output will always be shown for every case
+    document.getElementById("requiredSavings").textContent = reqSavings.toLocaleString("en-US", moneyStyle);
+    document.getElementById("requiredSavingsGroup").hidden = false;
+    var savingsTime;
+    var monthlyDeposit;
+    var startingFunds = inputs.startingPrincipal;
+    var savingsPlan;
+    var monteCarloDepositsResults;
+    // Case for not staying on active-duty
+    if (inputs.COA != COA.ActiveDuty) {
+        document.getElementById("pension").textContent = "" + annualPension.toLocaleString("en-US", moneyStyle) + (inputs.civRetireOffset != 0 ? " (" + adjustedPension.toLocaleString("en-US", moneyStyle) + ")" : "");
+        // Case for transferring to reserves
+        if (inputs.COA == COA.Reserves) {
+            document.getElementById("reservesPension").textContent = reservesPension.toLocaleString("en-US", moneyStyle) + " (" + adjustedReservesPension.toLocaleString("en-US", moneyStyle) + ")";
+            document.getElementById("reservesPensionGroup").hidden = false;
+        }
+        else {
+            document.getElementById("reservesPensionGroup").hidden = true;
+        }
+        // Assume savings start from ETS date
+        savingsTime = yearsDifference(dates.etsDate, civRetireDate);
+        if (calculationMode == Mode.MonteCarlo) {
+            monteCarloDepositsResults = depositsNeededMonteCarlo(reqSavings, inputs.startingPrincipal, inputs.savingsReturnMean, inputs.savingsReturnStdev, savingsTime, inputs.savingsMonteCarloScore, inputs.savingsMonteCarloScore + 0.01, inputs.monteCarloTrials);
+            monthlyDeposit = monteCarloDepositsResults.Deposit;
+        }
+        else {
+            monthlyDeposit = depositsNeeded(reqSavings, inputs.startingPrincipal, inputs.savingsReturnRate, savingsTime);
+        }
+        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, inputs.startingPrincipal, monthlyDeposit, inputs.payAdjustment);
+        document.getElementById("monthlySavings").textContent = monthlyDeposit.toLocaleString("en-US", moneyStyle);
+        document.getElementById("annualSavings").textContent = (monthlyDeposit * 12).toLocaleString("en-US", moneyStyle);
+        // Hide and display required outputs
+        document.getElementById("pensionGroup").hidden = false;
+        document.getElementById("monthlySavingsGroup").hidden = false;
+        document.getElementById("annualSavingsGroup").hidden = false;
+    }
+    // Case for staying on active-duty
+    else {
+        // Assume savings was done from the start of Active-Duty service
+        var totalCareerTime = yearsDifference(dates.eadDate, milRetireDate);
+        savingsTime = yearsDifference(new Date(), milRetireDate);
+        monthlyDeposit = depositsNeeded(reqSavings, 0, inputs.savingsReturnRate, totalCareerTime);
+        startingFunds = savingsAfterDeposits(0, monthlyDeposit, inputs.savingsReturnRate, monthsDifference(dates.eadDate, new Date()));
+        if (calculationMode == Mode.MonteCarlo) {
+            monteCarloDepositsResults = depositsNeededMonteCarlo(reqSavings, startingFunds, inputs.savingsReturnMean, inputs.savingsReturnStdev, savingsTime, inputs.savingsMonteCarloScore, inputs.savingsMonteCarloScore + 0.01, inputs.monteCarloTrials);
+            monthlyDeposit = monteCarloDepositsResults.Deposit;
+        }
+        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, 0, monthlyDeposit, inputs.payAdjustment, milRetireDate);
+        // Do not account for the civRetireOffset variable
+        document.getElementById("pension").textContent = "" + annualPension.toLocaleString("en-US", moneyStyle);
+        // Hide and display required outputs
+        document.getElementById("pensionGroup").hidden = false;
+        document.getElementById("reservesPensionGroup").hidden = true;
+        document.getElementById("monthlySavingsGroup").hidden = true;
+        document.getElementById("annualSavingsGroup").hidden = true;
+    }
+    // Create detailed tables and charts
+    var savingsTableData = createSavingsTable(savingsPlan, "retireTable");
+    var savingsTableButton = document.getElementById("retireTableDownload");
+    if (calculationMode == Mode.MonteCarlo) {
+        createMonteCarloChart(monteCarloDepositsResults.Data.Data, dates.etsDate, "savingsChart");
+    }
+    else {
+        createSavingsChart(savingsPlan, inputs.savingsReturnRate, "savingsChart", startingFunds);
+    }
+    // Overwrite download button data, if it already exists. Create it, if it doesn't exist.
+    if (savingsTableButton) {
+        savingsTableButton.href = createDownloadButton('savings.csv', savingsTableData, 'Download CSV', 'btn btn-primary mb-3', 'retireTableDownload').href;
+    }
+    else {
+        document.getElementById("retireTableTab").appendChild(createDownloadButton('savings.csv', savingsTableData, 'Download CSV', 'btn btn-primary mb-3', 'retireTableDownload'));
+    }
+    var withdrawalTableData = createWithdrawalTableAndChart(reqSavings, adjustedPension / 12, civRetireDate, lifeExpectancyDate, inputs.colaRate, inputs.retirementReturnRate, "withdrawalTable", "withdrawalChart", reduction);
+    if (calculationMode == Mode.MonteCarlo) {
+        createMonteCarloChart(monteCarloSavingsResults.Data, civRetireDate, "withdrawalChart");
+    }
+    var withdrawalTableButton = document.getElementById("withdrawalTableDownload");
+    // Overwrite download button data, if it already exists. Create it, if it doesn't exist.
+    if (withdrawalTableButton) {
+        withdrawalTableButton.href = createDownloadButton('withdrawals.csv', withdrawalTableData, 'Download CSV', 'btn btn-primary mb-3', 'withdrawalTableDownload').href;
+    }
+    else {
+        document.getElementById("withdrawalTableTab").appendChild(createDownloadButton('withdrawals.csv', withdrawalTableData, 'Download CSV', 'btn btn-primary mb-3', 'withdrawalTableDownload'));
+    }
+    // Reveal tabs
+    document.getElementById("myTab").hidden = false;
 }
 /*
     ****************************************************
