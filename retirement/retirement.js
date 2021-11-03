@@ -621,10 +621,11 @@ function predictPay(startDate, endDate, eadDate, payDate, annualRaiseRate, promo
  * @param {boolean} [verbose=false] - Print the table to the console.
  * @returns List of dictionaries containing the savings plan.
  */
-function equivalentRetirement(targetSavings, years, annualReturnRate, predictedPay, colaRate, startingPrincipal, monthlyDeposit, payAdjustment, endDate, verbose) {
+function equivalentRetirement(targetSavings, years, annualReturnRate, predictedPay, colaRate, startingPrincipal, monthlyDeposit, payAdjustment, endDate, reserves, verbose) {
     if (startingPrincipal === void 0) { startingPrincipal = 0; }
     if (payAdjustment === void 0) { payAdjustment = 1.0; }
     if (endDate === void 0) { endDate = null; }
+    if (reserves === void 0) { reserves = false; }
     if (verbose === void 0) { verbose = false; }
     var startDate = predictedPay[0]["Date"];
     var currentPrediction = { "Date": startDate };
@@ -649,19 +650,22 @@ function equivalentRetirement(targetSavings, years, annualReturnRate, predictedP
             currentPrediction = predictedPay[month];
         }
         var civilianMonthlyPay = (currentPrediction["Base Pay"] + currentPrediction["Bonuses"]) * payAdjustment + monthlyDeposit;
-        var civilianAnnualPay = civilianMonthlyPay * 12;
+        if (reserves) {
+            // Subtract monthly drill pay from required civilian pay (AD Base Pay / 30 ($ per pay period) * 62 pay periods for annual pay. Divided by 12 for monthly pay.)
+            civilianMonthlyPay -= (currentPrediction["Base Pay"] / 30) * 62 / 12;
+        }
         savingsPlan.push({
             "Date": currentPrediction["Date"],
             "Grade": currentPrediction["Grade"],
             "Mil Monthly": (currentPrediction["Base Pay"] + currentPrediction["Bonuses"]) * payAdjustment,
             "Civ Monthly": civilianMonthlyPay,
             "Monthly Deposit": monthlyDeposit,
-            "Civ Annual": civilianAnnualPay,
+            "Civ Annual": civilianMonthlyPay * 12,
             "Annual Deposit": monthlyDeposit * 12,
             "COLA": currentPrediction["COLA"]
         });
         if (verbose) {
-            console.log(currentPrediction["Date"].toLocaleDateString() + ",$" + civilianMonthlyPay.toFixed(2) + ',$' + monthlyDeposit.toFixed(2) + ',$' + civilianAnnualPay.toFixed(2) + ',$' + (monthlyDeposit * 12).toFixed(2) + "," + currentPrediction["COLA"].toFixed(2));
+            console.log(currentPrediction["Date"].toLocaleDateString() + ",$" + civilianMonthlyPay.toFixed(2) + ',$' + monthlyDeposit.toFixed(2) + ',$' + (civilianMonthlyPay * 12).toFixed(2) + ',$' + (monthlyDeposit * 12).toFixed(2) + "," + currentPrediction["COLA"].toFixed(2));
         }
     }
     return savingsPlan;
@@ -1340,7 +1344,7 @@ function calculateRetirementPlan() {
         else {
             monthlyDeposit = depositsNeeded(reqSavings, inputs.startingPrincipal, inputs.savingsReturnRate, savingsTime);
         }
-        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, inputs.startingPrincipal, monthlyDeposit, inputs.payAdjustment);
+        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, inputs.startingPrincipal, monthlyDeposit, inputs.payAdjustment, null, inputs.COA == COA.Reserves);
         document.getElementById("monthlySavings").textContent = monthlyDeposit.toLocaleString("en-US", moneyStyle);
         document.getElementById("annualSavings").textContent = (monthlyDeposit * 12).toLocaleString("en-US", moneyStyle);
         // Hide and display required outputs
