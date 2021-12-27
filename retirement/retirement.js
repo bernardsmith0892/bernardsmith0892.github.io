@@ -1153,7 +1153,7 @@ function calculateRetirementPlan() {
         savingsTime = yearsDifference(dates.etsDate, civRetireDate);
         monteCarloDepositsResults = depositsNeededMonteCarlo(reqSavings, inputs.startingPrincipal, inputs.savingsReturnMean, inputs.savingsReturnStdev, savingsTime, inputs.savingsMonteCarloScore, inputs.savingsMonteCarloScore + 0.01, inputs.monteCarloTrials);
         monthlyDeposit = monteCarloDepositsResults.Deposit;
-        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, inputs.startingPrincipal, monthlyDeposit, inputs.payAdjustment, null, inputs.COA == COA.Reserves);
+        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnMean, predictions["Predicted Pay"], inputs.colaRate, inputs.startingPrincipal, monthlyDeposit, inputs.payAdjustment, null, inputs.COA == COA.Reserves);
         document.getElementById("monthlySavings").textContent = monthlyDeposit.toLocaleString("en-US", moneyStyle);
         document.getElementById("annualSavings").textContent = (monthlyDeposit * 12).toLocaleString("en-US", moneyStyle);
         // Hide and display required outputs
@@ -1166,11 +1166,11 @@ function calculateRetirementPlan() {
         // Assume savings was done from the start of Active-Duty service
         var totalCareerTime = yearsDifference(dates.eadDate, milRetireDate);
         savingsTime = yearsDifference(new Date(), milRetireDate);
-        monthlyDeposit = depositsNeeded(reqSavings, 0, inputs.savingsReturnRate, totalCareerTime);
-        startingFunds = savingsAfterDeposits(0, monthlyDeposit, inputs.savingsReturnRate, monthsDifference(dates.eadDate, new Date()));
+        monthlyDeposit = depositsNeeded(reqSavings, 0, inputs.savingsReturnMean, totalCareerTime);
+        startingFunds = savingsAfterDeposits(0, monthlyDeposit, inputs.savingsReturnMean, monthsDifference(dates.eadDate, new Date()));
         monteCarloDepositsResults = depositsNeededMonteCarlo(reqSavings, startingFunds, inputs.savingsReturnMean, inputs.savingsReturnStdev, savingsTime, inputs.savingsMonteCarloScore, inputs.savingsMonteCarloScore + 0.01, inputs.monteCarloTrials);
         monthlyDeposit = monteCarloDepositsResults.Deposit;
-        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, 0, monthlyDeposit, inputs.payAdjustment, milRetireDate);
+        savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnMean, predictions["Predicted Pay"], inputs.colaRate, 0, monthlyDeposit, inputs.payAdjustment, milRetireDate);
         // Do not account for the civRetireOffset variable
         document.getElementById("pension").textContent = "" + annualPension.toLocaleString("en-US", moneyStyle);
         // Hide and display required outputs
