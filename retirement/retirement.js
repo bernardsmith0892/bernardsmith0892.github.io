@@ -117,7 +117,10 @@ function preloadFunction() {
                             document.getElementById("lifeExpectancy").value = inputs.lifeExpectancy;
                             // Alternative COAs
                             document.getElementById("coaSelect").value = inputs.COA;
-                            document.getElementById("etsDate").value = dates.etsDate.slice(0, 7);
+                            setETSDateRequirement();
+                            if ("etsDate" in dates) {
+                                document.getElementById("etsDate").value = dates.etsDate.slice(0, 7);
+                            }
                             document.getElementById("startingPrincipal").value = inputs.startingPrincipal;
                             document.getElementById("civRetireOffset").value = inputs.civRetireOffset;
                             document.getElementById("annuityAdjustment").value = (inputs.annuityAdjustment * 100).toString();
