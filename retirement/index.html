@@ -92,8 +92,8 @@
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
                                     <select class="form-select" id="retireSystem">
-                                        <option value=.02>BRS (2%)</option>
-                                        <option value=.025>Legacy (2.5%)</option>
+                                        <option value=0.02>BRS (2%)</option>
+                                        <option value=0.025>Legacy (2.5%)</option>
                                     </select>
                                 </div>
                             </div>
@@ -149,9 +149,9 @@
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
                                     <select class="form-select" id="coaSelect" onchange="setETSDateRequirement()" required>
-                                        <option selected value="0">Stay on Active-Duty</option>
+                                        <option selected value="2">Fully Leave Military Service</option>
                                         <option value="1">Transfer to the Reserves</option>
-                                        <option value="2">Fully Leave Military Service</option>
+                                        <option value="0">Stay on Active-Duty</option>
                                     </select>
                                 </div>
                             </div>
@@ -173,7 +173,7 @@
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
                                     <span class="input-group-text">$</span> 
-                                    <input type="number" class="form-control" id="startingPrincipal" value="0" step="0.01" min="0" max="100000000">
+                                    <input type="number" class="form-control" id="startingPrincipal" value="0" step="0.01" min="0" max="100000000" required>
                                 </div>
                             </div>
 
@@ -183,7 +183,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="If you leave active-duty, how many extra years are you willing to work beyond what would have been your active-duty retirement date?">Delay Retirement By
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="civRetireOffset" value="0" step="1" min="0" max="1000">
+                                    <input type="number" class="form-control" id="civRetireOffset" value="0" step="1" min="0" max="1000" required>
                                     <span class="input-group-text">years</span> 
                                 </div>
                             </div>
@@ -194,7 +194,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Set your target annuity as a percentage of the active-duty pension. Supports reductions and increases.">% of Active-Duty Pension
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="annuityAdjustment" value="100" step="0.1" min="0" max="1000">
+                                    <input type="number" class="form-control" id="annuityAdjustment" value="100" step="0.1" min="0" max="1000" required>
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
@@ -205,7 +205,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="What percentage of your potential active-duty pay do you require for your civilian pay? This is before adding any required savings.">Civilian Pay Ratio
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="payAdjustment" value="100" step="0.1" min="0" max="1000">
+                                    <input type="number" class="form-control" id="payAdjustment" value="100" step="0.1" min="0" max="1000" required>
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
@@ -226,19 +226,6 @@
                     <div class="container mt-3">
                         <div class="row">
 
-                            <!-- Calculation Mode Selector -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-sm mb-3">
-                                    <button class="input-group-text bg-outline-primary text-primary" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Monte Carlo performs a large number of trials with randomized market performance. Linear assumes a constant market performance.">Estimation Model
-                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
-                                    </button> 
-                                    <select class="form-select" id="modeSelect" onchange="setCalculationMode()">
-                                        <option selected value="M">Monte Carlo</option>
-                                        <option value="L">Linear</option>
-                                    </select>
-                                </div>
-                            </div>
-
                             <!-- COLA Rates -->
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm mb-3">
@@ -249,28 +236,6 @@
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
-                            <!-- Savings Return Rate -->
-                            <div class="col-md-6" id="savingsReturnRateGroup" hidden>
-                                <div class="input-group input-group-sm mb-3">
-                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The annual return rate for your savings before you retire.">Savings Return Rate
-                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
-                                    </button> 
-                                    <input type="number" class="form-control" id="savingsReturnRate" value="7" step="0.01" min="0" max="20">
-                                    <span class="input-group-text">%</span> 
-                                </div>
-                            </div>
-
-                            <!-- Retirement Return Rate -->
-                            <div class="col-md-6" id="retirementReturnRateGroup" hidden>
-                                <div class="input-group input-group-sm mb-3">
-                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The annual return rate for your savings during retirement.">Retirement Return Rate
-                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
-                                    </button> 
-                                    <input type="number" class="form-control" id="retirementReturnRate" value="5" step="0.01" min="0" max="20">
-                                    <span class="input-group-text">%</span> 
-                                </div>
-                            </div>
-
 
                             <!-- Savings Return Mean -->
                             <div class="col-md-6" id="savingsReturnMeanGroup">
@@ -359,6 +324,9 @@
                 <div class="col mb-3">
                     <button id="calcRetirementButton" class="btn btn-primary me-3" type="submit">Calculate Retirement Plan</button>
                     <span id="calcSpinner" class="spinner-border align-middle" role="status" style="visibility:hidden"></span>
+                </div>
+                <div class="col mb-3">
+                    <a id="bookmarkLink" class="btn btn-outline-primary" href="#" hidden>Save Settings</a>
                 </div>
             </div>
         </form>

@@ -36,7 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var payscale;
 var bah2;
-var savedParams;
 // Average promotion timeline for officers. YOS is based on AFCS career.
 // Each index is linked between the two lists
 var promotionTimeline = {
@@ -76,10 +75,9 @@ var Mode;
     Mode[Mode["Linear"] = 0] = "Linear";
     Mode[Mode["MonteCarlo"] = 1] = "MonteCarlo";
 })(Mode || (Mode = {}));
-var calculationMode = Mode.MonteCarlo;
 function preloadFunction() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, _b, urlParams;
+        var _a, _b, urlParams, savedParams, dates, inputs;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -105,11 +103,43 @@ function preloadFunction() {
                 case 8:
                     bah2 = _b;
                     urlParams = new URLSearchParams(window.location.search);
-                    savedParams = urlParams.get('inputs');
+                    if (urlParams.has('inputs')) {
+                        try {
+                            savedParams = atob(urlParams.get('inputs'));
+                            dates = JSON.parse(savedParams.split('&')[0]);
+                            inputs = JSON.parse(savedParams.split('&')[1]);
+                            // Personal Data
+                            document.getElementById("eadDate").value = dates.eadDate.slice(0, 7);
+                            document.getElementById("payDate").value = dates.payDate.slice(0, 7);
+                            document.getElementById("milRetireYOS").value = inputs.milTotalYOS;
+                            document.getElementById("retireSystem").value = inputs.retirementSystem;
+                            document.getElementById("birthday").value = dates.birthday.slice(0, 7);
+                            document.getElementById("lifeExpectancy").value = inputs.lifeExpectancy;
+                            // Alternative COAs
+                            document.getElementById("coaSelect").value = inputs.COA;
+                            document.getElementById("etsDate").value = dates.etsDate.slice(0, 7);
+                            document.getElementById("startingPrincipal").value = inputs.startingPrincipal;
+                            document.getElementById("civRetireOffset").value = inputs.civRetireOffset;
+                            document.getElementById("annuityAdjustment").value = (inputs.annuityAdjustment * 100).toString();
+                            document.getElementById("payAdjustment").value = (inputs.payAdjustment * 100).toString();
+                        }
+                        catch (error) {
+                            console.error("Error parsing saved data: " + error);
+                        }
+                    }
                     return [2 /*return*/];
             }
         });
     });
+}
+function createBookmark() {
+    var dates = {};
+    var inputs = {};
+    getDOMInputs(dates, inputs);
+    var mergedJSON = JSON.stringify(dates) + "&" + JSON.stringify(inputs);
+    var inputsParam = btoa(mergedJSON);
+    inputsParam = encodeURIComponent(inputsParam);
+    return "" + window.location.origin + window.location.pathname + "?inputs=" + inputsParam;
 }
 function percentileCalc(data, percentile) {
     data.sort(function (a, b) { return a - b; });
@@ -749,128 +779,18 @@ function createSavingsTable(savingsPlan, tableId) {
     return strOutput;
 }
 /**
- * Create a savings plan graph on an HTML canvas using a given savings plan and annual return rate.
- * @param savingsPlan
- * @param id - HTML element ID for desired canvas.
- * @param returnRate
- */
-function createSavingsChart(savingsPlan, returnRate, chartId, startingFunds) {
-    if (startingFunds === void 0) { startingFunds = 0; }
-    // Destroy current chart if it exists
-    // @ts-ignore
-    if (Chart.getChart(chartId) != null) {
-        // @ts-ignore
-        Chart.getChart(chartId).destroy();
-    }
-    // Grab context for the HTML canvas
-    var ctx = document.getElementById(chartId).getContext('2d');
-    // Setup Chart.js data.
-    var data = {
-        // Labels are months
-        labels: [],
-        datasets: [
-            {
-                label: 'Active-Duty Monthly Pay',
-                data: [],
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                order: 2
-            },
-            {
-                label: 'Monthly Deposit',
-                data: [],
-                backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                order: 2
-            },
-            {
-                label: 'Savings',
-                data: [],
-                borderWidth: 4,
-                borderColor: 'rgb(0, 102, 204)',
-                type: 'line',
-                yAxisID: 'y1',
-                pointRadius: 0,
-                pointHitRadius: 5,
-                order: 1
-            },
-            {
-                label: 'Savings Gains',
-                data: [],
-                backgroundColor: 'rgba(255, 178, 102, 0.6)',
-                order: 2
-            },
-        ]
-    };
-    // Populate data
-    var monthlyReturnRate = returnRate / 12;
-    var savings = startingFunds;
-    for (var i in savingsPlan) {
-        // Increase savings each month
-        var gains = savings * monthlyReturnRate;
-        savings += savingsPlan[i]["Monthly Deposit"] + gains;
-        // Push data into Chart.js
-        data.labels.push(savingsPlan[i]["Date"].toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' }));
-        data.datasets[0].data.push(savingsPlan[i]["Mil Monthly"]);
-        data.datasets[1].data.push(savingsPlan[i]["Monthly Deposit"]);
-        data.datasets[2].data.push(savings);
-        data.datasets[3].data.push(gains);
-    }
-    // Generate the Chart.js object
-    // @ts-ignore
-    new Chart(ctx, {
-        type: 'bar',
-        data: data,
-        options: {
-            responsive: true,
-            // interaction: {
-            //     mode: 'index',
-            // },
-            scales: {
-                x: {
-                    stacked: true
-                },
-                y: {
-                    stacked: true,
-                    title: {
-                        text: 'Monthly Pay and Deposit',
-                        display: true
-                    },
-                    ticks: {
-                        callback: function (value, index, values) {
-                            return value.toLocaleString("en-US", { style: "currency", currency: "USD" });
-                        }
-                    }
-                },
-                y1: {
-                    position: 'right',
-                    title: {
-                        text: 'Savings Balance',
-                        display: true
-                    },
-                    ticks: {
-                        callback: function (value, index, values) {
-                            return value.toLocaleString("en-US", { style: "currency", currency: "USD" });
-                        }
-                    }
-                }
-            }
-        }
-    });
-}
-/**
- * Create a savings plan graph on an HTML canvas using a given savings plan and annual return rate.
- * @param savingsData
+ * Create a graph on an HTML canvas using Monte Carlo data.
+ * @param chartData
  * @param chartId - HTML element ID for desired canvas.
  * @param returnRate
  */
-function createMonteCarloChart(savingsData, startDate, chartId) {
+function createMonteCarloChart(chartData, startDate, chartId, chartTitle) {
     // Create data for percentiles
-    var percentile50 = percentileList(savingsData, 0.50);
-    var percentile25 = percentileList(savingsData, 0.25);
-    var percentile75 = percentileList(savingsData, 0.75);
-    var percentile10 = percentileList(savingsData, 0.10);
-    var percentile90 = percentileList(savingsData, 0.90);
-    var percentile1 = percentileList(savingsData, 0.01);
-    var percentile99 = percentileList(savingsData, 0.99);
+    var percentile50 = percentileList(chartData, 0.50);
+    var percentile25 = percentileList(chartData, 0.25);
+    var percentile75 = percentileList(chartData, 0.75);
+    var percentile10 = percentileList(chartData, 0.10);
+    var percentile90 = percentileList(chartData, 0.90);
     // Destroy current chart if it exists
     // @ts-ignore
     if (Chart.getChart(chartId) != null) {
@@ -884,22 +804,14 @@ function createMonteCarloChart(savingsData, startDate, chartId) {
         // Labels are months
         labels: [],
         datasets: [
-            // {
-            // label: '1%',
-            // data: [],
-            // borderColor: 'rgba(211, 211, 211, 0.3)', // Grey
-            // backgroundColor: 'rgba(211, 211, 211, 0.3)', // Grey
-            // pointRadius: 0,
-            // fill: 1,
-            // },
             {
-                label: '10%',
+                label: '10% Likely',
                 data: [],
                 borderColor: 'rgb(100, 100, 100)',
                 pointRadius: 0
             },
             {
-                label: '25%',
+                label: '25% Likely',
                 data: [],
                 borderColor: 'rgb(102, 102, 204)',
                 backgroundColor: 'rgba(102, 102, 204, 0.3)',
@@ -907,7 +819,7 @@ function createMonteCarloChart(savingsData, startDate, chartId) {
                 fill: 0
             },
             {
-                label: '50%',
+                label: '50% Likely',
                 data: [],
                 borderColor: 'rgb(0, 102, 204)',
                 backgroundColor: 'rgba(0, 102, 204, 0.3)',
@@ -915,7 +827,7 @@ function createMonteCarloChart(savingsData, startDate, chartId) {
                 fill: 1
             },
             {
-                label: '75%',
+                label: '75% Likely',
                 data: [],
                 borderColor: 'rgb(0, 204, 0)',
                 backgroundColor: 'rgba(0, 204, 0, 0.3)',
@@ -923,34 +835,24 @@ function createMonteCarloChart(savingsData, startDate, chartId) {
                 fill: 2
             },
             {
-                label: '90%',
+                label: '90% Likely',
                 data: [],
                 borderColor: 'rgb(204, 0, 0)',
                 backgroundColor: 'rgba(204, 0, 0, 0.3)',
                 pointRadius: 0,
                 fill: 3
             },
-            // {
-            // label: '99%',
-            // data: [],
-            // borderColor: 'rgba(211, 211, 211, 0.3)', // Grey
-            // backgroundColor: 'rgba(211, 211, 211, 0.3)', // Grey
-            // pointRadius: 0,
-            // fill: 5,
-            // },
         ]
     };
     // Populate data
-    for (var month in savingsData) {
+    for (var month in chartData) {
         // Push data into Chart.js
         data.labels.push(addMonths(startDate, parseInt(month)).toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' }));
-        // data.datasets[0].data.push( percentile99[month] );
         data.datasets[0].data.push(percentile90[month]);
         data.datasets[1].data.push(percentile75[month]);
         data.datasets[2].data.push(percentile50[month]);
         data.datasets[3].data.push(percentile25[month]);
         data.datasets[4].data.push(percentile10[month]);
-        // data.datasets[6].data.push( percentile1[month] );
     }
     // Generate the Chart.js object
     // @ts-ignore
@@ -959,66 +861,11 @@ function createMonteCarloChart(savingsData, startDate, chartId) {
         data: data,
         options: {
             plugins: {
-                legend: {
-                    display: false,
-                    labels: {
-                        generateLabels: function (chart) {
-                            return [
-                                {
-                                    text: 'Avg. Outcome',
-                                    fillStyle: 'rgb(0, 102, 204)',
-                                    datasetIndex: 0
-                                },
-                                {
-                                    text: '25th-75th Percentile',
-                                    fillStyle: 'rgba(0, 204, 0)',
-                                    datasetIndex: 1
-                                },
-                                {
-                                    text: '10th-90th Percentile',
-                                    fillStyle: 'rgba(204, 0, 0)',
-                                    datasetIndex: 2
-                                },
-                                // {
-                                // text: '1st-99th Percentile',
-                                // fillStyle: 'rgba(211, 211, 211)',
-                                // datasetIndex: 3,
-                                // },
-                            ];
-                        }
-                    },
-                    onClick: function (e, legendItem, legend) {
-                        var index = legendItem.datasetIndex;
-                        var ci = legend.chart;
-                        var datasets;
-                        switch (index) {
-                            case 0:
-                                break;
-                            case 1:
-                                datasets = [
-                                    ci.getDatasetMeta(1),
-                                    ci.getDatasetMeta(3),
-                                ];
-                                break;
-                            case 2:
-                                datasets = [
-                                    ci.getDatasetMeta(0),
-                                    ci.getDatasetMeta(4),
-                                ];
-                                break;
-                            // case 3:
-                            // datasets = [
-                            // ci.getDatasetMeta(0),
-                            // ci.getDatasetMeta(6),
-                            // ];
-                            // break;
-                            default:
-                                break;
-                        }
-                        datasets.forEach(function (meta) {
-                            meta.hidden = meta.hidden == null ? !meta.hidden : null;
-                        });
-                        ci.update();
+                title: {
+                    display: true,
+                    text: chartTitle,
+                    font: {
+                        size: 18
                     }
                 },
                 tooltip: {
@@ -1027,7 +874,7 @@ function createMonteCarloChart(savingsData, startDate, chartId) {
                             return "Chance to have at least...";
                         },
                         label: function (context) {
-                            return context.dataset.label + ": " + context['raw'].toLocaleString("en-US", { style: "currency", currency: "USD" });
+                            return context.dataset.label.split(' ')[0] + ": " + context['raw'].toLocaleString("en-US", { style: "currency", currency: "USD" });
                         },
                         labelColor: function (context) {
                             var color = {};
@@ -1101,46 +948,10 @@ function createMonteCarloChart(savingsData, startDate, chartId) {
  * @param colaRate - Rate of annual cost-of-living adjustments. Used to increase amount of withdrawals each year.
  * @param interestRate - Rate of return for savings balance.
  * @param tableId - HTML Table Element ID to create the table in.
- * @param chartId - HTML Canvas ID to create the graph on.
  * @returns {string} - CSV representation of the table.
  */
-function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate, endDate, colaRate, interestRate, tableId, chartId, reduction) {
+function createWithdrawalTable(startFunds, monthlyWithdrawal, startDate, endDate, colaRate, interestRate, tableId, reduction) {
     if (reduction === void 0) { reduction = null; }
-    // Destroy current chart if it exists
-    // @ts-ignore
-    if (Chart.getChart(chartId) != null) {
-        // @ts-ignore
-        Chart.getChart(chartId).destroy();
-    }
-    var ctx = document.getElementById(chartId).getContext('2d');
-    var red = 'rgba(255, 99, 132, 0.6)';
-    var green = 'rgba(75, 192, 192, 0.6)';
-    var data = {
-        labels: [],
-        datasets: [
-            {
-                label: "Savings Balance",
-                data: [],
-                borderWidth: 4,
-                borderColor: 'rgb(0, 102, 204)',
-                type: 'line',
-                pointRadius: 0,
-                pointHitRadius: 5,
-                order: 1,
-                yAxisID: 'y'
-            },
-            {
-                label: "Change in Balance",
-                data: [],
-                backgroundColor: [],
-                borderColor: [],
-                yAxisID: 'y1',
-                barPercentage: 1,
-                categoryPercentage: 1,
-                order: 2
-            }
-        ]
-    };
     // Add table header
     var table = document.getElementById(tableId);
     removeChildNodes(table);
@@ -1203,54 +1014,10 @@ function createWithdrawalTableAndChart(startFunds, monthlyWithdrawal, startDate,
         strOutput += "\"" + gains.toLocaleString("en-US", moneyStyle) + "\",";
         strOutput += "\"" + monthlyWithdrawal.toLocaleString("en-US", moneyStyle) + "\",";
         strOutput += "\"" + change.toLocaleString("en-US", moneyStyle) + "\"";
-        // Add data to chart
-        data.labels.push(currentDate.toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' }));
-        data.datasets[0].data.push(balance);
-        data.datasets[1].data.push(change);
-        if (change >= 0) {
-            data.datasets[1].backgroundColor.push(green);
-        }
-        else {
-            data.datasets[1].backgroundColor.push(red);
-        }
     }
     // Create the table
     tableOutput.appendChild(tbody);
     table.appendChild(tableOutput);
-    // Create the chart
-    // @ts-ignore
-    new Chart(ctx, {
-        type: 'bar',
-        data: data,
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    title: {
-                        text: 'Savings Balance',
-                        display: true
-                    },
-                    ticks: {
-                        callback: function (value, index, values) {
-                            return value.toLocaleString("en-US", { style: "currency", currency: "USD" });
-                        }
-                    }
-                },
-                y1: {
-                    position: 'right',
-                    title: {
-                        text: 'Change in Balance',
-                        display: true
-                    },
-                    ticks: {
-                        callback: function (value, index, values) {
-                            return value.toLocaleString("en-US", { style: "currency", currency: "USD" });
-                        }
-                    }
-                }
-            }
-        }
-    });
     return strOutput;
 }
 // Sets the ETS Date input as required for the Reserves and Full ETS options
@@ -1306,9 +1073,6 @@ function getDOMInputs(dates, inputs) {
     inputs.payAdjustment = document.getElementById("payAdjustment").valueAsNumber / 100;
     // Market Performance
     inputs.colaRate = document.getElementById("colaRate").valueAsNumber / 100;
-    inputs.savingsReturnRate = document.getElementById("savingsReturnRate").valueAsNumber / 100;
-    inputs.retirementReturnRate = document.getElementById("retirementReturnRate").valueAsNumber / 100;
-    // Monte Carlo Performance
     inputs.savingsReturnMean = document.getElementById("savingsReturnMean").valueAsNumber / 100;
     inputs.savingsReturnStdev = document.getElementById("savingsReturnStdev").valueAsNumber / 100;
     inputs.retirementReturnMean = document.getElementById("retirementReturnMean").valueAsNumber / 100;
@@ -1360,14 +1124,8 @@ function calculateRetirementPlan() {
     var reduction = (inputs.COA == COA.Reserves) ? [greyAreaYears * 12, reservesPension] : null;
     // Determine total savings needed at retirement
     var reqSavings;
-    var monteCarloSavingsResults;
-    if (calculationMode == Mode.MonteCarlo) {
-        monteCarloSavingsResults = requiredSavingsMonteCarlo(retirementLength, adjustedPension, inputs.retirementReturnMean, inputs.retirementReturnStdev, inputs.colaRate, civRetireDate.getUTCMonth(), inputs.retirementMonteCarloScore, inputs.retirementMonteCarloScore + 0.01, reduction, inputs.monteCarloTrials);
-        reqSavings = monteCarloSavingsResults.Savings;
-    }
-    else {
-        reqSavings = requiredSavings(retirementLength, adjustedPension, inputs.retirementReturnRate, inputs.colaRate, civRetireDate.getUTCMonth(), reduction);
-    }
+    var monteCarloSavingsResults = requiredSavingsMonteCarlo(retirementLength, adjustedPension, inputs.retirementReturnMean, inputs.retirementReturnStdev, inputs.colaRate, civRetireDate.getUTCMonth(), inputs.retirementMonteCarloScore, inputs.retirementMonteCarloScore + 0.01, reduction, inputs.monteCarloTrials);
+    reqSavings = monteCarloSavingsResults.Savings;
     /* ***************************
        * Update DOM with outputs *
        *************************** */
@@ -1393,13 +1151,8 @@ function calculateRetirementPlan() {
         }
         // Assume savings start from ETS date
         savingsTime = yearsDifference(dates.etsDate, civRetireDate);
-        if (calculationMode == Mode.MonteCarlo) {
-            monteCarloDepositsResults = depositsNeededMonteCarlo(reqSavings, inputs.startingPrincipal, inputs.savingsReturnMean, inputs.savingsReturnStdev, savingsTime, inputs.savingsMonteCarloScore, inputs.savingsMonteCarloScore + 0.01, inputs.monteCarloTrials);
-            monthlyDeposit = monteCarloDepositsResults.Deposit;
-        }
-        else {
-            monthlyDeposit = depositsNeeded(reqSavings, inputs.startingPrincipal, inputs.savingsReturnRate, savingsTime);
-        }
+        monteCarloDepositsResults = depositsNeededMonteCarlo(reqSavings, inputs.startingPrincipal, inputs.savingsReturnMean, inputs.savingsReturnStdev, savingsTime, inputs.savingsMonteCarloScore, inputs.savingsMonteCarloScore + 0.01, inputs.monteCarloTrials);
+        monthlyDeposit = monteCarloDepositsResults.Deposit;
         savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, inputs.startingPrincipal, monthlyDeposit, inputs.payAdjustment, null, inputs.COA == COA.Reserves);
         document.getElementById("monthlySavings").textContent = monthlyDeposit.toLocaleString("en-US", moneyStyle);
         document.getElementById("annualSavings").textContent = (monthlyDeposit * 12).toLocaleString("en-US", moneyStyle);
@@ -1415,10 +1168,8 @@ function calculateRetirementPlan() {
         savingsTime = yearsDifference(new Date(), milRetireDate);
         monthlyDeposit = depositsNeeded(reqSavings, 0, inputs.savingsReturnRate, totalCareerTime);
         startingFunds = savingsAfterDeposits(0, monthlyDeposit, inputs.savingsReturnRate, monthsDifference(dates.eadDate, new Date()));
-        if (calculationMode == Mode.MonteCarlo) {
-            monteCarloDepositsResults = depositsNeededMonteCarlo(reqSavings, startingFunds, inputs.savingsReturnMean, inputs.savingsReturnStdev, savingsTime, inputs.savingsMonteCarloScore, inputs.savingsMonteCarloScore + 0.01, inputs.monteCarloTrials);
-            monthlyDeposit = monteCarloDepositsResults.Deposit;
-        }
+        monteCarloDepositsResults = depositsNeededMonteCarlo(reqSavings, startingFunds, inputs.savingsReturnMean, inputs.savingsReturnStdev, savingsTime, inputs.savingsMonteCarloScore, inputs.savingsMonteCarloScore + 0.01, inputs.monteCarloTrials);
+        monthlyDeposit = monteCarloDepositsResults.Deposit;
         savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnRate, predictions["Predicted Pay"], inputs.colaRate, 0, monthlyDeposit, inputs.payAdjustment, milRetireDate);
         // Do not account for the civRetireOffset variable
         document.getElementById("pension").textContent = "" + annualPension.toLocaleString("en-US", moneyStyle);
@@ -1431,12 +1182,7 @@ function calculateRetirementPlan() {
     // Create detailed tables and charts
     var savingsTableData = createSavingsTable(savingsPlan, "retireTable");
     var savingsTableButton = document.getElementById("retireTableDownload");
-    if (calculationMode == Mode.MonteCarlo) {
-        createMonteCarloChart(monteCarloDepositsResults.Data.Data, dates.etsDate, "savingsChart");
-    }
-    else {
-        createSavingsChart(savingsPlan, inputs.savingsReturnRate, "savingsChart", startingFunds);
-    }
+    createMonteCarloChart(monteCarloDepositsResults.Data.Data, dates.etsDate, "savingsChart", "Retirement Savings");
     // Overwrite download button data, if it already exists. Create it, if it doesn't exist.
     if (savingsTableButton) {
         savingsTableButton.href = createDownloadButton('savings.csv', savingsTableData, 'Download CSV', 'btn btn-primary mb-3', 'retireTableDownload').href;
@@ -1444,10 +1190,8 @@ function calculateRetirementPlan() {
     else {
         document.getElementById("retireTableTab").appendChild(createDownloadButton('savings.csv', savingsTableData, 'Download CSV', 'btn btn-primary mb-3', 'retireTableDownload'));
     }
-    var withdrawalTableData = createWithdrawalTableAndChart(reqSavings, adjustedPension / 12, civRetireDate, lifeExpectancyDate, inputs.colaRate, inputs.retirementReturnRate, "withdrawalTable", "withdrawalChart", reduction);
-    if (calculationMode == Mode.MonteCarlo) {
-        createMonteCarloChart(monteCarloSavingsResults.Data, civRetireDate, "withdrawalChart");
-    }
+    var withdrawalTableData = createWithdrawalTable(reqSavings, adjustedPension / 12, civRetireDate, lifeExpectancyDate, inputs.colaRate, inputs.retirementReturnMean, "withdrawalTable", reduction);
+    createMonteCarloChart(monteCarloSavingsResults.Data, civRetireDate, "withdrawalChart", "Withdrawals During Retirement");
     var withdrawalTableButton = document.getElementById("withdrawalTableDownload");
     // Overwrite download button data, if it already exists. Create it, if it doesn't exist.
     if (withdrawalTableButton) {
@@ -1456,6 +1200,10 @@ function calculateRetirementPlan() {
     else {
         document.getElementById("withdrawalTableTab").appendChild(createDownloadButton('withdrawals.csv', withdrawalTableData, 'Download CSV', 'btn btn-primary mb-3', 'withdrawalTableDownload'));
     }
+    // Create and reveal bookmark link
+    var bookmarkLink = createBookmark();
+    document.getElementById("bookmarkLink").setAttribute("href", bookmarkLink);
+    document.getElementById("bookmarkLink").hidden = false;
     // Reveal tabs
     document.getElementById("myTab").hidden = false;
 }
@@ -1715,47 +1463,6 @@ function setDefaultTimeline(careerPath) {
             break;
     }
     showPromotionTimeline();
-}
-function setCalculationMode() {
-    var calcSelect = document.getElementById("modeSelect");
-    switch (calcSelect.value) {
-        case "L":
-            calculationMode = Mode.Linear;
-            document.getElementById("savingsReturnRateGroup").hidden = false;
-            document.getElementById("retirementReturnRateGroup").hidden = false;
-            document.getElementById("savingsReturnMeanGroup").hidden = true;
-            document.getElementById("savingsReturnStdevGroup").hidden = true;
-            document.getElementById("retirementReturnMeanGroup").hidden = true;
-            document.getElementById("retirementReturnStdevGroup").hidden = true;
-            document.getElementById("minMonteCarloScoreGroup").hidden = true;
-            document.getElementById("maxMonteCarloScoreGroup").hidden = true;
-            document.getElementById("monteCarloTrialsGroup").hidden = true;
-            break;
-        case "M":
-            calculationMode = Mode.MonteCarlo;
-            document.getElementById("savingsReturnRateGroup").hidden = true;
-            document.getElementById("retirementReturnRateGroup").hidden = true;
-            document.getElementById("savingsReturnMeanGroup").hidden = false;
-            document.getElementById("savingsReturnStdevGroup").hidden = false;
-            document.getElementById("retirementReturnMeanGroup").hidden = false;
-            document.getElementById("retirementReturnStdevGroup").hidden = false;
-            document.getElementById("minMonteCarloScoreGroup").hidden = false;
-            document.getElementById("maxMonteCarloScoreGroup").hidden = false;
-            document.getElementById("monteCarloTrialsGroup").hidden = false;
-            break;
-        default:
-            calculationMode = Mode.Linear;
-            document.getElementById("savingsReturnRateGroup").hidden = false;
-            document.getElementById("retirementReturnRateGroup").hidden = false;
-            document.getElementById("savingsReturnMeanGroup").hidden = true;
-            document.getElementById("savingsReturnStdevGroup").hidden = true;
-            document.getElementById("retirementReturnMeanGroup").hidden = true;
-            document.getElementById("retirementReturnStdevGroup").hidden = true;
-            document.getElementById("minMonteCarloScoreGroup").hidden = true;
-            document.getElementById("maxMonteCarloScoreGroup").hidden = true;
-            document.getElementById("monteCarloTrialsGroup").hidden = true;
-            break;
-    }
 }
 /**
  * Create an HTML table based on a given dictionary.
