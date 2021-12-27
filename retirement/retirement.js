@@ -920,6 +920,7 @@ function createMonteCarloChart(chartData, startDate, chartId, chartTitle) {
                     }
                 }
             },
+            maintainAspectRatio: false,
             responsive: true,
             interaction: {
                 mode: 'index',
