@@ -23,7 +23,7 @@
 
     <title>Military Retirement Value Calculator</title>
   </head>
-  <body onload="fetchJSON();">
+  <body onload="preloadFunction();">
     <nav class="navbar navbar-expand navbar-light bg-light mb-3">
         <div class="container-fluid">
             <span class="navbar-brand mb-0 h1" href="#">Military Retirement Value Calculator</span>
@@ -48,7 +48,7 @@
             <!-- Personal Data: Information about the User -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="datesMenu">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#datesMenu-collapse" aria-expanded="true" aria-controls="datesMenu-collapse">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#datesMejnu-collapse" aria-expanded="true" aria-controls="datesMenu-collapse">
                         <b>Personal Data</b>
                     </button>
                 </h2>
@@ -194,7 +194,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Set your target annuity as a percentage of the active-duty pension. Supports reductions and increases.">% of Active-Duty Pension
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="annuityAdjustment" value="100" step="0.1" min="0" max="100">
+                                    <input type="number" class="form-control" id="annuityAdjustment" value="100" step="0.1" min="0" max="1000">
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
@@ -245,7 +245,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The rate of annual cost-of-living adjustments to your pay, pension, and withdrawals to account for inflation.">COLA Rate
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="colaRate" value="2.7" step="0.1" min="0" max="20">
+                                    <input type="number" class="form-control" id="colaRate" value="2.75" step="0.01" min="0" max="20">
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
@@ -255,7 +255,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The annual return rate for your savings before you retire.">Savings Return Rate
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="savingsReturnRate" value="7" step="0.1" min="0" max="20">
+                                    <input type="number" class="form-control" id="savingsReturnRate" value="7" step="0.01" min="0" max="20">
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
@@ -266,7 +266,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The annual return rate for your savings during retirement.">Retirement Return Rate
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="retirementReturnRate" value="5" step="0.1" min="0" max="20">
+                                    <input type="number" class="form-control" id="retirementReturnRate" value="5" step="0.01" min="0" max="20">
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
@@ -278,7 +278,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The mean return rate for your savings before you retire.">Savings Mean Return Rate
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="savingsReturnMean" value="7" step="0.1" min="0" max="100">
+                                    <input type="number" class="form-control" id="savingsReturnMean" value="7" step="0.01" min="0" max="100">
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
@@ -289,7 +289,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The volatility or standard deviation of your savings growth before you retire.">Savings Return Rate Volatility 
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="savingsReturnStdev" value="14" step="0.1" min="0.1" max="500">
+                                    <input type="number" class="form-control" id="savingsReturnStdev" value="14" step="0.01" min="0.1" max="500">
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
@@ -300,7 +300,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The mean return rate for your savings during your retirement.">Retirement Mean Return Rate
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="retirementReturnMean" value="5" step="0.1" min="0.1" max="100">
+                                    <input type="number" class="form-control" id="retirementReturnMean" value="5" step="0.01" min="0.1" max="100">
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
@@ -311,7 +311,7 @@
                                     <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The volatility or standard deviation of your savings growth during your retirement.">Retirement Return Rate Volatility 
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
-                                    <input type="number" class="form-control" id="retirementReturnStdev" value="4" step="0.1" min="0.1" max="500">
+                                    <input type="number" class="form-control" id="retirementReturnStdev" value="4" step="0.01" min="0.1" max="500">
                                     <span class="input-group-text">%</span> 
                                 </div>
                             </div>
@@ -341,7 +341,7 @@
                             <!-- Monte Carlo Iterations -->
                             <div class="col-md-6" id="monteCarloTrialsGroup">
                                 <div class="input-group input-group-sm mb-3 justify-content-center">
-                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="How many trial runs a Monte Carlo simulation performs. More trials makes the results more consistent, but requires more computing time.">Number of Trials
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" role="button" data-bs-toggle="tooltip" data-bs-placement="top" title="How many trial runs a Monte Carlo simulation performs. More trials make the results more consistent (not more accurate), but also requires more computing time.">Number of Trials
                                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                                     </button> 
                                     <input type="number" class="form-control" id="monteCarloTrials" value="1000" step="1" min="0" max="100000">
@@ -396,7 +396,7 @@
                 </ul>
 
                 <ul class="col-md-6 list-group list-group-horizontal mb-3" hidden id="reservesPensionGroup">
-                    <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="The initial value of the reservist pension upon retirement with its COLA-adjusted value at age 60 in parentheses."><b>Reservist Pension</b>
+                    <li class="list-group-item bg-success text-white w-50" data-bs-toggle="tooltip" data-bs-placement="top" title="The initial value of the reservist pension upon retirement at 60 years old."><b>Reservist Pension</b>
                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
                     </li><li class="list-group-item w-50" id="reservesPension"></li>
                 </ul>
@@ -410,38 +410,38 @@
             <div class="row">
                 <ul class="nav nav-tabs" id="myTab" role="tablist" hidden>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="retireTableTab-tab" data-bs-toggle="tab" data-bs-target="#retireTableTab" type="button" role="tab" aria-controls="retireTableTab" aria-selected="true">Savings Plan Table</button>
+                        <button class="nav-link active" id="savingsChartTab-tab" data-bs-toggle="tab" data-bs-target="#savingsChartTab" type="button" role="tab" aria-controls="savingsChartTab" aria-selected="true">Savings Plan Chart</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="savingsChartTab-tab" data-bs-toggle="tab" data-bs-target="#savingsChartTab" type="button" role="tab" aria-controls="savingsChartTab" aria-selected="false">Savings Plan Chart</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="withdrawalTableTab-tab" data-bs-toggle="tab" data-bs-target="#withdrawalTableTab" type="button" role="tab" aria-controls="withdrawalTableTab" aria-selected="false">Retirement Payout Table</button>
+                        <button class="nav-link" id="retireTableTab-tab" data-bs-toggle="tab" data-bs-target="#retireTableTab" type="button" role="tab" aria-controls="retireTableTab" aria-selected="false">Savings Plan Table</button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="withdrawalChartTab-tab" data-bs-toggle="tab" data-bs-target="#withdrawalChartTab" type="button" role="tab" aria-controls="withdrawalChartTab" aria-selected="false">Retirement Payout Chart</button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="withdrawalTableTab-tab" data-bs-toggle="tab" data-bs-target="#withdrawalTableTab" type="button" role="tab" aria-controls="withdrawalTableTab" aria-selected="false">Retirement Payout Table</button>
+                    </li>
                 </ul>
 
                 <div class="tab-content" id="myTabContent">
-                    <!-- Retirement Plan Table -->
-                    <div class="tab-pane fade show active" id="retireTableTab" role="tabpanel" aria-labelledby="retireTableTab-tab">
-                        <table class="table table-striped" id="retireTable"></table>
-                    </div>
-
                     <!-- Retirement Plan Chart -->
-                    <div class="tab-pane fade" id="savingsChartTab" role="tabpanel" aria-labelledby="savingsChartTab-tab">
+                    <div class="tab-pane fade show active" id="savingsChartTab" role="tabpanel" aria-labelledby="savingsChartTab-tab">
                         <canvas id="savingsChart"></canvas>
                     </div>
 
-                    <!-- Retirement Payouts Table -->
-                    <div class="tab-pane fade" id="withdrawalTableTab" role="tabpanel" aria-labelledby="withdrawalTableTab-tab">
-                        <table class="table table-striped" id="withdrawalTable"></table>
+                    <!-- Retirement Plan Table -->
+                    <div class="tab-pane fade" id="retireTableTab" role="tabpanel" aria-labelledby="retireTableTab-tab">
+                        <table class="table table-striped" id="retireTable"></table>
                     </div>
 
                     <!-- Retirement Payouts Chart -->
                     <div class="tab-pane fade" id="withdrawalChartTab" role="tabpanel" aria-labelledby="withdrawalChart-tab">
                         <canvas id="withdrawalChart"></canvas> 
+                    </div>
+
+                    <!-- Retirement Payouts Table -->
+                    <div class="tab-pane fade" id="withdrawalTableTab" role="tabpanel" aria-labelledby="withdrawalTableTab-tab">
+                        <table class="table table-striped" id="withdrawalTable"></table>
                     </div>
                 </div>
             </div>
@@ -487,32 +487,10 @@
 <h5 id="outputs">Outputs</h5>
 <p>The calculator will provide the following outputs:</p>
 <ul>
-<li>The predicted value for your active-duty pension.</li>
+<li>The estimated value for your potential active-duty pension.</li>
 <li>Savings needed to match that pension during retirement.</li>
 <li>How much you will need to save per month to match it by your retirement date.</li>
-</ul>
-<p>It also provides several tables and charts to show detailed information. You may download the tables as CSV files:</p>
-<ul>
-<li>
-<p><strong>Savings Plan Table:</strong> This shows you three primary data points:</p>
-<ol>
-<li>How much your compensation would have been on active-duty.</li>
-<li>How much you will need to save to meet the savings goal by your retirement date.</li>
-<li>How much your annual civilian pay needs to be to match your active-duty compensation in addition to your savings requirement. ( <code>Active-Duty Pay + Savings Requirement = Civilian Pay Requirement</code> )</li>
-</ol>
-</li>
-<li>
-<p><strong>Retirement Payout Table:</strong> This lets you see how your savings is depleted during retirement. If you're calculating for a reserves retirement, it also shows you when and by how much your withdrawal requirement is reduced from the reserves pension.</p>
-</li>
-<li>
-<p><strong>Charts:</strong> In <em>Linear</em> mode, the charts will simply represent the values in the tables. In <em>Monte Carlo</em> mode, the charts will display three overlapping shaded areas that show the percentile ranges of the results.</p>
-<ul>
-<li><strong>Green (25th to 75th percentiles):</strong> 50% of the simulated results ended up within this area.</li>
-<li><strong>Red (10th to 90th percentiles):</strong> 80% of the simulated results ended up within this area. 15% of these were better than the green results and 15% were worse.</li>
-<li><strong>Grey (1st to 99th percentiles):</strong> Shows the remaining range of the simulated results. 9% of these were better than the best red results and 9% were worse than the poor red results.</li>
-<li><strong>Blue (average outcome):</strong> This is the line showing the average/median result from the simulations. 50% of results were better than this line and 50% of results were worse.</li>
-</ul>
-</li>
+<li><i>(Optional)</i> The estimated value for a reserves pension at 60.</li>
 </ul>
 </div>
         <div class="modal-footer">

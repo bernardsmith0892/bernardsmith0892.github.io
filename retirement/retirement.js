@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var payscale;
 var bah2;
+var savedParams;
 // Average promotion timeline for officers. YOS is based on AFCS career.
 // Each index is linked between the two lists
 var promotionTimeline = {
@@ -76,9 +77,9 @@ var Mode;
     Mode[Mode["MonteCarlo"] = 1] = "MonteCarlo";
 })(Mode || (Mode = {}));
 var calculationMode = Mode.MonteCarlo;
-function fetchJSON() {
+function preloadFunction() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, _b;
+        var _a, _b, urlParams;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -103,6 +104,8 @@ function fetchJSON() {
                     _c.label = 8;
                 case 8:
                     bah2 = _b;
+                    urlParams = new URLSearchParams(window.location.search);
+                    savedParams = urlParams.get('inputs');
                     return [2 /*return*/];
             }
         });
@@ -563,13 +566,15 @@ function depositsNeededMonteCarloTrial(monthlyDeposit, startFunds, savingsMean, 
  * @param {boolean} [verbose=false] - Print table to the console.
  * @returns Dictionary of predicted pay over time, and calculated High-3.
  */
-function predictPay(startDate, endDate, eadDate, payDate, annualRaiseRate, promotionTimeline, payscale, bah, bas, verbose) {
+function predictPay(startDate, endDate, eadDate, payDate, annualRaiseRate, promotionTimeline, payscale, bah, bas, age60Date, verbose) {
     if (verbose === void 0) { verbose = false; }
     var today = new Date();
     var currentDate = startDate;
     var last36 = [];
     var predictedPay = [];
     var careerYOS = monthsDifference(eadDate, currentDate) / 12;
+    var grade;
+    var currentRaise;
     annualRaiseRate += 1;
     if (verbose) {
         console.log("Date,Career YOS,Pay YOS,Grade,Base Pay,Bonuses,COLA Increase");
@@ -577,8 +582,8 @@ function predictPay(startDate, endDate, eadDate, payDate, annualRaiseRate, promo
     while (currentDate <= endDate) {
         careerYOS = monthsDifference(eadDate, currentDate) / 12;
         var payYOS = monthsDifference(payDate, currentDate) / 12;
-        var currentRaise = Math.pow(annualRaiseRate, (currentDate.getFullYear() - today.getFullYear()));
-        var grade = getCurrentGrade(careerYOS, promotionTimeline);
+        currentRaise = Math.pow(annualRaiseRate, (currentDate.getFullYear() - today.getFullYear()));
+        grade = getCurrentGrade(careerYOS, promotionTimeline);
         var basePay = getCurrentPay(payYOS, grade, payscale) * currentRaise;
         var bonuses = (getBAH2(grade, true, bah) + getBAS(grade, bas)) * currentRaise;
         if (verbose) {
@@ -604,10 +609,12 @@ function predictPay(startDate, endDate, eadDate, payDate, annualRaiseRate, promo
         sum += last36[i];
     }
     var high3 = sum / last36.length;
-    var pension = high3 * careerYOS * 0.02;
+    var yosAt60 = yearsDifference(payDate, age60Date);
+    var reserveshigh3 = getCurrentPay(yosAt60, grade, payscale) * currentRaise;
     return {
         "Predicted Pay": predictedPay,
-        "High 3": high3
+        "High 3": high3,
+        "Reserves High 3": reserveshigh3
     };
 }
 /**
@@ -814,6 +821,9 @@ function createSavingsChart(savingsPlan, returnRate, chartId, startingFunds) {
         data: data,
         options: {
             responsive: true,
+            // interaction: {
+            //     mode: 'index',
+            // },
             scales: {
                 x: {
                     stacked: true
@@ -874,77 +884,73 @@ function createMonteCarloChart(savingsData, startDate, chartId) {
         // Labels are months
         labels: [],
         datasets: [
+            // {
+            // label: '1%',
+            // data: [],
+            // borderColor: 'rgba(211, 211, 211, 0.3)', // Grey
+            // backgroundColor: 'rgba(211, 211, 211, 0.3)', // Grey
+            // pointRadius: 0,
+            // fill: 1,
+            // },
             {
-                label: 'Avg. Outcome',
+                label: '10%',
+                data: [],
+                borderColor: 'rgb(100, 100, 100)',
+                pointRadius: 0
+            },
+            {
+                label: '25%',
+                data: [],
+                borderColor: 'rgb(102, 102, 204)',
+                backgroundColor: 'rgba(102, 102, 204, 0.3)',
+                pointRadius: 0,
+                fill: 0
+            },
+            {
+                label: '50%',
                 data: [],
                 borderColor: 'rgb(0, 102, 204)',
+                backgroundColor: 'rgba(0, 102, 204, 0.3)',
                 pointRadius: 0,
-                pointHitRadius: 5
-            },
-            {
-                label: '25th Percentile',
-                data: [],
-                borderColor: 'rgba(0, 204, 0, 0.7)',
-                backgroundColor: 'rgba(0, 204, 0, 0.3)',
-                pointRadius: 0,
-                pointHitRadius: 5
-            },
-            {
-                label: '75th Percentile',
-                data: [],
-                borderColor: 'rgba(0, 204, 0, 0.7)',
-                backgroundColor: 'rgba(0, 204, 0, 0.3)',
-                pointRadius: 0,
-                pointHitRadius: 5,
                 fill: 1
             },
             {
-                label: '10th Percentile',
+                label: '75%',
                 data: [],
-                borderColor: 'rgba(204, 0, 0, 0.7)',
-                backgroundColor: 'rgba(204, 0, 0, 0.3)',
+                borderColor: 'rgb(0, 204, 0)',
+                backgroundColor: 'rgba(0, 204, 0, 0.3)',
                 pointRadius: 0,
-                pointHitRadius: 5
+                fill: 2
             },
             {
-                label: '90th Percentile',
+                label: '90%',
                 data: [],
-                borderColor: 'rgba(204, 0, 0, 0.7)',
+                borderColor: 'rgb(204, 0, 0)',
                 backgroundColor: 'rgba(204, 0, 0, 0.3)',
                 pointRadius: 0,
-                pointHitRadius: 5,
                 fill: 3
             },
-            {
-                label: '1st Percentile',
-                data: [],
-                borderColor: 'rgba(211, 211, 211, 0.3)',
-                backgroundColor: 'rgba(211, 211, 211, 0.3)',
-                pointRadius: 0,
-                pointHitRadius: 5
-            },
-            {
-                label: '99th Percentile',
-                data: [],
-                borderColor: 'rgba(211, 211, 211, 0.3)',
-                backgroundColor: 'rgba(211, 211, 211, 0.3)',
-                pointRadius: 0,
-                pointHitRadius: 5,
-                fill: 5
-            },
+            // {
+            // label: '99%',
+            // data: [],
+            // borderColor: 'rgba(211, 211, 211, 0.3)', // Grey
+            // backgroundColor: 'rgba(211, 211, 211, 0.3)', // Grey
+            // pointRadius: 0,
+            // fill: 5,
+            // },
         ]
     };
     // Populate data
     for (var month in savingsData) {
         // Push data into Chart.js
         data.labels.push(addMonths(startDate, parseInt(month)).toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' }));
-        data.datasets[0].data.push(percentile50[month]);
-        data.datasets[1].data.push(percentile25[month]);
-        data.datasets[2].data.push(percentile75[month]);
-        data.datasets[3].data.push(percentile10[month]);
-        data.datasets[4].data.push(percentile90[month]);
-        data.datasets[5].data.push(percentile1[month]);
-        data.datasets[6].data.push(percentile99[month]);
+        // data.datasets[0].data.push( percentile99[month] );
+        data.datasets[0].data.push(percentile90[month]);
+        data.datasets[1].data.push(percentile75[month]);
+        data.datasets[2].data.push(percentile50[month]);
+        data.datasets[3].data.push(percentile25[month]);
+        data.datasets[4].data.push(percentile10[month]);
+        // data.datasets[6].data.push( percentile1[month] );
     }
     // Generate the Chart.js object
     // @ts-ignore
@@ -954,6 +960,7 @@ function createMonteCarloChart(savingsData, startDate, chartId) {
         options: {
             plugins: {
                 legend: {
+                    display: false,
                     labels: {
                         generateLabels: function (chart) {
                             return [
@@ -972,11 +979,11 @@ function createMonteCarloChart(savingsData, startDate, chartId) {
                                     fillStyle: 'rgba(204, 0, 0)',
                                     datasetIndex: 2
                                 },
-                                {
-                                    text: '1st-99th Percentile',
-                                    fillStyle: 'rgba(211, 211, 211)',
-                                    datasetIndex: 3
-                                },
+                                // {
+                                // text: '1st-99th Percentile',
+                                // fillStyle: 'rgba(211, 211, 211)',
+                                // datasetIndex: 3,
+                                // },
                             ];
                         }
                     },
@@ -986,28 +993,25 @@ function createMonteCarloChart(savingsData, startDate, chartId) {
                         var datasets;
                         switch (index) {
                             case 0:
-                                datasets = [
-                                    ci.getDatasetMeta(0)
-                                ];
                                 break;
                             case 1:
                                 datasets = [
                                     ci.getDatasetMeta(1),
-                                    ci.getDatasetMeta(2),
+                                    ci.getDatasetMeta(3),
                                 ];
                                 break;
                             case 2:
                                 datasets = [
-                                    ci.getDatasetMeta(3),
+                                    ci.getDatasetMeta(0),
                                     ci.getDatasetMeta(4),
                                 ];
                                 break;
-                            case 3:
-                                datasets = [
-                                    ci.getDatasetMeta(5),
-                                    ci.getDatasetMeta(6),
-                                ];
-                                break;
+                            // case 3:
+                            // datasets = [
+                            // ci.getDatasetMeta(0),
+                            // ci.getDatasetMeta(6),
+                            // ];
+                            // break;
                             default:
                                 break;
                         }
@@ -1016,9 +1020,61 @@ function createMonteCarloChart(savingsData, startDate, chartId) {
                         });
                         ci.update();
                     }
+                },
+                tooltip: {
+                    callbacks: {
+                        beforeBody: function (context) {
+                            return "Chance to have at least...";
+                        },
+                        label: function (context) {
+                            return context.dataset.label + ": " + context['raw'].toLocaleString("en-US", { style: "currency", currency: "USD" });
+                        },
+                        labelColor: function (context) {
+                            var color = {};
+                            switch (context.datasetIndex) {
+                                case 0:
+                                    color = {
+                                        borderColor: 'rgb(100, 100, 100)',
+                                        backgroundColor: 'rgb(100, 100, 100)'
+                                    };
+                                    break;
+                                case 1:
+                                    color = {
+                                        borderColor: 'rgb(102, 102, 204)',
+                                        backgroundColor: 'rgb(102, 102, 204)'
+                                    };
+                                    break;
+                                case 2:
+                                    color = {
+                                        borderColor: 'rgb(0, 102, 204)',
+                                        backgroundColor: 'rgb(0, 102, 204)'
+                                    };
+                                    break;
+                                case 3:
+                                    color = {
+                                        borderColor: 'rgb(0, 204, 0)',
+                                        backgroundColor: 'rgb(0, 204, 0)'
+                                    };
+                                    break;
+                                case 4:
+                                    color = {
+                                        borderColor: 'rgb(204, 0, 0)',
+                                        backgroundColor: 'rgb(204, 0, 0)'
+                                    };
+                                    break;
+                                default:
+                                    break;
+                            }
+                            return color;
+                        }
+                    }
                 }
             },
             responsive: true,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
             scales: {
                 y: {
                     position: 'right',
@@ -1291,14 +1347,14 @@ function calculateRetirementPlan() {
         civRetireDate = milRetireDate;
     }
     var retirementLength = yearsDifference(civRetireDate, lifeExpectancyDate);
-    var predictions = predictPay(dates.etsDate, milRetireDate, dates.eadDate, dates.payDate, inputs.colaRate, promotionTimeline, payscale, bah2, bas);
+    var predictions = predictPay(dates.etsDate, milRetireDate, dates.eadDate, dates.payDate, inputs.colaRate, promotionTimeline, payscale, bah2, bas, sixtyBirthday);
     // Used for early retirement under TERA. Compute reduction factor if below 20 years. Set reduction factor to 1 if equal to or above 20 years.
     var reductionFactor = 1.0 - (inputs.milTotalYOS < 20 ? Math.ceil((20 - inputs.milTotalYOS) * 12) * 0.01 / 12 : 0);
     var annualPension = predictions["High 3"] * inputs.milTotalYOS * inputs.retirementSystem * 12 * reductionFactor;
     var activePoints = 365 * yearsDifference(dates.eadDate, dates.etsDate);
     var reservesPoints = 72 * yearsDifference(dates.etsDate, milRetireDate);
     var adjustedPension = annualPension * Math.pow((1 + inputs.colaRate), inputs.civRetireOffset) * inputs.annuityAdjustment;
-    var reservesPension = predictions["High 3"] * (activePoints + reservesPoints) / 360 * inputs.retirementSystem * 12;
+    var reservesPension = predictions["Reserves High 3"] * (activePoints + reservesPoints) / 360 * inputs.retirementSystem * 12;
     var adjustedReservesPension = reservesPension * Math.pow((1 + inputs.colaRate), Math.floor(yearsDifference(milRetireDate, sixtyBirthday))) * inputs.annuityAdjustment;
     //  ** If we're calculating for a transfer into the reserves, schedule a reduction in our savings withdrawal requirement at Age 60
     var reduction = (inputs.COA == COA.Reserves) ? [greyAreaYears * 12, reservesPension] : null;
@@ -1324,12 +1380,12 @@ function calculateRetirementPlan() {
     var startingFunds = inputs.startingPrincipal;
     var savingsPlan;
     var monteCarloDepositsResults;
-    // Case for not staying on active-duty
+    // Cases for not staying on active-duty
     if (inputs.COA != COA.ActiveDuty) {
         document.getElementById("pension").textContent = "" + annualPension.toLocaleString("en-US", moneyStyle) + (inputs.civRetireOffset != 0 ? " (" + adjustedPension.toLocaleString("en-US", moneyStyle) + ")" : "");
         // Case for transferring to reserves
         if (inputs.COA == COA.Reserves) {
-            document.getElementById("reservesPension").textContent = reservesPension.toLocaleString("en-US", moneyStyle) + " (" + adjustedReservesPension.toLocaleString("en-US", moneyStyle) + ")";
+            document.getElementById("reservesPension").textContent = "" + adjustedReservesPension.toLocaleString("en-US", moneyStyle);
             document.getElementById("reservesPensionGroup").hidden = false;
         }
         else {
