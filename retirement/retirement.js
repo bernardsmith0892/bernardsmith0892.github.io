@@ -70,14 +70,9 @@ var COA;
     COA[COA["Reserves"] = 1] = "Reserves";
     COA[COA["FullETS"] = 2] = "FullETS";
 })(COA || (COA = {}));
-var Mode;
-(function (Mode) {
-    Mode[Mode["Linear"] = 0] = "Linear";
-    Mode[Mode["MonteCarlo"] = 1] = "MonteCarlo";
-})(Mode || (Mode = {}));
-function preloadFunction() {
+function preloadFunction(errorToastId, errorToastBodyId) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, _b, urlParams, savedParams, dates, inputs;
+        var _a, _b, urlParams, savedParams, dates, inputs, errMsg, element, errorToast;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -123,11 +118,26 @@ function preloadFunction() {
                             }
                             document.getElementById("startingPrincipal").value = inputs.startingPrincipal;
                             document.getElementById("civRetireOffset").value = inputs.civRetireOffset;
-                            document.getElementById("annuityAdjustment").value = (inputs.annuityAdjustment * 100).toString();
-                            document.getElementById("payAdjustment").value = (inputs.payAdjustment * 100).toString();
+                            // Round to two decimal places WITHOUT trailing zeros
+                            document.getElementById("annuityAdjustment").value = parseFloat((inputs.annuityAdjustment * 100).toFixed(2)).toString();
+                            document.getElementById("payAdjustment").value = parseFloat((inputs.payAdjustment * 100).toFixed(2)).toString();
+                            // Market Performance
+                            document.getElementById("colaRate").value = parseFloat((inputs.colaRate * 100).toFixed(2)).toString();
+                            document.getElementById("savingsReturnMean").value = parseFloat((inputs.savingsReturnMean * 100).toFixed(2)).toString();
+                            document.getElementById("savingsReturnStdev").value = parseFloat((inputs.savingsReturnStdev * 100).toFixed(2)).toString();
+                            document.getElementById("retirementReturnMean").value = parseFloat((inputs.retirementReturnMean * 100).toFixed(2)).toString();
+                            document.getElementById("retirementReturnStdev").value = parseFloat((inputs.retirementReturnStdev * 100).toFixed(2)).toString();
+                            document.getElementById("savingsMonteCarloScore").value = Math.round(inputs.savingsMonteCarloScore * 100).toString();
+                            document.getElementById("retirementMonteCarloScore").value = Math.round(inputs.retirementMonteCarloScore * 100).toString();
+                            document.getElementById("monteCarloTrials").value = inputs.monteCarloTrials;
                         }
                         catch (error) {
-                            console.error("Error parsing saved data: " + error);
+                            errMsg = "Error loading your saved settings: " + error;
+                            console.error(errMsg);
+                            document.getElementById(errorToastBodyId).textContent = errMsg;
+                            element = document.getElementById(errorToastId);
+                            errorToast = new bootstrap.Toast(element);
+                            errorToast.show();
                         }
                     }
                     return [2 /*return*/];
