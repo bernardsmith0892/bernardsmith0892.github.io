@@ -79,7 +79,7 @@ function preloadFunction(errorToastId, errorToastBodyId) {
                     if (!(payscale !== null && payscale !== void 0)) return [3 /*break*/, 1];
                     _a = payscale;
                     return [3 /*break*/, 4];
-                case 1: return [4 /*yield*/, fetch("./2021_payscale.json")];
+                case 1: return [4 /*yield*/, fetch("./2022_payscale.json")];
                 case 2: return [4 /*yield*/, (_c.sent()).json()];
                 case 3:
                     _a = _c.sent();
@@ -90,7 +90,7 @@ function preloadFunction(errorToastId, errorToastBodyId) {
                     if (!(bah2 !== null && bah2 !== void 0)) return [3 /*break*/, 5];
                     _b = bah2;
                     return [3 /*break*/, 8];
-                case 5: return [4 /*yield*/, fetch("./2021_bah2.json")];
+                case 5: return [4 /*yield*/, fetch("./2022_bah2.json")];
                 case 6: return [4 /*yield*/, (_c.sent()).json()];
                 case 7:
                     _b = _c.sent();
@@ -1099,7 +1099,8 @@ function getDOMInputs(dates, inputs) {
  * Calculate retirement plan upon a button press from the user. Fetches JSON data, values from input fields, and outputs the results to the webpage.
  */
 function calculateRetirementPlan() {
-    var bas = { "O": 266.18, "E": 386.50 };
+    // 2021 - const bas = {"O": 266.18, "E": 386.50};
+    var bas = { "O": 280.29, "E": 406.98 };
     /* ************************************
        * Get values from DOM input fields *
        ************************************ */
