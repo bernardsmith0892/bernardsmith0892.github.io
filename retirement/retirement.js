@@ -754,7 +754,8 @@ function equivalentRetirement(targetSavings, years, annualReturnRate, predictedP
         savingsPlan.push({
             "Date": currentPrediction["Date"],
             "Grade": currentPrediction["Grade"],
-            "Mil Monthly": (currentPrediction["Base Pay"] + currentPrediction["Bonuses"]) * payAdjustment,
+            "Mil Base Pay": currentPrediction["Base Pay"] * payAdjustment,
+            "Mil Bonuses": currentPrediction["Bonuses"] * payAdjustment,
             "Civ Monthly": civilianMonthlyPay,
             "Monthly Deposit": monthlyDeposit,
             "Civ Annual": civilianMonthlyPay * 12,
@@ -801,7 +802,7 @@ function createSavingsTable(savingsPlan, tableId) {
     var thead = document.createElement('thead');
     var tbody = document.createElement('tbody');
     // Add table headers
-    var headers = ['Date', 'Pay Grade', 'Active-Duty Monthly Pay', 'Monthly Retirement Savings', 'Equivalent Annual Civilian Pay'];
+    var headers = ['Date', 'Pay Grade', 'Active-Duty Base Pay', 'Allowances (BAH + BAS)', 'Monthly Retirement Savings', 'Equivalent Annual Civilian Pay'];
     var newRow = thead.insertRow();
     for (var i in headers) {
         var newCell = document.createElement('th');
@@ -824,13 +825,15 @@ function createSavingsTable(savingsPlan, tableId) {
         newRow_1.appendChild(headerCell);
         // Add remaining cells
         newRow_1.insertCell().textContent = savingsPlan[i]["Grade"];
-        newRow_1.insertCell().textContent = savingsPlan[i]["Mil Monthly"].toLocaleString("en-US", moneyStyle);
+        newRow_1.insertCell().textContent = savingsPlan[i]["Mil Base Pay"].toLocaleString("en-US", moneyStyle);
+        newRow_1.insertCell().textContent = savingsPlan[i]["Mil Bonuses"].toLocaleString("en-US", moneyStyle);
         newRow_1.insertCell().textContent = savingsPlan[i]["Monthly Deposit"].toLocaleString("en-US", moneyStyle);
         newRow_1.insertCell().textContent = savingsPlan[i]["Civ Annual"].toLocaleString("en-US", moneyStyle);
         // Add text to CSV output
         strOutput += "\"" + savingsPlan[i]["Date"].toLocaleDateString("en-US", { month: 'short', year: 'numeric', timeZone: 'UTC' }) + "\",";
         strOutput += "\"" + savingsPlan[i]["Grade"] + "\",";
-        strOutput += "\"" + savingsPlan[i]["Mil Monthly"].toLocaleString("en-US", moneyStyle) + "\",";
+        strOutput += "\"" + savingsPlan[i]["Mil Base Pay"].toLocaleString("en-US", moneyStyle) + "\",";
+        strOutput += "\"" + savingsPlan[i]["Mil Bonuses"].toLocaleString("en-US", moneyStyle) + "\",";
         strOutput += "\"" + savingsPlan[i]["Monthly Deposit"].toLocaleString("en-US", moneyStyle) + "\",";
         strOutput += "\"" + savingsPlan[i]["Civ Annual"].toLocaleString("en-US", moneyStyle) + "\"";
     }
@@ -985,6 +988,7 @@ function createMonteCarloChart(chartData, startDate, chartId, chartTitle) {
             },
             scales: {
                 y: {
+                    suggestedMin: 0,
                     position: 'right',
                     title: {
                         text: 'Savings Balance',
