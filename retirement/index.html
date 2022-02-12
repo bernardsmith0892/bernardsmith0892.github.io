@@ -126,6 +126,16 @@
                                     </ul>
                                 </div>
                             </div>
+
+                            <!-- Zip Code -->
+                            <div class="col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <button class="input-group-text bg-outline-primary text-primary" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="The place you want to calculate BAH for. Leave blank to use the average BAH.">ZIP Code
+                                        &nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>
+                                    </button> 
+                                    <input type="text" class="form-control" id="zipCode" maxlength="5" pattern="[0-9]*">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -438,16 +448,16 @@
 <h5 id="scenarios">Scenarios</h5>
 <p>There are three scenarios this tool can consider:</p>
 <ol>
-<li><strong>If you stay on active-duty until retirement:</strong> This scenario estimates the equivalent value of your potential active-duty pension, how much the government is currently &quot;saving&quot; for you each month, and how much the government has already &quot;saved&quot; for you. You can use this as a retention tool or to compare the values of retirement pensions between different timelines. (For example - Retire at 20 years or retire at 24 years) Also supports calculating early retirements under TERA.</li>
 <li><strong>If you completely ETS from military service:</strong> This scenario estimates how much you will need to save, starting from your ETS date, in order to match the active-duty pension.</li>
 <li><strong>If you ETS and transfer into the reserves:</strong> This scenario is very similar to the previous one. The primary difference is that it also considers the value of your reservist pension at 60 years old to reduce your withdrawal requirements.</li>
+<li><strong>If you stay on active-duty until retirement:</strong> This scenario estimates the equivalent value of your potential active-duty pension, how much the government is currently &quot;saving&quot; for you each month, and how much the government has already &quot;saved&quot; for you. You can use this as a retention tool or to compare the values of retirement pensions between different timelines. (For example - Retire at 20 years or retire at 24 years) Also supports calculating early retirements under TERA.</li>
 </ol>
 <p>If you wish to consider other scenarios, you also have the option to download Excel/CSV versions of the tables to perform additional calculations. The download buttons are at the bottom of the tables.</p>
 <h5 id="assumptions">Assumptions</h5>
 <p>The calculator makes the following assumptions:</p>
 <ul>
 <li>Annual military pay raises and cost-of-living adjustments are equal to the inflation rate.</li>
-<li>You would have received BAH at the BAH II rate.</li>
+<li>You would have received BAH for wherever you chose to live.</li>
 <li>You will save the same amount of money per month.</li>
 <li>For reserves retirement, it assumes that you will earn 72 retirement points each year after you ETS from active-duty.</li>
 </ul>

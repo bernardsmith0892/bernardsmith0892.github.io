@@ -35,7 +35,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var payscale;
-var bah2;
+var avg_bah;
+var bah;
+var zipToMHA;
+// 2021 - const bas = {"O": 266.18, "E": 386.50};
+var bas = { "O": 280.29, "E": 406.98 };
 // Average promotion timeline for officers. YOS is based on AFCS career.
 // Each index is linked between the two lists
 var promotionTimeline = {
@@ -72,49 +76,69 @@ var COA;
 })(COA || (COA = {}));
 function preloadFunction(errorToastId, errorToastBodyId) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, _b, urlParams, savedParams, dates, inputs, errMsg, element, errorToast;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var _a, _b, _c, _d, urlParams, savedParams, inputs, errMsg, element, errorToast;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
                 case 0:
                     if (!(payscale !== null && payscale !== void 0)) return [3 /*break*/, 1];
                     _a = payscale;
                     return [3 /*break*/, 4];
                 case 1: return [4 /*yield*/, fetch("./2022_payscale.json")];
-                case 2: return [4 /*yield*/, (_c.sent()).json()];
+                case 2: return [4 /*yield*/, (_e.sent()).json()];
                 case 3:
-                    _a = _c.sent();
-                    _c.label = 4;
+                    _a = _e.sent();
+                    _e.label = 4;
                 case 4:
                     // Fetch payscale and BAH charts
                     payscale = _a;
-                    if (!(bah2 !== null && bah2 !== void 0)) return [3 /*break*/, 5];
-                    _b = bah2;
+                    if (!(avg_bah !== null && avg_bah !== void 0)) return [3 /*break*/, 5];
+                    _b = avg_bah;
                     return [3 /*break*/, 8];
-                case 5: return [4 /*yield*/, fetch("./2022_bah2.json")];
-                case 6: return [4 /*yield*/, (_c.sent()).json()];
+                case 5: return [4 /*yield*/, fetch("./2022_avgbah.json")];
+                case 6: return [4 /*yield*/, (_e.sent()).json()];
                 case 7:
-                    _b = _c.sent();
-                    _c.label = 8;
+                    _b = _e.sent();
+                    _e.label = 8;
                 case 8:
-                    bah2 = _b;
+                    avg_bah = _b;
+                    if (!(bah !== null && bah !== void 0)) return [3 /*break*/, 9];
+                    _c = bah;
+                    return [3 /*break*/, 12];
+                case 9: return [4 /*yield*/, fetch("./2022_bah.json")];
+                case 10: return [4 /*yield*/, (_e.sent()).json()];
+                case 11:
+                    _c = _e.sent();
+                    _e.label = 12;
+                case 12:
+                    bah = _c;
+                    if (!(zipToMHA !== null && zipToMHA !== void 0)) return [3 /*break*/, 13];
+                    _d = zipToMHA;
+                    return [3 /*break*/, 16];
+                case 13: return [4 /*yield*/, fetch("./2022_zip_mha.json")];
+                case 14: return [4 /*yield*/, (_e.sent()).json()];
+                case 15:
+                    _d = _e.sent();
+                    _e.label = 16;
+                case 16:
+                    zipToMHA = _d;
                     urlParams = new URLSearchParams(window.location.search);
                     if (urlParams.has('inputs')) {
                         try {
                             savedParams = atob(urlParams.get('inputs'));
-                            dates = JSON.parse(savedParams.split('&')[0]);
-                            inputs = JSON.parse(savedParams.split('&')[1]);
+                            inputs = JSON.parse(savedParams);
                             // Personal Data
-                            document.getElementById("eadDate").value = dates.eadDate.slice(0, 7);
-                            document.getElementById("payDate").value = dates.payDate.slice(0, 7);
+                            document.getElementById("eadDate").value = inputs.eadDate.slice(0, 7);
+                            document.getElementById("payDate").value = inputs.payDate.slice(0, 7);
                             document.getElementById("milRetireYOS").value = inputs.milTotalYOS;
                             document.getElementById("retireSystem").value = inputs.retirementSystem;
-                            document.getElementById("birthday").value = dates.birthday.slice(0, 7);
+                            document.getElementById("birthday").value = inputs.birthday.slice(0, 7);
                             document.getElementById("lifeExpectancy").value = inputs.lifeExpectancy;
+                            document.getElementById("zipCode").value = inputs.zipCode;
                             // Alternative COAs
                             document.getElementById("coaSelect").value = inputs.COA;
                             setETSDateRequirement();
-                            if ("etsDate" in dates) {
-                                document.getElementById("etsDate").value = dates.etsDate.slice(0, 7);
+                            if ("etsDate" in inputs) {
+                                document.getElementById("etsDate").value = inputs.etsDate.slice(0, 7);
                             }
                             document.getElementById("startingPrincipal").value = inputs.startingPrincipal;
                             document.getElementById("civRetireOffset").value = inputs.civRetireOffset;
@@ -146,10 +170,9 @@ function preloadFunction(errorToastId, errorToastBodyId) {
     });
 }
 function createBookmark() {
-    var dates = {};
     var inputs = {};
-    getDOMInputs(dates, inputs);
-    var mergedJSON = JSON.stringify(dates) + "&" + JSON.stringify(inputs);
+    getDOMInputs(inputs);
+    var mergedJSON = "" + JSON.stringify(inputs);
     var inputsParam = btoa(mergedJSON);
     inputsParam = encodeURIComponent(inputsParam);
     return "" + window.location.origin + window.location.pathname + "?inputs=" + inputsParam;
@@ -275,10 +298,9 @@ function getCurrentGrade(yearsOfService, promotionTimeline) {
  * Determines current base pay based on years of service and paygrade.
  * @param yearsOfService
  * @param payGrade
- * @param payscale
  * @returns {number} Current base pay.
  */
-function getCurrentPay(yearsOfService, payGrade, payscale) {
+function getCurrentPay(yearsOfService, payGrade) {
     var currentStep = 0;
     for (var i = 0; i < payscale.years.length; ++i) {
         if (yearsOfService >= payscale.years[i]) {
@@ -291,19 +313,47 @@ function getCurrentPay(yearsOfService, payGrade, payscale) {
     return payscale[payGrade][currentStep];
 }
 /**
- * Determines BAH2-entitlement based on paygrade and dependent status.
+ * Determines BAH-entitlement based on paygrade and dependent status. Defaults to average BAH
+ *  if no ZIP code or an invalid ZIP code is provided.
  * @param payGrade
  * @param dependents
+ * @param zipCode
+ * @param zipToMHA
  * @param bah
- * @returns {number} BAH2 entitlement
+ * @returns {number} BAH entitlement
  */
-function getBAH2(payGrade, dependents, bah) {
-    if (dependents) {
-        return bah[payGrade]["With Dependents"];
+function getBAH(payGrade, dependents, zipCode) {
+    var mha = getMHA(zipCode, zipToMHA);
+    if (mha == null) {
+        if (dependents) {
+            return avg_bah[payGrade]["With Dependents"];
+        }
+        else {
+            return avg_bah[payGrade]["Without Dependents"];
+        }
     }
     else {
-        return bah[payGrade]["Without Dependents"];
+        if (dependents) {
+            return bah[mha][payGrade]["With Dependents"];
+        }
+        else {
+            return bah[mha][payGrade]["Without Dependents"];
+        }
     }
+}
+/**
+ * Determines the MHA code for the given ZIP Code.
+ * @param zipCode
+ * @param zipToMHA
+ * @returns {string} MHA for this ZIP Code
+ */
+function getMHA(zipCode, zipToMHA) {
+    for (var mha in zipToMHA) {
+        if (zipToMHA[mha].includes(zipCode)) {
+            return mha;
+        }
+    }
+    return null;
 }
 /**
  * Determines BAS-entitlement based on officer/enlisted status.
@@ -311,7 +361,7 @@ function getBAH2(payGrade, dependents, bah) {
  * @param bas
  * @returns {number} BAS entitlement
  */
-function getBAS(payGrade, bas) {
+function getBAS(payGrade) {
     if (payGrade[0] == "O" || payGrade[0] == "W") {
         return bas.O;
     }
@@ -603,13 +653,10 @@ function depositsNeededMonteCarloTrial(monthlyDeposit, startFunds, savingsMean, 
  * @param payDate - Date that DFAS will use to determine pay for this person. Usually the same as their EAD date.
  * @param annualRaiseRate - Rate of annual raises used to offset inflation. Must be in decimal. (0.05, not 5%)
  * @param promotionTimeline - Expected timeline of this person's promotions.
- * @param payscale - Military payscale chart to use.
- * @param bah - Chart of BAH rates to use.
- * @param bas - Dictionary of BAS entitlements to use.
  * @param {boolean} [verbose=false] - Print table to the console.
  * @returns Dictionary of predicted pay over time, and calculated High-3.
  */
-function predictPay(startDate, endDate, eadDate, payDate, annualRaiseRate, promotionTimeline, payscale, bah, bas, age60Date, verbose) {
+function predictPay(startDate, endDate, eadDate, payDate, annualRaiseRate, promotionTimeline, zipCode, age60Date, verbose) {
     if (verbose === void 0) { verbose = false; }
     var today = new Date();
     var currentDate = startDate;
@@ -627,8 +674,8 @@ function predictPay(startDate, endDate, eadDate, payDate, annualRaiseRate, promo
         var payYOS = monthsDifference(payDate, currentDate) / 12;
         currentRaise = Math.pow(annualRaiseRate, (currentDate.getFullYear() - today.getFullYear()));
         grade = getCurrentGrade(careerYOS, promotionTimeline);
-        var basePay = getCurrentPay(payYOS, grade, payscale) * currentRaise;
-        var bonuses = (getBAH2(grade, true, bah) + getBAS(grade, bas)) * currentRaise;
+        var basePay = getCurrentPay(payYOS, grade) * currentRaise;
+        var bonuses = (getBAH(grade, true, zipCode) + getBAS(grade)) * currentRaise;
         if (verbose) {
             console.log(currentDate.toLocaleDateString() + "," + careerYOS.toFixed(2) + "," + payYOS.toFixed(2) + "," + grade + ",$" + basePay.toFixed(2) + ",$" + bonuses.toFixed(2) + "," + currentRaise.toFixed(2));
         }
@@ -653,7 +700,7 @@ function predictPay(startDate, endDate, eadDate, payDate, annualRaiseRate, promo
     }
     var high3 = sum / last36.length;
     var yosAt60 = yearsDifference(payDate, age60Date);
-    var reserveshigh3 = getCurrentPay(yosAt60, grade, payscale) * currentRaise;
+    var reserveshigh3 = getCurrentPay(yosAt60, grade) * currentRaise;
     return {
         "Predicted Pay": predictedPay,
         "High 3": high3,
@@ -1068,18 +1115,19 @@ function createDownloadButton(filename, data, buttonText, classAttr, id) {
     return element;
 }
 // Retrieves values from all DOM input fields and places them in the provided dictionaries
-function getDOMInputs(dates, inputs) {
+function getDOMInputs(inputs) {
     // Personal Data
-    dates.eadDate = document.getElementById("eadDate").valueAsDate;
-    dates.payDate = document.getElementById("payDate").valueAsDate;
+    inputs.eadDate = document.getElementById("eadDate").valueAsDate;
+    inputs.payDate = document.getElementById("payDate").valueAsDate;
     inputs.milTotalYOS = document.getElementById("milRetireYOS").valueAsNumber;
     inputs.retirementSystem = parseFloat(document.getElementById("retireSystem").value);
-    dates.birthday = document.getElementById("birthday").valueAsDate;
+    inputs.birthday = document.getElementById("birthday").valueAsDate;
     inputs.lifeExpectancy = document.getElementById("lifeExpectancy").valueAsNumber;
+    inputs.zipCode = document.getElementById("zipCode").value;
     // Alternative COAs
     inputs.COA = parseInt(document.getElementById("coaSelect").value);
     if (inputs.COA != COA.ActiveDuty) {
-        dates.etsDate = document.getElementById("etsDate").valueAsDate;
+        inputs.etsDate = document.getElementById("etsDate").valueAsDate;
     }
     inputs.startingPrincipal = document.getElementById("startingPrincipal").valueAsNumber;
     inputs.civRetireOffset = document.getElementById("civRetireOffset").valueAsNumber;
@@ -1099,39 +1147,36 @@ function getDOMInputs(dates, inputs) {
  * Calculate retirement plan upon a button press from the user. Fetches JSON data, values from input fields, and outputs the results to the webpage.
  */
 function calculateRetirementPlan() {
-    // 2021 - const bas = {"O": 266.18, "E": 386.50};
-    var bas = { "O": 280.29, "E": 406.98 };
     /* ************************************
        * Get values from DOM input fields *
        ************************************ */
-    var dates = {};
     var inputs = {};
-    getDOMInputs(dates, inputs);
+    getDOMInputs(inputs);
     /* *************************
        * Calculate Date Ranges *
        ************************* */
-    var milRetireDate = addMonths(dates.eadDate, inputs.milTotalYOS * 12);
+    var milRetireDate = addMonths(inputs.eadDate, inputs.milTotalYOS * 12);
     var civRetireDate = addMonths(milRetireDate, inputs.civRetireOffset * 12);
-    var sixtyBirthday = addMonths(dates.birthday, 60 * 12);
-    var lifeExpectancyDate = addMonths(dates.birthday, inputs.lifeExpectancy * 12);
+    var sixtyBirthday = addMonths(inputs.birthday, 60 * 12);
+    var lifeExpectancyDate = addMonths(inputs.birthday, inputs.lifeExpectancy * 12);
     var greyAreaYears = yearsDifference(civRetireDate, sixtyBirthday);
     /* ************************
        * Perform calculations *
        ************************ */
     if (inputs.COA == COA.ActiveDuty) {
         // Allows COLA-increases to work for the Active-Duty case
-        dates.etsDate = new Date();
+        inputs.etsDate = new Date();
         inputs.annuityAdjustment = 1.0;
         inputs.civRetireOffset = 0;
         civRetireDate = milRetireDate;
     }
     var retirementLength = yearsDifference(civRetireDate, lifeExpectancyDate);
-    var predictions = predictPay(dates.etsDate, milRetireDate, dates.eadDate, dates.payDate, inputs.colaRate, promotionTimeline, payscale, bah2, bas, sixtyBirthday);
+    var predictions = predictPay(inputs.etsDate, milRetireDate, inputs.eadDate, inputs.payDate, inputs.colaRate, promotionTimeline, inputs.zipCode, sixtyBirthday);
     // Used for early retirement under TERA. Compute reduction factor if below 20 years. Set reduction factor to 1 if equal to or above 20 years.
     var reductionFactor = 1.0 - (inputs.milTotalYOS < 20 ? Math.ceil((20 - inputs.milTotalYOS) * 12) * 0.01 / 12 : 0);
     var annualPension = predictions["High 3"] * inputs.milTotalYOS * inputs.retirementSystem * 12 * reductionFactor;
-    var activePoints = 365 * yearsDifference(dates.eadDate, dates.etsDate);
-    var reservesPoints = 72 * yearsDifference(dates.etsDate, milRetireDate);
+    var activePoints = 365 * yearsDifference(inputs.eadDate, inputs.etsDate);
+    var reservesPoints = 72 * yearsDifference(inputs.etsDate, milRetireDate);
     var adjustedPension = annualPension * Math.pow((1 + inputs.colaRate), inputs.civRetireOffset) * inputs.annuityAdjustment;
     var reservesPension = predictions["Reserves High 3"] * (activePoints + reservesPoints) / 360 * inputs.retirementSystem * 12;
     var adjustedReservesPension = reservesPension * Math.pow((1 + inputs.colaRate), Math.floor(yearsDifference(milRetireDate, sixtyBirthday))) * inputs.annuityAdjustment;
@@ -1165,7 +1210,7 @@ function calculateRetirementPlan() {
             document.getElementById("reservesPensionGroup").hidden = true;
         }
         // Assume savings start from ETS date
-        savingsTime = yearsDifference(dates.etsDate, civRetireDate);
+        savingsTime = yearsDifference(inputs.etsDate, civRetireDate);
         monteCarloDepositsResults = depositsNeededMonteCarlo(reqSavings, inputs.startingPrincipal, inputs.savingsReturnMean, inputs.savingsReturnStdev, savingsTime, inputs.savingsMonteCarloScore, inputs.savingsMonteCarloScore + 0.01, inputs.monteCarloTrials);
         monthlyDeposit = monteCarloDepositsResults.Deposit;
         savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnMean, predictions["Predicted Pay"], inputs.colaRate, inputs.startingPrincipal, monthlyDeposit, inputs.payAdjustment, null, inputs.COA == COA.Reserves);
@@ -1179,10 +1224,10 @@ function calculateRetirementPlan() {
     // Case for staying on active-duty
     else {
         // Assume savings was done from the start of Active-Duty service
-        var totalCareerTime = yearsDifference(dates.eadDate, milRetireDate);
+        var totalCareerTime = yearsDifference(inputs.eadDate, milRetireDate);
         savingsTime = yearsDifference(new Date(), milRetireDate);
         monthlyDeposit = depositsNeeded(reqSavings, 0, inputs.savingsReturnMean, totalCareerTime);
-        startingFunds = savingsAfterDeposits(0, monthlyDeposit, inputs.savingsReturnMean, monthsDifference(dates.eadDate, new Date()));
+        startingFunds = savingsAfterDeposits(0, monthlyDeposit, inputs.savingsReturnMean, monthsDifference(inputs.eadDate, new Date()));
         monteCarloDepositsResults = depositsNeededMonteCarlo(reqSavings, startingFunds, inputs.savingsReturnMean, inputs.savingsReturnStdev, savingsTime, inputs.savingsMonteCarloScore, inputs.savingsMonteCarloScore + 0.01, inputs.monteCarloTrials);
         monthlyDeposit = monteCarloDepositsResults.Deposit;
         savingsPlan = equivalentRetirement(reqSavings, savingsTime, inputs.savingsReturnMean, predictions["Predicted Pay"], inputs.colaRate, 0, monthlyDeposit, inputs.payAdjustment, milRetireDate);
@@ -1197,7 +1242,7 @@ function calculateRetirementPlan() {
     // Create detailed tables and charts
     var savingsTableData = createSavingsTable(savingsPlan, "retireTable");
     var savingsTableButton = document.getElementById("retireTableDownload");
-    createMonteCarloChart(monteCarloDepositsResults.Data.Data, dates.etsDate, "savingsChart", "Retirement Savings");
+    createMonteCarloChart(monteCarloDepositsResults.Data.Data, inputs.etsDate, "savingsChart", "Retirement Savings");
     // Overwrite download button data, if it already exists. Create it, if it doesn't exist.
     if (savingsTableButton) {
         savingsTableButton.href = createDownloadButton('savings.csv', savingsTableData, 'Download CSV', 'btn btn-primary mb-3', 'retireTableDownload').href;
